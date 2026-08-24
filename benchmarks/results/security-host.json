@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "captured_at": "2026-08-24T07:05:46.866032+00:00",
+  "result": "pass",
+  "records": [
+    {
+      "command": [
+        "espsecure",
+        "verify-signature",
+        "--version",
+        "2",
+        "--keyfile",
+        "nucleus/secure_boot_signing_key.pem",
+        "/tmp/nucleus-production.EkFhsk/nucleus.bin"
+      ],
+      "exit_code": 0,
+      "passed": true
+    },
+    {
+      "command": [
+        "espsecure",
+        "verify-signature",
+        "--version",
+        "2",
+        "--keyfile",
+        "nucleus/secure_boot_signing_key.pem",
+        "/var/folders/0p/ql8wrj9j575gv90ft9tl8_sw0000gn/T/nucleus-security-mjjd5cc4/corrupt.bin"
+      ],
+      "exit_code": 2,
+      "passed": true
+    },
+    {
+      "command": [
+        "espsecure",
+        "generate-signing-key",
+        "--version",
+        "2",
+        "--scheme",
+        "ecdsa256",
+        "/var/folders/0p/ql8wrj9j575gv90ft9tl8_sw0000gn/T/nucleus-security-mjjd5cc4/wrong.pem"
+      ],
+      "exit_code": 0,
+      "passed": true
+    },
+    {
+      "command": [
+        "espsecure",
+        "verify-signature",
+        "--version",
+        "2",
+        "--keyfile",
+        "/var/folders/0p/ql8wrj9j575gv90ft9tl8_sw0000gn/T/nucleus-security-mjjd5cc4/wrong.pem",
+        "/tmp/nucleus-production.EkFhsk/nucleus.bin"
+      ],
+      "exit_code": 2,
+      "passed": true
+    }
+  ]
+}

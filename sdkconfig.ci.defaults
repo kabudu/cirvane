@@ -1,0 +1,2 @@
+# Local-CI development signing key. The generated key remains under ignored build/.
+CONFIG_SECURE_BOOT_SIGNING_KEY="build/ci/signing-key.pem"

@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "captured_at": "2026-08-24T07:05:12.078264+00:00",
+  "port": "/dev/cu.usbmodem3101",
+  "result": "pass",
+  "records": [
+    {
+      "step": "self-test",
+      "command": "selftest",
+      "output": "selftest\r\nselftest bus=ok config=ok services=ok result=PASS\r\nnucleus>  "
+    },
+    {
+      "step": "resources",
+      "command": "res",
+      "output": "res\r\nid  name           stack_min  heap_delta cpu%  radio_ms\r\n0   led-heartbeat  3288       -6000      0     0\r\n1   wifi-scan      3756       -6000      0     0\r\nnucleus>  "
+    },
+    {
+      "step": "lazy-dual-band-scan",
+      "command": "scan",
+      "output": "scan\r\nscan queued; results follow asynchronously\r\nnucleus>  "
+    },
+    {
+      "step": "scan-results",
+      "command": "",
+      "output": "I (34393) pp: pp rom version: 78a72e9d5\r\nI (34393) net80211: net80211 rom version: 78a72e9d5\r\nI (34403) wifi:wifi driver task: 408358cc, prio:23, stack:6656, core=0\r\nI (34403) wifi:wifi firmware version: 00ad238\r\nI (34403) wifi:wifi certification version: v7.0\r\nI (34403) wifi:config NVS flash: enabled\r\nI (34403) wifi:config nano formatting: disabled\r\nI (34403) wifi:mac_version:HAL_MAC_ESP32AX_752MP_ECO2,ut_version:N, band mode:0x3\r\nI (34403) wifi:Init data frame dynamic rx buffer num: 32\r\nI (34413) wifi:Init static rx mgmt buffer num: 5\r\nI (34413) wifi:Init management short buffer num: 32\r\nI (34413) wifi:Init dynamic tx buffer num: 32\r\nI (34413) wifi:Init static tx FG buffer num: 2\r\nI (34413) wifi:Init static rx buffer size: 1700 (rxctrl:64, csi:512)\r\nI (34413) wifi:Init static rx buffer num: 10\r\nI (34413) wifi:Init dynamic rx buffer num: 32\r\nI (34413) wifi_init: rx ba win: 6\r\nI (34413) wifi_init: accept mbox: 6\r\nI (34413) wifi_init: tcpip mbox: 32\r\nI (34413) wifi_init: udp mbox: 6\r\nI (34413) wifi_init: tcp mbox: 6\r\nI (34413) wifi_init: tcp tx win: 5760\r\nI (34413) wifi_init: tcp rx win: 5760\r\nI (34413) wifi_init: tcp mss: 1440\r\nI (34413) wifi_init: WiFi IRAM OP enabled\r\nI (34413) wifi_init: WiFi RX IRAM OP enabled\r\nI (34413) wifi_init: WiFi SLP IRAM OP enabled\r\nI (34413) phy_init: phy_version 109,edb400d6,Mar 10 2026,10:22:11\r\nI (34983) wifi:11ax coex: WDEVAX_PTI0(0x55777555), WDEVAX_PTI1(0x00003377).\r\n\r\nI (34983) wifi:mode : sta (d0:cf:13:e2:15:b0)\r\nI (34983) wifi:enable tsf\r\nscanning both bands...\r\nI (40243) nucleus: heartbeat up=40s heap=142720 mode=blink state=nominal\r\n13 APs visible (13 shown)\r\n 1. BRSK-AC5207                      2.4GHz ch= 11 rssi= -39\r\n 2. BRSK-AC5207_legacy               2.4GHz ch= 11 rssi= -40\r\n 3. B"
+    },
+    {
+      "step": "service-after-scan",
+      "command": "svc",
+      "output": "svc\r\nsystem=nominal services=2\r\nid  name           phase     health  restarts last/max ms\r\n0   led-heartbeat  running   0       0        0/0\r\n1   wifi-scan      running   0       0        0/10306\r\nnucleus>  "
+    },
+    {
+      "step": "inject-wifi-failure",
+      "command": "svcfail 1",
+      "output": "svcfail 1\r\nfailure injected into service 1; inspect with svc\r\nnucleus>  "
+    },
+    {
+      "step": "supervised-recovery",
+      "command": "svc",
+      "output": "svc\r\nsystem=nominal services=2\r\nid  name           phase     health  restarts last/max ms\r\n0   led-heartbeat  running   0       0        0/0\r\n1   wifi-scan      running   0       1        0/10306\r\nnucleus>  "
+    }
+  ]
+}

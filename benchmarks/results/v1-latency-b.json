@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "label": "v1",
+  "block": "latency-b",
+  "captured_at": "2026-08-23T21:01:29.451660+00:00",
+  "port": "/dev/cu.usbmodem3101",
+  "baud": 115200,
+  "firmware": "benchmarks/nucleus-v1/build/nucleus.bin",
+  "firmware_sha256": "fb0d37c190ad35bd2e1c05c2b76b61df4ca22874ee5faf4c512b30012f9c626e",
+  "latency": {
+    "command": "info",
+    "samples_ms": [
+      2.15125,
+      2.141916,
+      2.146417,
+      2.157291,
+      2.148292,
+      2.236875,
+      2.148375,
+      2.1355,
+      2.111959,
+      2.154583,
+      2.136583,
+      2.177583,
+      2.157625,
+      2.126209,
+      2.139833
+    ],
+    "median_ms": 2.148292,
+    "p95_ms": 2.236875,
+    "population_stdev_ms": 0.027086300191466184,
+    "min_ms": 2.111959,
+    "max_ms": 2.236875
+  },
+  "boot": {
+    "method": "shell restart to prompt",
+    "samples_ms": [],
+    "median_ms": null,
+    "p95_ms": null,
+    "population_stdev_ms": null,
+    "min_ms": null,
+    "max_ms": null
+  }
+}
