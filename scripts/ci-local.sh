@@ -5,7 +5,8 @@ repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$repo_dir"
 
 git diff --check
-if git grep -n $'\u2014' -- .; then
+forbidden_dash="$(printf '\342\200\224')"
+if git grep -n "$forbidden_dash" -- .; then
   echo "Unicode U+2014 is prohibited" >&2
   exit 1
 fi
