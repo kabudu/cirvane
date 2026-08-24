@@ -2,7 +2,7 @@
 
 ## Decision state
 
-Cirvane and the Quiet Horizon direction are owner-approved. The palette is owner-approved. The three marks in `assets/brand/candidates/` are candidates, not canonical assets. Selection and legal clearance remain open.
+Cirvane and the palette are owner-approved. The owner rejected the first geometric and second faceted rounds as too visually anonymous. They remain as negative evidence. On 2026-08-24 the owner selected Recovery Scar from a creative-reset exploration. Its deterministic reconstruction is the canonical identity. Professional legal clearance remains open.
 
 ## Method
 
@@ -41,6 +41,40 @@ The stable upper and lower states plus one bounded transition express controlled
 
 The converging paths give the clearest recovery narrative and the most unusual full-size silhouette. Its central detail collapses at 16px and its directional form can suggest networking or synchronization. The current construction fails the small-size gate and cannot be selected without simplification.
 
+## Expressive second round
+
+The second round deliberately adds mass, curves and counterforms. A broader visual search found that eye, ribbon, link and polygon-aperture motifs are all crowded across technology, communications and stock-logo catalogues. The scores therefore penalise a memorable silhouette when its immediate reading is already owned by a familiar visual category.
+
+| Candidate | Comprehension | Distinctiveness | 16px | Monochrome | Ambiguity resistance | Expressiveness | Enduring fit | Total |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| D: Vane Aperture | 4 | 3 | 4 | 5 | 2 | 5 | 4 | 27 |
+| E: Recovery Fold | 4 | 3 | 4 | 5 | 2 | 4 | 4 | 26 |
+| F: Faceted Aperture | 3 | 4 | 5 | 5 | 3 | 4 | 4 | 28 |
+
+### D: Vane Aperture
+
+D has the strongest organic presence and makes observation immediately legible. That is also its weakness: it reads as an eye, a heavily saturated motif associated with vision, surveillance, media and AI. It is expressive but carries inaccurate product expectations.
+
+### E: Recovery Fold
+
+E turns the transition mechanism into a substantial folded form and remains clear at small sizes. Its immediate chain-link or interconnection reading is common in networking, integration and collaboration brands. It risks describing connectivity rather than bounded recovery.
+
+### F: Faceted Aperture
+
+F has the strongest silhouette, best 16px performance and least literal reading in this round. Its asymmetric boundary reduces generic hexagon symmetry, but polygonal apertures remain common in crypto, camera and infrastructure branding. It is the strongest basis for another optical refinement, not a cleared final mark.
+
+Search references included [Dribbble's abstract-eye index](https://dribbble.com/search/abstract-eye-logo), [LogoFav's ribbon-logo survey](https://www.logofav.com/style/ribbon-logo-examples), [99designs' aperture-logo index](https://99designs.com/inspiration/logos/aperture) and broader image searches for asymmetric faceted technology marks. These sources establish motif crowding, not legal availability.
+
+## Selected creative reset: Recovery Scar
+
+The creative reset removed containers, apertures, eyes, ribbons, cubes and infrastructure glyphs. Recovery Scar treats the symbol as an irregular recovered artefact whose disruption remains visible through a living mineral-teal seam. The owner explicitly selected the concept.
+
+| Concept | Comprehension | Distinctiveness | 16px | Monochrome | Ambiguity resistance | Expressiveness | Enduring fit | Total |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| Recovery Scar | 4 | 5 | 4 | 4 | 4 | 5 | 5 | 31 |
+
+The generated concept board is provenance evidence only and is not shipped. The final mark was manually reconstructed with new deterministic SVG geometry, a dedicated small-size master and a negative-space monochrome form. It avoids a claim-bearing shield, badge or self-healing animation. Residual ambiguity includes geological, biological and repaired-object readings; these support rather than contradict the recovery narrative, but cultural review and professional mark clearance remain required.
+
 ## Accessibility and claim review
 
 - Every candidate retains its silhouette in one colour; colour is not the only identifier.
@@ -57,4 +91,4 @@ python3 scripts/validate_brand_candidates.py
 scripts/render-brand-candidates.sh
 ```
 
-Generated previews are written under ignored `build/brand-candidates/`. The SVG sources are the decision artefacts.
+Generated previews for the active round are written under ignored `build/brand-candidates/expressive/`. The SVG sources are the decision artefacts.

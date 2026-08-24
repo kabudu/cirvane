@@ -1,0 +1,36 @@
+:root {
+  --cirvane-aubergine: #3a2748;
+  --cirvane-mineral-teal: #0e7c78;
+  --cirvane-sea-glass: #cde7e2;
+  --cirvane-warm-white: #f8f6ef;
+  --cirvane-graphite: #1f2326;
+  --cirvane-success: #146b4a;
+  --cirvane-warning: #7a4b00;
+  --cirvane-failure: #a1283b;
+  --cirvane-information: #285d88;
+  --cirvane-unknown: #625b66;
+  --cirvane-font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --cirvane-font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --cirvane-radius-control: 6px;
+  --cirvane-radius-panel: 12px;
+  --cirvane-motion-fast: 120ms;
+  --cirvane-motion-standard: 200ms;
+  --cirvane-motion-recovery: 360ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --cirvane-motion-fast: 0ms;
+    --cirvane-motion-standard: 0ms;
+    --cirvane-motion-recovery: 0ms;
+  }
+}
+
+@media (forced-colors: active) {
+  :root {
+    --cirvane-mineral-teal: LinkText;
+    --cirvane-sea-glass: Canvas;
+    --cirvane-warm-white: Canvas;
+    --cirvane-graphite: CanvasText;
+  }
+}

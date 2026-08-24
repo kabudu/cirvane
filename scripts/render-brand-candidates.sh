@@ -2,8 +2,23 @@
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-candidate_dir="$repo_root/assets/brand/candidates"
-output_dir="$repo_root/build/brand-candidates"
+candidate_set="${1:-expressive}"
+case "$candidate_set" in
+  expressive)
+    candidate_dir="$repo_root/assets/brand/candidates/expressive"
+    ;;
+  f-refinements)
+    candidate_dir="$repo_root/assets/brand/candidates/expressive/f-refinements"
+    ;;
+  f-depth)
+    candidate_dir="$repo_root/assets/brand/candidates/expressive/f-depth"
+    ;;
+  *)
+    echo "unknown candidate set: $candidate_set" >&2
+    exit 1
+    ;;
+esac
+output_dir="$repo_root/build/brand-candidates/$candidate_set"
 
 if ! command -v magick >/dev/null 2>&1; then
   echo "ImageMagick is required to render brand candidates" >&2
@@ -16,7 +31,8 @@ mkdir -p "$output_dir/colour" "$output_dir/monochrome" "$output_dir/small"
 for source in "$candidate_dir"/*.svg; do
   name="$(basename "$source" .svg)"
   magick -background none "$source" -strip "$output_dir/colour/$name.png"
-  sed -e 's/#0E7C78/#1F2326/g' -e 's/#3A2748/#1F2326/g' "$source" \
+  sed -e 's/#0E7C78/#1F2326/g' -e 's/#3A2748/#1F2326/g' \
+    -e 's/#CDE7E2/#1F2326/g' "$source" \
     | magick -background none svg:- -strip "$output_dir/monochrome/$name.png"
   magick -background none "$source" -resize 16x16 -gravity center -extent 16x16 -strip \
     "$output_dir/small/$name.png"
