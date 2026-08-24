@@ -15,17 +15,28 @@ EXPECTED = {
     "quiet-horizon-a-bounded-gate.svg",
     "quiet-horizon-b-controlled-shift.svg",
     "quiet-horizon-c-recovery-channel.svg",
+    "expressive/quiet-horizon-d-vane-aperture.svg",
+    "expressive/quiet-horizon-e-recovery-fold.svg",
+    "expressive/quiet-horizon-f-faceted-aperture.svg",
+    "expressive/f-refinements/f1-open-seam.svg",
+    "expressive/f-refinements/f2-returning-facet.svg",
+    "expressive/f-refinements/f3-vane-counterform.svg",
+    "expressive/f-depth/f2a-folded-monolith.svg",
+    "expressive/f-depth/f2b-inset-aperture.svg",
+    "expressive/f-depth/f2c-counterfold.svg",
 }
 ALLOWED_TAGS = {"svg", "title", "desc", "path"}
 ALLOWED_ATTRIBUTES = {
     "aria-labelledby",
     "d",
     "fill",
+    "fill-rule",
     "id",
     "role",
     "viewBox",
 }
-ALLOWED_COLOURS = {"#0E7C78", "#3A2748"}
+ALLOWED_COLOURS = {"#0E7C78", "#3A2748", "#CDE7E2", "#1F2326"}
+REQUIRED_COLOURS = {"#0E7C78", "#3A2748"}
 MATURITY_TERMS = re.compile(
     r"\b(?:alpha|beta|evaluation|experimental|preview|release candidate|production-ready)\b",
     re.IGNORECASE,
@@ -69,15 +80,18 @@ def validate(path: Path) -> list[str]:
             else:
                 colours.add(fill)
 
-    if not 1 <= paths <= 3:
-        errors.append(f"expected 1 to 3 paths, found {paths}")
-    if colours != ALLOWED_COLOURS:
-        errors.append(f"expected approved candidate colours, found {sorted(colours)}")
+    if not 1 <= paths <= 6:
+        errors.append(f"expected 1 to 6 paths, found {paths}")
+    if not REQUIRED_COLOURS.issubset(colours):
+        errors.append(f"missing core candidate colours: {sorted(REQUIRED_COLOURS - colours)}")
     return errors
 
 
 def main() -> int:
-    actual = {path.name for path in CANDIDATE_DIR.glob("*.svg")}
+    actual = {
+        str(path.relative_to(CANDIDATE_DIR))
+        for path in CANDIDATE_DIR.rglob("*.svg")
+    }
     failures: list[str] = []
     if actual != EXPECTED:
         failures.append(f"candidate inventory mismatch: {sorted(actual)}")
@@ -89,7 +103,7 @@ def main() -> int:
         for failure in failures:
             print(f"- {failure}", file=sys.stderr)
         return 1
-    print("brand candidate validation passed: 3 safe deterministic SVGs")
+    print("brand candidate validation passed: 12 safe deterministic SVGs")
     return 0
 
 

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 96" role="img" aria-labelledby="title desc">
+  <title id="title">Cirvane Quiet Horizon candidate D: Vane Aperture</title>
+  <desc id="desc">Two asymmetric fields create a rising aperture and controlled counterflow.</desc>
+  <path fill="#0E7C78" d="M8 58C14 25 42 8 74 12c21 2 38 13 46 30L98 52c-6-11-17-18-31-19-17-2-32 6-39 21z"/>
+  <path fill="#3A2748" d="M120 38c-6 33-34 50-66 46-21-2-38-13-46-30l22-10c6 11 17 18 31 19 17 2 32-6 39-21z"/>
+</svg>

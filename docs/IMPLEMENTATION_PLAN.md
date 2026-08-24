@@ -11,8 +11,8 @@ Checkboxes represent implementation plus required evidence, never documentation 
 ## M1: enduring product identity
 
 - [x] Produce three distinct visual directions and record non-leading evaluation.
-- [ ] Select one direction and complete the accessible logo, colour, type, icon, diagram and chart systems.
-- [ ] Add deterministic export tooling, design tokens, licences and asset manifest verification.
+- [x] Select one direction and complete the accessible logo, colour, type, icon, diagram and chart systems.
+- [x] Add deterministic export tooling, design tokens, licences and asset manifest verification.
 
 ## M2: complete Cirvane rename
 

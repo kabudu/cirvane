@@ -1,0 +1,524 @@
+{
+  "assets": [
+    {
+      "allowedUse": "licence and provenance",
+      "colourSpace": null,
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": null,
+      "exportCommand": null,
+      "licence": "MIT",
+      "mediaType": "text/markdown",
+      "path": "assets/brand/LICENSES/README.md",
+      "provenance": "manually authored deterministic source",
+      "sha256": "6f5fde8b8b95794852b82f2d0e55b58e0d3c9d911fdfd0d63e316b404723f4cd",
+      "sourcePath": null,
+      "sourceSha256": null
+    },
+    {
+      "allowedUse": "generated distribution asset",
+      "colourSpace": "sRGB",
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": [
+        1280,
+        640
+      ],
+      "exportCommand": "scripts/export-brand-assets.sh",
+      "licence": "MIT",
+      "mediaType": "image/png",
+      "path": "assets/brand/exports/cirvane-chart-palette-1280.png",
+      "provenance": "deterministic librsvg export",
+      "sha256": "3395992f578c5208d25d900b80dac2e52cce585a6dd027b90c7c917778d6626f",
+      "sourcePath": "assets/brand/templates/chart-palette.svg",
+      "sourceSha256": "ddd6ca57e03e2559a23f33169b7d0da2795c522004dfeca759234273abe26ac7"
+    },
+    {
+      "allowedUse": "generated distribution asset",
+      "colourSpace": "sRGB",
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": [
+        1280,
+        480
+      ],
+      "exportCommand": "scripts/export-brand-assets.sh",
+      "licence": "MIT",
+      "mediaType": "image/png",
+      "path": "assets/brand/exports/cirvane-diagram-key-1280.png",
+      "provenance": "deterministic librsvg export",
+      "sha256": "fdfb79d9b1b806a86aabc14f373902e307aa3fe8859bbe71afefcc4d486a9843",
+      "sourcePath": "assets/brand/templates/diagram-key.svg",
+      "sourceSha256": "4d3022bd61c454c1f05056d570dcdd062e4d7da17c393265c1ef66b6c6ddd01a"
+    },
+    {
+      "allowedUse": "generated distribution asset",
+      "colourSpace": "sRGB",
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": [
+        680,
+        192
+      ],
+      "exportCommand": "scripts/export-brand-assets.sh",
+      "licence": "MIT",
+      "mediaType": "image/png",
+      "path": "assets/brand/exports/cirvane-horizontal-680.png",
+      "provenance": "deterministic librsvg export",
+      "sha256": "d8517e5bdb9fbb0638049a572f87b446e1b3aabfb2f9bee52d959a7c0bbe1a51",
+      "sourcePath": "assets/brand/source/cirvane-horizontal.svg",
+      "sourceSha256": "4aa590a162854cbeaf2ae7ce3ee9cd384ad29e32c2f41018b24fa2e3fa88df3f"
+    },
+    {
+      "allowedUse": "generated distribution asset",
+      "colourSpace": "sRGB",
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": [
+        680,
+        192
+      ],
+      "exportCommand": "scripts/export-brand-assets.sh",
+      "licence": "MIT",
+      "mediaType": "image/png",
+      "path": "assets/brand/exports/cirvane-horizontal-reversed-680.png",
+      "provenance": "deterministic librsvg export",
+      "sha256": "a9ba364989afc7dafa9393e3e766d89f5f88a20606df8fdf6d89717ab6cbe2bb",
+      "sourcePath": "assets/brand/source/cirvane-horizontal-reversed.svg",
+      "sourceSha256": "dcdaef8b1927a1f6286352e7bde82ac726f5a3b1f02412e3707bc831f4ee3bc0"
+    },
+    {
+      "allowedUse": "generated distribution asset",
+      "colourSpace": "sRGB",
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": [
+        1024,
+        256
+      ],
+      "exportCommand": "scripts/export-brand-assets.sh",
+      "licence": "MIT",
+      "mediaType": "image/png",
+      "path": "assets/brand/exports/cirvane-icons-1024.png",
+      "provenance": "deterministic librsvg export",
+      "sha256": "d42881862f64c31d7cef2cf7243a8cb9c6c64cb7a022ccdc579c2fd5abfd7717",
+      "sourcePath": "assets/brand/source/cirvane-icons.svg",
+      "sourceSha256": "6c1a78a06ff1df945285600a768bcf4c473259dd42b287cc01617a03fbc198e1"
+    },
+    {
+      "allowedUse": "generated distribution asset",
+      "colourSpace": "sRGB",
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": [
+        1200,
+        630
+      ],
+      "exportCommand": "scripts/export-brand-assets.sh",
+      "licence": "MIT",
+      "mediaType": "image/png",
+      "path": "assets/brand/exports/cirvane-release-card-1200.png",
+      "provenance": "deterministic librsvg export",
+      "sha256": "483a773a9c98860ae5066e4aad77d4adc732d0b2618d8b418caf6fc1b3a76d5e",
+      "sourcePath": "assets/brand/templates/overlays/release-social-card.svg",
+      "sourceSha256": "466466854818199b2114076904e3ad9cdf80a74ba47ed2fa6b58936f923a11a6"
+    },
+    {
+      "allowedUse": "generated distribution asset",
+      "colourSpace": "sRGB",
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": [
+        432,
+        416
+      ],
+      "exportCommand": "scripts/export-brand-assets.sh",
+      "licence": "MIT",
+      "mediaType": "image/png",
+      "path": "assets/brand/exports/cirvane-stacked-432.png",
+      "provenance": "deterministic librsvg export",
+      "sha256": "6af34746f06dab2ffe9d96a6a30a8cc7e953283695425c25eb613b35fd105b5a",
+      "sourcePath": "assets/brand/source/cirvane-stacked.svg",
+      "sourceSha256": "4ee34c05cf8867ddeedf75abaa66026abfbe5ae8e06d4df6496acdccf73e840f"
+    },
+    {
+      "allowedUse": "generated distribution asset",
+      "colourSpace": "sRGB",
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": [
+        128,
+        128
+      ],
+      "exportCommand": "scripts/export-brand-assets.sh",
+      "licence": "MIT",
+      "mediaType": "image/png",
+      "path": "assets/brand/exports/cirvane-symbol-128.png",
+      "provenance": "deterministic librsvg export",
+      "sha256": "01839cc95ed184359d057ba53d9c796166879a5df03de4bfd18452cd232c5877",
+      "sourcePath": "assets/brand/source/cirvane-symbol.svg",
+      "sourceSha256": "cd1d5445ebb8c926397887cbaf0aae93d8c2ec9973a587005a493a7e98a132f3"
+    },
+    {
+      "allowedUse": "generated distribution asset",
+      "colourSpace": "sRGB",
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": [
+        16,
+        16
+      ],
+      "exportCommand": "scripts/export-brand-assets.sh",
+      "licence": "MIT",
+      "mediaType": "image/png",
+      "path": "assets/brand/exports/cirvane-symbol-16.png",
+      "provenance": "deterministic librsvg export",
+      "sha256": "936be93236c3de8370ebec2801204e3d246d2ccb84ec6e26916aa10d76b6554d",
+      "sourcePath": "assets/brand/source/cirvane-symbol-small.svg",
+      "sourceSha256": "5ac0483e937fc2310fb21d5d6e8db5b35cc38295bd25c6a924cb5f5da8b5b415"
+    },
+    {
+      "allowedUse": "generated distribution asset",
+      "colourSpace": "sRGB",
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": [
+        32,
+        32
+      ],
+      "exportCommand": "scripts/export-brand-assets.sh",
+      "licence": "MIT",
+      "mediaType": "image/png",
+      "path": "assets/brand/exports/cirvane-symbol-32.png",
+      "provenance": "deterministic librsvg export",
+      "sha256": "ad55206688dbfa6c83f5675921fc42edcf5ad344301d8f27cc57e18e63377d18",
+      "sourcePath": "assets/brand/source/cirvane-symbol-small.svg",
+      "sourceSha256": "5ac0483e937fc2310fb21d5d6e8db5b35cc38295bd25c6a924cb5f5da8b5b415"
+    },
+    {
+      "allowedUse": "generated distribution asset",
+      "colourSpace": "sRGB",
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": [
+        512,
+        512
+      ],
+      "exportCommand": "scripts/export-brand-assets.sh",
+      "licence": "MIT",
+      "mediaType": "image/png",
+      "path": "assets/brand/exports/cirvane-symbol-512.png",
+      "provenance": "deterministic librsvg export",
+      "sha256": "6113f7101887482b3089cc0908869f44d7e7738702136d8814c82065eec697a4",
+      "sourcePath": "assets/brand/source/cirvane-symbol.svg",
+      "sourceSha256": "cd1d5445ebb8c926397887cbaf0aae93d8c2ec9973a587005a493a7e98a132f3"
+    },
+    {
+      "allowedUse": "generated distribution asset",
+      "colourSpace": "sRGB",
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": [
+        64,
+        64
+      ],
+      "exportCommand": "scripts/export-brand-assets.sh",
+      "licence": "MIT",
+      "mediaType": "image/png",
+      "path": "assets/brand/exports/cirvane-symbol-64.png",
+      "provenance": "deterministic librsvg export",
+      "sha256": "611004521d5124c8b599f26af9b05394f7998dd785fe0e2708db3da63af0d7d6",
+      "sourcePath": "assets/brand/source/cirvane-symbol.svg",
+      "sourceSha256": "cd1d5445ebb8c926397887cbaf0aae93d8c2ec9973a587005a493a7e98a132f3"
+    },
+    {
+      "allowedUse": "generated distribution asset",
+      "colourSpace": "sRGB",
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": [
+        512,
+        512
+      ],
+      "exportCommand": "scripts/export-brand-assets.sh",
+      "licence": "MIT",
+      "mediaType": "image/png",
+      "path": "assets/brand/exports/cirvane-symbol-mono-512.png",
+      "provenance": "deterministic librsvg export",
+      "sha256": "4e4ed29ae66e2703aca96f40febf486ed5cb72f92b5e3085f14663e3fb7da469",
+      "sourcePath": "assets/brand/source/cirvane-symbol-mono.svg",
+      "sourceSha256": "3a9b67c89ba87f650c3888ca4f2994d0c700c9d72dae5d45b13d442e96e0422a"
+    },
+    {
+      "allowedUse": "generated distribution asset",
+      "colourSpace": "sRGB",
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": [
+        512,
+        512
+      ],
+      "exportCommand": "scripts/export-brand-assets.sh",
+      "licence": "MIT",
+      "mediaType": "image/png",
+      "path": "assets/brand/exports/cirvane-symbol-reversed-512.png",
+      "provenance": "deterministic librsvg export",
+      "sha256": "c1613ee99e1dab1d94b021cc22805abe7f211f2c13e992d5227144b632fe954b",
+      "sourcePath": "assets/brand/source/cirvane-symbol-reversed.svg",
+      "sourceSha256": "520b811b8948bea63bf7b1cfd3b726f0271dd80c1ee2bad6b5d1afc2c11e2d5c"
+    },
+    {
+      "allowedUse": "generated distribution asset",
+      "colourSpace": "sRGB",
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": [
+        432,
+        128
+      ],
+      "exportCommand": "scripts/export-brand-assets.sh",
+      "licence": "MIT",
+      "mediaType": "image/png",
+      "path": "assets/brand/exports/cirvane-wordmark-432.png",
+      "provenance": "deterministic librsvg export",
+      "sha256": "480f00de92f51394d0866b59070394257a666e9f67f9068fa78e9bed2b340de6",
+      "sourcePath": "assets/brand/source/cirvane-wordmark.svg",
+      "sourceSha256": "9570d5578f6a1aa8711aa3fa992490e3cbd677b8e2c0a87936cd2bfc218aac92"
+    },
+    {
+      "allowedUse": "canonical identity source",
+      "colourSpace": "sRGB",
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": [
+        340,
+        96
+      ],
+      "exportCommand": null,
+      "licence": "MIT",
+      "mediaType": "image/svg+xml",
+      "path": "assets/brand/source/cirvane-horizontal-reversed.svg",
+      "provenance": "manually authored deterministic source",
+      "sha256": "dcdaef8b1927a1f6286352e7bde82ac726f5a3b1f02412e3707bc831f4ee3bc0",
+      "sourcePath": null,
+      "sourceSha256": null
+    },
+    {
+      "allowedUse": "canonical identity source",
+      "colourSpace": "sRGB",
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": [
+        340,
+        96
+      ],
+      "exportCommand": null,
+      "licence": "MIT",
+      "mediaType": "image/svg+xml",
+      "path": "assets/brand/source/cirvane-horizontal.svg",
+      "provenance": "manually authored deterministic source",
+      "sha256": "4aa590a162854cbeaf2ae7ce3ee9cd384ad29e32c2f41018b24fa2e3fa88df3f",
+      "sourcePath": null,
+      "sourceSha256": null
+    },
+    {
+      "allowedUse": "canonical identity source",
+      "colourSpace": "sRGB",
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": [
+        256,
+        64
+      ],
+      "exportCommand": null,
+      "licence": "MIT",
+      "mediaType": "image/svg+xml",
+      "path": "assets/brand/source/cirvane-icons.svg",
+      "provenance": "manually authored deterministic source",
+      "sha256": "6c1a78a06ff1df945285600a768bcf4c473259dd42b287cc01617a03fbc198e1",
+      "sourcePath": null,
+      "sourceSha256": null
+    },
+    {
+      "allowedUse": "canonical identity source",
+      "colourSpace": "sRGB",
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": [
+        216,
+        208
+      ],
+      "exportCommand": null,
+      "licence": "MIT",
+      "mediaType": "image/svg+xml",
+      "path": "assets/brand/source/cirvane-stacked.svg",
+      "provenance": "manually authored deterministic source",
+      "sha256": "4ee34c05cf8867ddeedf75abaa66026abfbe5ae8e06d4df6496acdccf73e840f",
+      "sourcePath": null,
+      "sourceSha256": null
+    },
+    {
+      "allowedUse": "canonical identity source",
+      "colourSpace": "sRGB",
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": [
+        128,
+        128
+      ],
+      "exportCommand": null,
+      "licence": "MIT",
+      "mediaType": "image/svg+xml",
+      "path": "assets/brand/source/cirvane-symbol-mono.svg",
+      "provenance": "manually authored deterministic source",
+      "sha256": "3a9b67c89ba87f650c3888ca4f2994d0c700c9d72dae5d45b13d442e96e0422a",
+      "sourcePath": null,
+      "sourceSha256": null
+    },
+    {
+      "allowedUse": "canonical identity source",
+      "colourSpace": "sRGB",
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": [
+        128,
+        128
+      ],
+      "exportCommand": null,
+      "licence": "MIT",
+      "mediaType": "image/svg+xml",
+      "path": "assets/brand/source/cirvane-symbol-reversed.svg",
+      "provenance": "manually authored deterministic source",
+      "sha256": "520b811b8948bea63bf7b1cfd3b726f0271dd80c1ee2bad6b5d1afc2c11e2d5c",
+      "sourcePath": null,
+      "sourceSha256": null
+    },
+    {
+      "allowedUse": "canonical identity source",
+      "colourSpace": "sRGB",
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": [
+        32,
+        32
+      ],
+      "exportCommand": null,
+      "licence": "MIT",
+      "mediaType": "image/svg+xml",
+      "path": "assets/brand/source/cirvane-symbol-small.svg",
+      "provenance": "manually authored deterministic source",
+      "sha256": "5ac0483e937fc2310fb21d5d6e8db5b35cc38295bd25c6a924cb5f5da8b5b415",
+      "sourcePath": null,
+      "sourceSha256": null
+    },
+    {
+      "allowedUse": "canonical identity source",
+      "colourSpace": "sRGB",
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": [
+        128,
+        128
+      ],
+      "exportCommand": null,
+      "licence": "MIT",
+      "mediaType": "image/svg+xml",
+      "path": "assets/brand/source/cirvane-symbol.svg",
+      "provenance": "manually authored deterministic source",
+      "sha256": "cd1d5445ebb8c926397887cbaf0aae93d8c2ec9973a587005a493a7e98a132f3",
+      "sourcePath": null,
+      "sourceSha256": null
+    },
+    {
+      "allowedUse": "canonical identity source",
+      "colourSpace": "sRGB",
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": [
+        216,
+        64
+      ],
+      "exportCommand": null,
+      "licence": "MIT",
+      "mediaType": "image/svg+xml",
+      "path": "assets/brand/source/cirvane-wordmark-reversed.svg",
+      "provenance": "manually authored deterministic source",
+      "sha256": "8cd93ab5b2152aad2a363db85f778a805b942d93640fec0715736308c7125f8e",
+      "sourcePath": null,
+      "sourceSha256": null
+    },
+    {
+      "allowedUse": "canonical identity source",
+      "colourSpace": "sRGB",
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": [
+        216,
+        64
+      ],
+      "exportCommand": null,
+      "licence": "MIT",
+      "mediaType": "image/svg+xml",
+      "path": "assets/brand/source/cirvane-wordmark.svg",
+      "provenance": "manually authored deterministic source",
+      "sha256": "9570d5578f6a1aa8711aa3fa992490e3cbd677b8e2c0a87936cd2bfc218aac92",
+      "sourcePath": null,
+      "sourceSha256": null
+    },
+    {
+      "allowedUse": "brand template",
+      "colourSpace": "sRGB",
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": [
+        640,
+        320
+      ],
+      "exportCommand": null,
+      "licence": "MIT",
+      "mediaType": "image/svg+xml",
+      "path": "assets/brand/templates/chart-palette.svg",
+      "provenance": "manually authored deterministic source",
+      "sha256": "ddd6ca57e03e2559a23f33169b7d0da2795c522004dfeca759234273abe26ac7",
+      "sourcePath": null,
+      "sourceSha256": null
+    },
+    {
+      "allowedUse": "brand template",
+      "colourSpace": "sRGB",
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": [
+        640,
+        240
+      ],
+      "exportCommand": null,
+      "licence": "MIT",
+      "mediaType": "image/svg+xml",
+      "path": "assets/brand/templates/diagram-key.svg",
+      "provenance": "manually authored deterministic source",
+      "sha256": "4d3022bd61c454c1f05056d570dcdd062e4d7da17c393265c1ef66b6c6ddd01a",
+      "sourcePath": null,
+      "sourceSha256": null
+    },
+    {
+      "allowedUse": "versioned release overlay",
+      "colourSpace": "sRGB",
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": [
+        1200,
+        630
+      ],
+      "exportCommand": null,
+      "licence": "MIT",
+      "mediaType": "image/svg+xml",
+      "path": "assets/brand/templates/overlays/release-social-card.svg",
+      "provenance": "manually authored deterministic source",
+      "sha256": "466466854818199b2114076904e3ad9cdf80a74ba47ed2fa6b58936f923a11a6",
+      "sourcePath": null,
+      "sourceSha256": null
+    },
+    {
+      "allowedUse": "design system",
+      "colourSpace": null,
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": null,
+      "exportCommand": null,
+      "licence": "MIT",
+      "mediaType": "text/css",
+      "path": "assets/brand/tokens/cirvane.css",
+      "provenance": "manually authored deterministic source",
+      "sha256": "f0f22070819fe94a5c8a7620da9fc332bc679c4b1ea5856324efbd587db868a1",
+      "sourcePath": null,
+      "sourceSha256": null
+    },
+    {
+      "allowedUse": "design system",
+      "colourSpace": null,
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": null,
+      "exportCommand": null,
+      "licence": "MIT",
+      "mediaType": "application/json",
+      "path": "assets/brand/tokens/cirvane.tokens.json",
+      "provenance": "manually authored deterministic source",
+      "sha256": "8770590029b507a886274e004c48ce29a157a81c9823e3873d5b9985a790f7a9",
+      "sourcePath": null,
+      "sourceSha256": null
+    }
+  ],
+  "brandVersion": "1.0.0",
+  "schemaVersion": 1
+}

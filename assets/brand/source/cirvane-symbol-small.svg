@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-labelledby="title desc">
+  <title id="title">Cirvane small symbol</title>
+  <desc id="desc">A simplified recovered form with a clear central scar.</desc>
+  <path fill="#1F2326" d="M4 4C8 1 15 1 19 3c3 2 2 6 0 9-3 3-8 4-12 1C3 11 2 6 4 4zm20 2c5-1 7 3 7 9 0 7-3 14-7 15-4 0-6-4-5-9 1-6 3-9 5-15zM3 16c2-2 4-1 7 2 2 2 5 3 6 6 1 3-2 6-6 5-5-1-9-9-7-13z"/>
+  <path fill="#3A2748" d="M23 1c3-1 5 1 4 3 0 2-2 3-4 3-2-1-2-5 0-6z"/>
+  <path fill="#0E7C78" d="M22 6c2 4-2 6-4 10-2 4 3 7 1 14l-3-1c2-6-3-9-1-14 2-4 6-6 4-9z"/>
+</svg>

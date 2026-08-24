@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 240" role="img" aria-labelledby="title desc">
+  <title id="title">Cirvane architecture diagram key</title>
+  <desc id="desc">Canonical shapes for boundaries, transitions, recovery and rejected paths.</desc>
+  <rect width="640" height="240" rx="16" fill="#F8F6EF"/>
+  <g font-family="ui-sans-serif,system-ui,sans-serif" font-size="18" fill="#1F2326">
+    <rect x="32" y="40" width="120" height="64" rx="12" fill="#CDE7E2" stroke="#0E7C78" stroke-width="3"/><text x="52" y="78">Boundary</text>
+    <rect x="260" y="40" width="120" height="64" rx="12" fill="#FFFFFF" stroke="#3A2748" stroke-width="3"/><text x="279" y="78">Decision</text>
+    <rect x="488" y="40" width="120" height="64" rx="12" fill="#1F2326"/><text x="510" y="78" fill="#F8F6EF">Outcome</text>
+    <path d="M152 72h108" stroke="#0E7C78" stroke-width="4"/><path d="m248 64 12 8-12 8" fill="none" stroke="#0E7C78" stroke-width="4"/>
+    <path d="M380 72h108" stroke="#1F2326" stroke-width="4"/><path d="m476 64 12 8-12 8" fill="none" stroke="#1F2326" stroke-width="4"/>
+    <path d="M320 104v64H152" fill="none" stroke="#A1283B" stroke-width="4" stroke-dasharray="10 8"/>
+    <path d="m164 160-12 8 12 8" fill="none" stroke="#A1283B" stroke-width="4"/>
+    <text x="178" y="198" fill="#A1283B">Rejected or rolled back</text>
+  </g>
+</svg>
