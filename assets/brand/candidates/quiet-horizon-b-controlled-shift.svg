@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 96" role="img" aria-labelledby="title desc">
+  <title id="title">Cirvane Quiet Horizon candidate B: Controlled Shift</title>
+  <desc id="desc">A bounded diagonal transition joins two stable horizontal states.</desc>
+  <path fill="#0E7C78" d="M8 30h52v12H8zm60 24h52v12H68z"/>
+  <path fill="#3A2748" d="m56 30 20 36H62L42 30z"/>
+</svg>

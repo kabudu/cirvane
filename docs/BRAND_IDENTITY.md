@@ -27,4 +27,6 @@ Allowed current terms include bounded, supervised, rollback-tested, signed-updat
 
 ## Visual-productisation gate
 
-Three materially different directions must be developed and assessed for comprehension, distinctiveness, small-size recognition, accessibility, cultural ambiguity and misleading expectations. A selected direction must then supply vector masters, complete lockups, monochrome and reversed variants, tokens, typography, icon and diagram rules, deterministic exports, licences, provenance and an asset manifest. Those outputs are not yet complete and must not be represented as shipped.
+The owner selected Quiet Horizon from three materially different directions and approved the aubergine, mineral teal, sea-glass, warm off-white and graphite palette on 2026-08-24. The selection was assessed against comprehension, distinctiveness, small-size recognition, accessibility, cultural ambiguity and misleading expectations.
+
+Three manually constructed Quiet Horizon symbol candidates remain under review. None is the canonical Cirvane mark until the owner selects it and legal review finds a viable mark path. The selected direction must then supply vector masters, complete lockups, monochrome and reversed variants, tokens, typography, icon and diagram rules, deterministic exports, licences, provenance and an asset manifest. Those outputs are not yet complete and must not be represented as shipped.
