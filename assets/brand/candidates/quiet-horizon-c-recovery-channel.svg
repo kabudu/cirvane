@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 96" role="img" aria-labelledby="title desc">
+  <title id="title">Cirvane Quiet Horizon candidate C: Recovery Channel</title>
+  <desc id="desc">Two bounded paths converge on a central recovery channel without crossing.</desc>
+  <path fill="#0E7C78" d="M8 26h42l18 16-8 9-15-13H8zm112 44H78L60 54l8-9 15 13h37z"/>
+  <path fill="#3A2748" d="M54 22h12v18H54zm8 34h12v18H62z"/>
+</svg>
