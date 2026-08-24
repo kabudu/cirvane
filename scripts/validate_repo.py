@@ -10,6 +10,7 @@ REQUIRED = [
     "README.md", "AGENTS.md", "LICENSE", "docs/PRODUCT_SPECIFICATION.md",
     "docs/ARCHITECTURE.md", "docs/ADOPTION_AND_INTEGRATION.md",
     "docs/BRAND_IDENTITY.md", "docs/IMPLEMENTATION_PLAN.md",
+    "docs/PRODUCTISATION_COMPLETION_PLAN.md",
     "docs/E2E_TESTING.md", "docs/VALIDATION.md", "docs/THREAT_MODEL.md",
     "docs/OPERATIONS.md", "docs/RISK_REGISTER.md",
     "docs/REQUIREMENTS_TRACEABILITY.md", "docs/NOVELTY.md",

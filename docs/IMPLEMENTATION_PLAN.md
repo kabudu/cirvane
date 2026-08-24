@@ -2,6 +2,8 @@
 
 Checkboxes represent implementation plus required evidence, never documentation alone.
 
+The detailed path from the current productised identity to the first developer release is maintained in [PRODUCTISATION_COMPLETION_PLAN.md](PRODUCTISATION_COMPLETION_PLAN.md).
+
 ## M0: source baseline and private delivery
 
 - [x] Select Cirvane through an initial collision audit and owner approval.

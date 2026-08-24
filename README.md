@@ -26,6 +26,7 @@ Raw evidence and reproducible harnesses live under `benchmarks/`. The authoritat
 - [Product specification](docs/PRODUCT_SPECIFICATION.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Implementation plan](docs/IMPLEMENTATION_PLAN.md)
+- [Productisation completion plan](docs/PRODUCTISATION_COMPLETION_PLAN.md)
 - [Threat model](docs/THREAT_MODEL.md)
 - [Brand identity](docs/BRAND_IDENTITY.md)
 - [Brand asset usage](docs/brand/ASSET_USAGE.md)
