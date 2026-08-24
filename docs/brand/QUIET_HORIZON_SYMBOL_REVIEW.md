@@ -2,7 +2,7 @@
 
 ## Decision state
 
-Cirvane and the palette are owner-approved. The owner rejected the first geometric and second faceted rounds as too visually anonymous. They remain as negative evidence. On 2026-08-24 the owner selected Recovery Scar from a creative-reset exploration. Its deterministic reconstruction is the canonical identity. Professional legal clearance remains open.
+Cirvane and the palette are owner-approved. The owner rejected the first geometric and second faceted rounds as too visually anonymous. They remain as negative evidence. On 2026-08-24 the owner selected Recovery Scar from a creative-reset exploration, rejected a later manual vector reconstruction as a design regression and approved a transparent extraction faithful to the selected concept as the canonical expressive identity. Professional legal and AI-assisted asset rights clearance remain open.
 
 ## Method
 

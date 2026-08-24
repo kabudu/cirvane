@@ -54,12 +54,12 @@ Allowed current terms include bounded, supervised, rollback-tested, signed-updat
 
 The owner selected Recovery Scar on 2026-08-24 after rejecting two rounds of flat geometric marks. The mark is an irregular recovered artefact divided by a living mineral-teal seam. The disruption is not hidden: repair becomes the most recognisable feature.
 
-The canonical master is `assets/brand/source/cirvane-symbol.svg`. It was manually reconstructed as deterministic SVG geometry from an AI-assisted concept and contains no traced raster, font, external resource or third-party icon.
+The canonical expressive master is `assets/brand/source/cirvane-symbol-dimensional.png`, an owner-approved AI-assisted transparent raster artwork. `cirvane-symbol.svg` is a deterministic local wrapper used by the export pipeline and lockups. The monochrome source is a deterministic one-colour derivative that preserves the master silhouette and expresses the recovery channel as negative space. No third-party icon, font or remotely loaded resource is present.
 
 ### Construction and responsive use
 
-- Use the full-colour symbol at 32px or larger.
-- Use `cirvane-symbol-small.svg` from 16px through 31px.
+- Use the full-colour dimensional symbol at 32px or larger wherever the channel and stone texture remain clear.
+- Use `cirvane-symbol-small.svg` from 16px through 31px; it retains the approved composition but must be visually checked on its actual background.
 - Use the monochrome symbol when colour reproduction, forced colour or print constraints would collapse the seam.
 - Use the reversed symbol and lockup only on aubergine, graphite or imagery dark enough to maintain contrast.
 - Minimum horizontal lockup width is 136px; minimum stacked width is 86px.
@@ -109,10 +109,10 @@ Required text pairs are machine-validated against WCAG AA. High-contrast and for
 
 ## Assets, provenance and governance
 
-Canonical sources live in `assets/brand/source/`; deterministic exports in `assets/brand/exports/`; templates in `assets/brand/templates/`; tokens in `assets/brand/tokens/`; licences in `assets/brand/LICENSES/`; and digests plus allowed use in `assets/brand/BRAND_ASSET_MANIFEST.json`.
+Canonical sources live in `assets/brand/source/`; deterministic exports in `assets/brand/exports/`; templates in `assets/brand/templates/`; tokens in `assets/brand/tokens/`; licences in `assets/brand/LICENSES/`; and digests plus allowed use in `assets/brand/BRAND_ASSET_MANIFEST.json`. Canonical SVG wrappers may reference only the declared local raster masters and wordmark sources. Validation rejects undeclared, remote and unsafe resources.
 
 Product and brand ownership remains with the repository owner. Engineering owns deterministic export and manifest integrity. Security owns claim-boundary review. Accessibility owns contrast and non-colour semantics. Legal owns trademark clearance before public opening. Changes require a versioned source change, regenerated exports, validation, PR review and an updated manifest; released assets are archived rather than silently overwritten.
 
 ## Remaining external gates
 
-The identity is technically complete only when repository validation, deterministic reproduction and visual QA pass. Public use additionally requires professional name and mark clearance, cultural review and owner approval of the rendered release surfaces. Visual polish is not product, security or production evidence.
+The identity is technically complete only when repository validation, deterministic reproduction and visual QA pass. Public use additionally requires professional name and mark clearance, cultural review, AI-assisted asset rights review and owner approval of the rendered release surfaces. Visual polish is not product, security or production evidence.

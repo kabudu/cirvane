@@ -11,6 +11,8 @@ if ! command -v rsvg-convert >/dev/null 2>&1; then
   exit 1
 fi
 
+"$repo_root/scripts/generate-brand-derivatives.sh"
+
 mkdir -p "$output_dir"
 
 render() {

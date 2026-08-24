@@ -1,10 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 216 208" role="img" aria-labelledby="title desc">
   <title id="title">Cirvane stacked logo</title>
-  <desc id="desc">The Recovery Scar symbol above the custom Cirvane wordmark.</desc>
-  <g transform="translate(44)">
-    <path fill="#1F2326" d="M16 18C26 7 47 4 68 8c11 2 17 10 15 22-2 13-9 23-20 29-13 6-28 4-39-4C12 47 8 29 16 18zM93 25c14-3 26 7 29 24 4 20-1 44-12 57-8 10-22 9-29-1-8-11-7-26-2-39 5-14 4-24 14-41zM62 96c5-8 12-10 20-6 7 4 12 11 17 17 5 6 2 13-5 15-13 4-29 2-39-3-7-4-6-12 0-16z"/><path fill="#3A2748" d="M10 65c5-7 13-8 19-3 9 7 16 16 26 20 8 4 10 14 4 22-8 12-24 13-36 4C9 98 2 76 10 65zM91 8c8-2 16 2 18 8 2 7-4 12-12 13-8 1-13-3-13-9 0-5 2-10 7-12z"/><path fill="#0E7C78" d="M87 24c5 7 4 15-1 23-5 9-14 15-16 25-2 9 5 17 8 25 4 10 2 20-4 27l-9-5c5-7 6-13 3-20-4-9-11-17-9-29 2-14 13-21 19-30 4-6 4-10 1-15z"/><path fill="#CDE7E2" d="M82 23c5 8 3 15-2 22-6 9-16 16-17 27-1 10 6 18 9 27 2 7 1 13-3 19l-4-2c3-5 3-10 1-16-3-9-11-18-8-30 3-14 13-21 19-30 4-6 4-11 1-15z"/>
-  </g>
-  <g transform="translate(0 140)" fill="none" stroke="#1F2326" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M34 14C27 7 12 9 8 23c-4 14 5 28 19 27 4 0 7-2 10-5"/><path d="M48 24v25"/><path d="M48 13h.1"/><path d="M62 49V25m0 8c4-7 9-10 15-8"/><path d="m87 25 10 24 11-24"/><path d="M128 27c-6-5-17-2-17 9s11 16 17 9m0-18v22"/><path d="M142 49V25m0 8c4-7 15-11 20-3 2 3 2 7 2 11v8"/><path d="M205 44c-4 5-14 7-21 1-7-6-5-18 2-22 8-4 18 1 18 10h-23"/>
-  </g>
+  <desc id="desc">The dimensional Recovery Scar above the Cirvane wordmark.</desc>
+  <image href="cirvane-symbol-dimensional.png" x="44" y="0" width="128" height="128" preserveAspectRatio="xMidYMid meet"/>
+  <image href="cirvane-wordmark.svg" x="0" y="140" width="216" height="64" preserveAspectRatio="xMidYMid meet"/>
 </svg>
