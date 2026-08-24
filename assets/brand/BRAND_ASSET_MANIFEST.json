@@ -8,9 +8,23 @@
       "exportCommand": null,
       "licence": "MIT",
       "mediaType": "text/markdown",
+      "path": "assets/brand/LICENSES/Figtree-OFL.txt",
+      "provenance": "manually authored deterministic source",
+      "sha256": "bb272dfcd8801eb31fb98fe51828f76f0e41ac82f89256101df8021aa3d30ce2",
+      "sourcePath": null,
+      "sourceSha256": null
+    },
+    {
+      "allowedUse": "licence and provenance",
+      "colourSpace": null,
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": null,
+      "exportCommand": null,
+      "licence": "MIT",
+      "mediaType": "text/markdown",
       "path": "assets/brand/LICENSES/README.md",
       "provenance": "manually authored deterministic source",
-      "sha256": "6f5fde8b8b95794852b82f2d0e55b58e0d3c9d911fdfd0d63e316b404723f4cd",
+      "sha256": "780363d03635073b625992bb1d95f47407ca2504c9820623d66970be0fc1c30a",
       "sourcePath": null,
       "sourceSha256": null
     },
@@ -61,9 +75,9 @@
       "mediaType": "image/png",
       "path": "assets/brand/exports/cirvane-horizontal-680.png",
       "provenance": "deterministic librsvg export",
-      "sha256": "d8517e5bdb9fbb0638049a572f87b446e1b3aabfb2f9bee52d959a7c0bbe1a51",
+      "sha256": "08c3e55209b2d2b1ee982321a58a9ad9999d4fedbd6b5fe45a8a90d7ba384aef",
       "sourcePath": "assets/brand/source/cirvane-horizontal.svg",
-      "sourceSha256": "4aa590a162854cbeaf2ae7ce3ee9cd384ad29e32c2f41018b24fa2e3fa88df3f"
+      "sourceSha256": "b45843851506c070241272213bab46a618286a619caceea5cf0edb5b6ce014c0"
     },
     {
       "allowedUse": "generated distribution asset",
@@ -78,9 +92,9 @@
       "mediaType": "image/png",
       "path": "assets/brand/exports/cirvane-horizontal-reversed-680.png",
       "provenance": "deterministic librsvg export",
-      "sha256": "a9ba364989afc7dafa9393e3e766d89f5f88a20606df8fdf6d89717ab6cbe2bb",
+      "sha256": "741211e0674246c306ca4917dc880138e9a0703908236c783661f224e228bd11",
       "sourcePath": "assets/brand/source/cirvane-horizontal-reversed.svg",
-      "sourceSha256": "dcdaef8b1927a1f6286352e7bde82ac726f5a3b1f02412e3707bc831f4ee3bc0"
+      "sourceSha256": "873ffe16a021bc7ed6d160c5e451f438b02e62a7991a56596becc6453612d746"
     },
     {
       "allowedUse": "generated distribution asset",
@@ -129,9 +143,9 @@
       "mediaType": "image/png",
       "path": "assets/brand/exports/cirvane-stacked-432.png",
       "provenance": "deterministic librsvg export",
-      "sha256": "6af34746f06dab2ffe9d96a6a30a8cc7e953283695425c25eb613b35fd105b5a",
+      "sha256": "bf4afc6c37e6e10ed82f72259aa57ae6fdcebaa9184f30b93e33767e1c961c81",
       "sourcePath": "assets/brand/source/cirvane-stacked.svg",
-      "sourceSha256": "4ee34c05cf8867ddeedf75abaa66026abfbe5ae8e06d4df6496acdccf73e840f"
+      "sourceSha256": "f332772920fa3be966d6ba367ce4798348e209d84428e33bd312c2999fa90066"
     },
     {
       "allowedUse": "generated distribution asset",
@@ -146,9 +160,9 @@
       "mediaType": "image/png",
       "path": "assets/brand/exports/cirvane-symbol-128.png",
       "provenance": "deterministic librsvg export",
-      "sha256": "01839cc95ed184359d057ba53d9c796166879a5df03de4bfd18452cd232c5877",
+      "sha256": "326a1cce7de55742ed6afe4343c19cbe2cdfb505a916f2b6907ebf2a41ea7bc2",
       "sourcePath": "assets/brand/source/cirvane-symbol.svg",
-      "sourceSha256": "cd1d5445ebb8c926397887cbaf0aae93d8c2ec9973a587005a493a7e98a132f3"
+      "sourceSha256": "6d9abdb9a2cc0c61e8bf0973ad8f156f95dd4b866c0d0f2acd8bc0916a837058"
     },
     {
       "allowedUse": "generated distribution asset",
@@ -163,9 +177,9 @@
       "mediaType": "image/png",
       "path": "assets/brand/exports/cirvane-symbol-16.png",
       "provenance": "deterministic librsvg export",
-      "sha256": "936be93236c3de8370ebec2801204e3d246d2ccb84ec6e26916aa10d76b6554d",
+      "sha256": "b9c3eb0332a372b1514196f9afb65cad90924c58a81b33fd21f0d51f14f59953",
       "sourcePath": "assets/brand/source/cirvane-symbol-small.svg",
-      "sourceSha256": "5ac0483e937fc2310fb21d5d6e8db5b35cc38295bd25c6a924cb5f5da8b5b415"
+      "sourceSha256": "a7c24bc6b228864f4c7768513c2f3c6e5be2aa11ca64d78199ca12dbb1e821d6"
     },
     {
       "allowedUse": "generated distribution asset",
@@ -180,9 +194,9 @@
       "mediaType": "image/png",
       "path": "assets/brand/exports/cirvane-symbol-32.png",
       "provenance": "deterministic librsvg export",
-      "sha256": "ad55206688dbfa6c83f5675921fc42edcf5ad344301d8f27cc57e18e63377d18",
+      "sha256": "243ee71bf66ac81d7cd6570c5a78ec899b6654980cf7e8fedaf8c8d16a926024",
       "sourcePath": "assets/brand/source/cirvane-symbol-small.svg",
-      "sourceSha256": "5ac0483e937fc2310fb21d5d6e8db5b35cc38295bd25c6a924cb5f5da8b5b415"
+      "sourceSha256": "a7c24bc6b228864f4c7768513c2f3c6e5be2aa11ca64d78199ca12dbb1e821d6"
     },
     {
       "allowedUse": "generated distribution asset",
@@ -197,9 +211,9 @@
       "mediaType": "image/png",
       "path": "assets/brand/exports/cirvane-symbol-512.png",
       "provenance": "deterministic librsvg export",
-      "sha256": "6113f7101887482b3089cc0908869f44d7e7738702136d8814c82065eec697a4",
+      "sha256": "88cddb2d31967bf1ebca39d9952475f1984b828f302e89d0308c5c43d55f0138",
       "sourcePath": "assets/brand/source/cirvane-symbol.svg",
-      "sourceSha256": "cd1d5445ebb8c926397887cbaf0aae93d8c2ec9973a587005a493a7e98a132f3"
+      "sourceSha256": "6d9abdb9a2cc0c61e8bf0973ad8f156f95dd4b866c0d0f2acd8bc0916a837058"
     },
     {
       "allowedUse": "generated distribution asset",
@@ -214,9 +228,9 @@
       "mediaType": "image/png",
       "path": "assets/brand/exports/cirvane-symbol-64.png",
       "provenance": "deterministic librsvg export",
-      "sha256": "611004521d5124c8b599f26af9b05394f7998dd785fe0e2708db3da63af0d7d6",
+      "sha256": "bbd2777252b2f5f7e2ee99a9e64d01424bd9b0d7bf3c4335eb33244c81c71c15",
       "sourcePath": "assets/brand/source/cirvane-symbol.svg",
-      "sourceSha256": "cd1d5445ebb8c926397887cbaf0aae93d8c2ec9973a587005a493a7e98a132f3"
+      "sourceSha256": "6d9abdb9a2cc0c61e8bf0973ad8f156f95dd4b866c0d0f2acd8bc0916a837058"
     },
     {
       "allowedUse": "generated distribution asset",
@@ -231,9 +245,9 @@
       "mediaType": "image/png",
       "path": "assets/brand/exports/cirvane-symbol-mono-512.png",
       "provenance": "deterministic librsvg export",
-      "sha256": "4e4ed29ae66e2703aca96f40febf486ed5cb72f92b5e3085f14663e3fb7da469",
+      "sha256": "0a5008dadbedf48e8fd1363ee21f2cf9cee1512464089ac9b3821f40eb327236",
       "sourcePath": "assets/brand/source/cirvane-symbol-mono.svg",
-      "sourceSha256": "3a9b67c89ba87f650c3888ca4f2994d0c700c9d72dae5d45b13d442e96e0422a"
+      "sourceSha256": "271680f9656e1da809926459d78ae99aa8c9290eb5a9f0767d436edbaefa9534"
     },
     {
       "allowedUse": "generated distribution asset",
@@ -248,9 +262,9 @@
       "mediaType": "image/png",
       "path": "assets/brand/exports/cirvane-symbol-reversed-512.png",
       "provenance": "deterministic librsvg export",
-      "sha256": "c1613ee99e1dab1d94b021cc22805abe7f211f2c13e992d5227144b632fe954b",
+      "sha256": "88cddb2d31967bf1ebca39d9952475f1984b828f302e89d0308c5c43d55f0138",
       "sourcePath": "assets/brand/source/cirvane-symbol-reversed.svg",
-      "sourceSha256": "520b811b8948bea63bf7b1cfd3b726f0271dd80c1ee2bad6b5d1afc2c11e2d5c"
+      "sourceSha256": "a4fbc6ea869a3de7f958b659935d3ff25702be4c88c0426e9a6b2e250c128a86"
     },
     {
       "allowedUse": "generated distribution asset",
@@ -265,9 +279,9 @@
       "mediaType": "image/png",
       "path": "assets/brand/exports/cirvane-wordmark-432.png",
       "provenance": "deterministic librsvg export",
-      "sha256": "480f00de92f51394d0866b59070394257a666e9f67f9068fa78e9bed2b340de6",
+      "sha256": "08aa82290ad8043af01693671aa78809b154b0ad51a8aee49f7186d4c16c2d70",
       "sourcePath": "assets/brand/source/cirvane-wordmark.svg",
-      "sourceSha256": "9570d5578f6a1aa8711aa3fa992490e3cbd677b8e2c0a87936cd2bfc218aac92"
+      "sourceSha256": "77f6372056876956bfdd5d6ea0254be3345fcaa5f4a64464af2f5c4e50f54182"
     },
     {
       "allowedUse": "canonical identity source",
@@ -282,7 +296,7 @@
       "mediaType": "image/svg+xml",
       "path": "assets/brand/source/cirvane-horizontal-reversed.svg",
       "provenance": "manually authored deterministic source",
-      "sha256": "dcdaef8b1927a1f6286352e7bde82ac726f5a3b1f02412e3707bc831f4ee3bc0",
+      "sha256": "873ffe16a021bc7ed6d160c5e451f438b02e62a7991a56596becc6453612d746",
       "sourcePath": null,
       "sourceSha256": null
     },
@@ -299,7 +313,7 @@
       "mediaType": "image/svg+xml",
       "path": "assets/brand/source/cirvane-horizontal.svg",
       "provenance": "manually authored deterministic source",
-      "sha256": "4aa590a162854cbeaf2ae7ce3ee9cd384ad29e32c2f41018b24fa2e3fa88df3f",
+      "sha256": "b45843851506c070241272213bab46a618286a619caceea5cf0edb5b6ce014c0",
       "sourcePath": null,
       "sourceSha256": null
     },
@@ -333,9 +347,43 @@
       "mediaType": "image/svg+xml",
       "path": "assets/brand/source/cirvane-stacked.svg",
       "provenance": "manually authored deterministic source",
-      "sha256": "4ee34c05cf8867ddeedf75abaa66026abfbe5ae8e06d4df6496acdccf73e840f",
+      "sha256": "f332772920fa3be966d6ba367ce4798348e209d84428e33bd312c2999fa90066",
       "sourcePath": null,
       "sourceSha256": null
+    },
+    {
+      "allowedUse": "canonical identity source",
+      "colourSpace": "sRGB",
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "exportCommand": null,
+      "licence": "MIT",
+      "mediaType": "image/png",
+      "path": "assets/brand/source/cirvane-symbol-dimensional.png",
+      "provenance": "owner-approved AI-assisted raster master and deterministic derivative",
+      "sha256": "0d35a863ca85cd9fef12aae2169af39fd18de49bd9bb18079a67682381cfe59b",
+      "sourcePath": null,
+      "sourceSha256": null
+    },
+    {
+      "allowedUse": "canonical identity source",
+      "colourSpace": "sRGB",
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "exportCommand": "scripts/generate-brand-derivatives.sh",
+      "licence": "MIT",
+      "mediaType": "image/png",
+      "path": "assets/brand/source/cirvane-symbol-mono-dimensional.png",
+      "provenance": "owner-approved AI-assisted raster master and deterministic derivative",
+      "sha256": "3c9dfef44b2ee61a56a0e9b2bc79c98b64aa97ca4da7cc66f252112d5c01a9d5",
+      "sourcePath": "assets/brand/source/cirvane-symbol-dimensional.png",
+      "sourceSha256": "0d35a863ca85cd9fef12aae2169af39fd18de49bd9bb18079a67682381cfe59b"
     },
     {
       "allowedUse": "canonical identity source",
@@ -350,7 +398,7 @@
       "mediaType": "image/svg+xml",
       "path": "assets/brand/source/cirvane-symbol-mono.svg",
       "provenance": "manually authored deterministic source",
-      "sha256": "3a9b67c89ba87f650c3888ca4f2994d0c700c9d72dae5d45b13d442e96e0422a",
+      "sha256": "271680f9656e1da809926459d78ae99aa8c9290eb5a9f0767d436edbaefa9534",
       "sourcePath": null,
       "sourceSha256": null
     },
@@ -367,7 +415,7 @@
       "mediaType": "image/svg+xml",
       "path": "assets/brand/source/cirvane-symbol-reversed.svg",
       "provenance": "manually authored deterministic source",
-      "sha256": "520b811b8948bea63bf7b1cfd3b726f0271dd80c1ee2bad6b5d1afc2c11e2d5c",
+      "sha256": "a4fbc6ea869a3de7f958b659935d3ff25702be4c88c0426e9a6b2e250c128a86",
       "sourcePath": null,
       "sourceSha256": null
     },
@@ -384,7 +432,7 @@
       "mediaType": "image/svg+xml",
       "path": "assets/brand/source/cirvane-symbol-small.svg",
       "provenance": "manually authored deterministic source",
-      "sha256": "5ac0483e937fc2310fb21d5d6e8db5b35cc38295bd25c6a924cb5f5da8b5b415",
+      "sha256": "a7c24bc6b228864f4c7768513c2f3c6e5be2aa11ca64d78199ca12dbb1e821d6",
       "sourcePath": null,
       "sourceSha256": null
     },
@@ -401,7 +449,7 @@
       "mediaType": "image/svg+xml",
       "path": "assets/brand/source/cirvane-symbol.svg",
       "provenance": "manually authored deterministic source",
-      "sha256": "cd1d5445ebb8c926397887cbaf0aae93d8c2ec9973a587005a493a7e98a132f3",
+      "sha256": "6d9abdb9a2cc0c61e8bf0973ad8f156f95dd4b866c0d0f2acd8bc0916a837058",
       "sourcePath": null,
       "sourceSha256": null
     },
@@ -417,8 +465,8 @@
       "licence": "MIT",
       "mediaType": "image/svg+xml",
       "path": "assets/brand/source/cirvane-wordmark-reversed.svg",
-      "provenance": "manually authored deterministic source",
-      "sha256": "8cd93ab5b2152aad2a363db85f778a805b942d93640fec0715736308c7125f8e",
+      "provenance": "Figtree weight 450 outlines under the SIL Open Font License 1.1",
+      "sha256": "f2a0f61b4cecd1b7aa4542dd0d334951190403993ae843babf2715c29faa5525",
       "sourcePath": null,
       "sourceSha256": null
     },
@@ -434,8 +482,8 @@
       "licence": "MIT",
       "mediaType": "image/svg+xml",
       "path": "assets/brand/source/cirvane-wordmark.svg",
-      "provenance": "manually authored deterministic source",
-      "sha256": "9570d5578f6a1aa8711aa3fa992490e3cbd677b8e2c0a87936cd2bfc218aac92",
+      "provenance": "Figtree weight 450 outlines under the SIL Open Font License 1.1",
+      "sha256": "77f6372056876956bfdd5d6ea0254be3345fcaa5f4a64464af2f5c4e50f54182",
       "sourcePath": null,
       "sourceSha256": null
     },
@@ -519,6 +567,6 @@
       "sourceSha256": null
     }
   ],
-  "brandVersion": "1.0.0",
+  "brandVersion": "2.0.0",
   "schemaVersion": 1
 }

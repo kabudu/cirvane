@@ -12,7 +12,7 @@
 | Centred cover, poster or presentation | `cirvane-stacked.svg` |
 | Text-only constrained header | `cirvane-wordmark.svg` |
 
-Never use candidate assets outside design review. The `assets/brand/candidates/` tree records rejected and exploratory work and is excluded from the canonical manifest.
+Never use candidate assets outside design review. The `assets/brand/candidates/` tree records rejected and exploratory work and is excluded from the canonical manifest. The approved concept has been promoted by copying it into `assets/brand/source/cirvane-symbol-dimensional.png`; consumers must use the canonical source or exports, not the candidate copy.
 
 ## Plain-text fallback
 
@@ -28,5 +28,5 @@ Lifecycle and assurance language belongs in a separately named overlay instance.
 2. Preserve clear space and aspect ratio.
 3. Provide accessible naming when the mark conveys identity.
 4. Use semantic icons and labels for operational states.
-5. Regenerate rather than editing an exported PNG.
+5. Regenerate rather than editing an exported PNG or resizing the candidate master independently.
 6. Verify the asset digest against `BRAND_ASSET_MANIFEST.json`.
