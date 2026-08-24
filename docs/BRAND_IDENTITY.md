@@ -82,7 +82,7 @@ Semantic success, warning, failure, information and unknown colours are separate
 
 ## Typography
 
-The canonical wordmark is custom path geometry. It must never be recreated with a font. Product and documentation typography use the platform system sans stack; code, shell and evidence use the platform system monospace stack. No font file is redistributed.
+The canonical wordmark uses optically spaced Figtree Medium outlines at weight 450. Figtree is distributed under the SIL Open Font License 1.1; the canonical SVG contains paths and has no runtime font dependency. Do not reset the wordmark as live text or substitute another weight. Product and documentation typography use the platform system sans stack; code, shell and evidence use the platform system monospace stack. No font binary is redistributed.
 
 - Display: 700 weight, compact leading, sentence case.
 - Interface: 400 or 550 weight; use 700 only for short hierarchy labels.

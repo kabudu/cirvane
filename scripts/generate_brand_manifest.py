@@ -95,6 +95,9 @@ def main() -> int:
         is_dimensional_source = relative.name in {
             "cirvane-symbol-dimensional.png", "cirvane-symbol-mono-dimensional.png"
         }
+        is_figtree_wordmark = relative.name in {
+            "cirvane-wordmark.svg", "cirvane-wordmark-reversed.svg"
+        }
         entry = {
             "path": str(relative),
             "sha256": digest(path),
@@ -106,6 +109,8 @@ def main() -> int:
             "provenance": (
                 "owner-approved AI-assisted raster master and deterministic derivative"
                 if is_dimensional_source else
+                "Figtree weight 450 outlines under the SIL Open Font License 1.1"
+                if is_figtree_wordmark else
                 "deterministic librsvg export" if is_export else
                 "manually authored deterministic source"
             ),

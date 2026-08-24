@@ -8,9 +8,23 @@
       "exportCommand": null,
       "licence": "MIT",
       "mediaType": "text/markdown",
+      "path": "assets/brand/LICENSES/Figtree-OFL.txt",
+      "provenance": "manually authored deterministic source",
+      "sha256": "bb272dfcd8801eb31fb98fe51828f76f0e41ac82f89256101df8021aa3d30ce2",
+      "sourcePath": null,
+      "sourceSha256": null
+    },
+    {
+      "allowedUse": "licence and provenance",
+      "colourSpace": null,
+      "creator": "OpenAI Codex under owner direction",
+      "dimensions": null,
+      "exportCommand": null,
+      "licence": "MIT",
+      "mediaType": "text/markdown",
       "path": "assets/brand/LICENSES/README.md",
       "provenance": "manually authored deterministic source",
-      "sha256": "05e53b521ee333e8f9dbd39c527ab745b51a28863562b11dfe850ae62f19167e",
+      "sha256": "780363d03635073b625992bb1d95f47407ca2504c9820623d66970be0fc1c30a",
       "sourcePath": null,
       "sourceSha256": null
     },
@@ -61,7 +75,7 @@
       "mediaType": "image/png",
       "path": "assets/brand/exports/cirvane-horizontal-680.png",
       "provenance": "deterministic librsvg export",
-      "sha256": "a27e9ee025b3ac7c8f0837d869c8156481dc4442885b4670f0009b2fab5bc5fc",
+      "sha256": "08c3e55209b2d2b1ee982321a58a9ad9999d4fedbd6b5fe45a8a90d7ba384aef",
       "sourcePath": "assets/brand/source/cirvane-horizontal.svg",
       "sourceSha256": "b45843851506c070241272213bab46a618286a619caceea5cf0edb5b6ce014c0"
     },
@@ -78,7 +92,7 @@
       "mediaType": "image/png",
       "path": "assets/brand/exports/cirvane-horizontal-reversed-680.png",
       "provenance": "deterministic librsvg export",
-      "sha256": "dd702c21324a3073fc192300364a5155c477c05d855a98974c85326c332c03cc",
+      "sha256": "741211e0674246c306ca4917dc880138e9a0703908236c783661f224e228bd11",
       "sourcePath": "assets/brand/source/cirvane-horizontal-reversed.svg",
       "sourceSha256": "873ffe16a021bc7ed6d160c5e451f438b02e62a7991a56596becc6453612d746"
     },
@@ -129,7 +143,7 @@
       "mediaType": "image/png",
       "path": "assets/brand/exports/cirvane-stacked-432.png",
       "provenance": "deterministic librsvg export",
-      "sha256": "592d7e6004052d93ba7ef558d84493a1e5577848ebe31c2e9106f27157f81b15",
+      "sha256": "bf4afc6c37e6e10ed82f72259aa57ae6fdcebaa9184f30b93e33767e1c961c81",
       "sourcePath": "assets/brand/source/cirvane-stacked.svg",
       "sourceSha256": "f332772920fa3be966d6ba367ce4798348e209d84428e33bd312c2999fa90066"
     },
@@ -265,9 +279,9 @@
       "mediaType": "image/png",
       "path": "assets/brand/exports/cirvane-wordmark-432.png",
       "provenance": "deterministic librsvg export",
-      "sha256": "480f00de92f51394d0866b59070394257a666e9f67f9068fa78e9bed2b340de6",
+      "sha256": "08aa82290ad8043af01693671aa78809b154b0ad51a8aee49f7186d4c16c2d70",
       "sourcePath": "assets/brand/source/cirvane-wordmark.svg",
-      "sourceSha256": "9570d5578f6a1aa8711aa3fa992490e3cbd677b8e2c0a87936cd2bfc218aac92"
+      "sourceSha256": "77f6372056876956bfdd5d6ea0254be3345fcaa5f4a64464af2f5c4e50f54182"
     },
     {
       "allowedUse": "canonical identity source",
@@ -451,8 +465,8 @@
       "licence": "MIT",
       "mediaType": "image/svg+xml",
       "path": "assets/brand/source/cirvane-wordmark-reversed.svg",
-      "provenance": "manually authored deterministic source",
-      "sha256": "8cd93ab5b2152aad2a363db85f778a805b942d93640fec0715736308c7125f8e",
+      "provenance": "Figtree weight 450 outlines under the SIL Open Font License 1.1",
+      "sha256": "f2a0f61b4cecd1b7aa4542dd0d334951190403993ae843babf2715c29faa5525",
       "sourcePath": null,
       "sourceSha256": null
     },
@@ -468,8 +482,8 @@
       "licence": "MIT",
       "mediaType": "image/svg+xml",
       "path": "assets/brand/source/cirvane-wordmark.svg",
-      "provenance": "manually authored deterministic source",
-      "sha256": "9570d5578f6a1aa8711aa3fa992490e3cbd677b8e2c0a87936cd2bfc218aac92",
+      "provenance": "Figtree weight 450 outlines under the SIL Open Font License 1.1",
+      "sha256": "77f6372056876956bfdd5d6ea0254be3345fcaa5f4a64464af2f5c4e50f54182",
       "sourcePath": null,
       "sourceSha256": null
     },
