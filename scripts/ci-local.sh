@@ -11,8 +11,9 @@ if git grep -n "$forbidden_dash" -- .; then
   exit 1
 fi
 python3 scripts/validate_repo.py
+python3 scripts/validate_brand_candidates.py
 python3 tests/test_contract.py
-python3 -m py_compile scripts/validate_repo.py benchmarks/tools/*.py
+python3 -m py_compile scripts/validate_repo.py scripts/validate_brand_candidates.py benchmarks/tools/*.py
 
 if [[ -z "${IDF_PATH:-}" || ! -f "${IDF_PATH}/tools/cmake/project.cmake" ]]; then
   echo "IDF_PATH must reference the bootstrapped ESP-IDF checkout" >&2

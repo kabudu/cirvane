@@ -6,11 +6,11 @@ Checkboxes represent implementation plus required evidence, never documentation 
 
 - [x] Select Cirvane through an initial collision audit and owner approval.
 - [x] Import the verified Nucleus firmware and benchmark evidence without local build state or secrets.
-- [ ] Create and verify the private `kabudu/cirvane` repository with `master` and local-CI policy.
+- [x] Create and verify the private `kabudu/cirvane` repository with `master` and local-CI policy.
 
 ## M1: enduring product identity
 
-- [ ] Produce three distinct visual directions and record non-leading evaluation.
+- [x] Produce three distinct visual directions and record non-leading evaluation.
 - [ ] Select one direction and complete the accessible logo, colour, type, icon, diagram and chart systems.
 - [ ] Add deterministic export tooling, design tokens, licences and asset manifest verification.
 
