@@ -21,7 +21,8 @@ fi
 
 mkdir -p build/ci
 if [[ ! -f build/ci/signing-key.pem ]]; then
-  idf.py secure-generate-signing-key --scheme ecdsa256 build/ci/signing-key.pem
+  python -m espsecure generate-signing-key --version 2 --scheme ecdsa256 \
+    build/ci/signing-key.pem
 fi
 
 idf.py -B build/ci \
