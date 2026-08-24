@@ -17,7 +17,7 @@ There is no claim of measured adoption, market fit or reduced onboarding effort.
 
 ## Lifecycle
 
-Installation uses ESP-IDF build and USB flashing. Upgrade must preserve a known-good slot, validate the manifest and signed image, and require post-boot confirmation. Downgrade is refused by policy unless explicitly authorized for recovery. Removal is a normal reflash of another compatible image; configuration and evidence formats remain documented and exportable.
+The preserved comparison baseline uses the pinned ESP-IDF build. The release installation uses the pinned Cirvane kernel build and USB flashing, with every retained Espressif component recorded in the dependency inventory. Upgrade must preserve a known-good slot, validate the manifest and signed image, and require post-boot confirmation. Downgrade is refused by policy unless explicitly authorized for recovery. Removal is a normal reflash of another compatible image; configuration and evidence formats remain documented and exportable.
 
 ## Integration boundary
 

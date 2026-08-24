@@ -18,4 +18,4 @@ Strict numeric parsing, static resource bounds, strong stack protection, transac
 
 ## Residual risks and deferrals
 
-Hardware Secure Boot, flash encryption, eFuse/JTAG/download restrictions and anti-rollback fuses are deferred because only one development device exists and provisioning is irreversible. The USB shell is privileged and unauthenticated. Physical fault injection, RF fuzzing, side-channel analysis and independent penetration testing are not complete. Authenticated OTA transport is planned but not implemented.
+Hardware Secure Boot, flash encryption, eFuse/JTAG/download restrictions and anti-rollback fuses are deferred because only one development device exists and provisioning is irreversible. The USB shell is privileged and unauthenticated. Physical fault injection, RF fuzzing, side-channel analysis and independent penetration testing are not complete. Authenticated OTA transport and the clean-sheet kernel are planned but not implemented. The kernel plan adds privileged trap, PMP/PMA, unsafe-code, vendor binary, radio callback, capability-revocation and stale-epoch attack surfaces that must be modelled before implementation acceptance.

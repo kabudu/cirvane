@@ -2,11 +2,11 @@
 
 ## Minimal system
 
-The current implementation is an ESP-IDF application using FreeRTOS as its scheduler and hardware integration substrate. Cirvane owns the service model, supervisor, bounded message bus, capability checks, configuration journal, power policy, shell and OTA policy. ESP-IDF owns boot, drivers, networking primitives, partitions and low-level update APIs.
+The current baseline is an ESP-IDF application using FreeRTOS as its scheduler and hardware integration substrate. Cirvane owns the service model, supervisor, bounded message bus, capability checks, configuration journal, power policy, shell and OTA policy. ESP-IDF owns boot, drivers, networking primitives, partitions and low-level update APIs. This baseline is implemented and preserved for migration and matched evaluation.
 
-This is the least complex design that preserves ESP32-C5 radio and USB support while making failure and resource behaviour explicit. A future custom kernel must enter through a separate architecture decision and matched validation; it is not implied by the current layering.
+ADR 0002 changes the target architecture for the first release. The target is a clean-sheet Cirvane kernel that owns reset-to-runtime scheduling, typed messaging, capability decisions and bounded recovery transactions. Vendor ROM, HAL, boot, radio and cryptographic code may remain only behind an enumerated boundary that does not schedule on FreeRTOS or reinterpret kernel outcomes. The target architecture is planned, not implemented.
 
-## Components and invariants
+## Current baseline components and invariants
 
 | Component | Owner | Invariant | Failure path | Bound |
 |---|---|---|---|---|
@@ -17,14 +17,14 @@ This is the least complex design that preserves ESP32-C5 radio and USB support w
 | Shell | Cirvane and ESP console | Bounded parsing and explicit errors | Reject malformed or unsupported input | ESP console line bound |
 | Vendor substrate | ESP-IDF/FreeRTOS | Hardware and scheduler services match pinned SDK | Build or runtime error, never silently accepted | Pinned v6.0.2 baseline |
 
-## Trust boundary
+## Target release boundary
 
-The trusted computing base includes Cirvane firmware, ESP-IDF/FreeRTOS, Espressif ROM and radio components, bootloader, partition data and configured verification keys. Capability masks constrain cooperative service behaviour but do not isolate arbitrary native code. The local USB shell is privileged and unauthenticated.
+The target trusted computing base includes the Cirvane kernel and services, the enumerated Espressif ROM, boot, HAL, radio and cryptographic components, partition data and configured verification keys. FreeRTOS is excluded. Machine-mode kernel code owns isolation and recovery; user-mode services receive only declared capabilities and mapped resources. The exact hard-isolation claim remains bounded by the implemented PMP/PMA/APM configuration and vendor component audit. The local USB shell is privileged and unauthenticated.
 
 ## Resource and concurrency model
 
-Services are statically registered and use static task stacks and mailboxes. Work is periodic or explicitly queued; queues do not grow. Wi-Fi initialisation is lazy. OTA writes use bounded blocks. Retry and recovery decisions are supervisor-owned and observable.
+Services are statically registered and use fixed stacks and kernel-owned message slots. Work is periodic or explicitly queued; queues do not grow. Recovery transactions bind epochs, resource reclamation, capability leases and fixed-size evidence. Wi-Fi initialisation remains lazy if the feasibility gate admits it. OTA writes use bounded blocks. Retry and recovery decisions are kernel-owned and observable.
 
 ## Compatibility boundary
 
-ESP-IDF v6.0.2 and the ESP32-C5 are the current compatibility surface. A future kernel may preserve selected ESP-IDF drivers through a narrow compatibility enclave, but no such design is implemented or claimed.
+ESP-IDF v6.0.2 and the ESP32-C5 remain the baseline compatibility surface. The target kernel may preserve selected Espressif ROM, HAL or driver components through a narrow adapter, but must enumerate their privilege, memory, callback and scheduler assumptions. No clean-sheet kernel or compatibility boundary is implemented yet.

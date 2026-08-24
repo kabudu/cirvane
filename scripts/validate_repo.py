@@ -16,6 +16,7 @@ REQUIRED = [
     "docs/REQUIREMENTS_TRACEABILITY.md", "docs/NOVELTY.md",
     "docs/PRIOR_ART_MATRIX.md", "docs/RELEASE.md",
     "docs/ENGINEERING_REVIEW.md", "docs/DECISIONS/0001-project-scope.md",
+    "docs/DECISIONS/0002-clean-sheet-kernel-release.md",
     "docs/brand/ASSET_USAGE.md",
 ]
 

@@ -16,13 +16,25 @@ The detailed path from the current productised identity to the first developer r
 - [x] Select one direction and complete the accessible logo, colour, type, icon, diagram and chart systems.
 - [x] Add deterministic export tooling, design tokens, licences and asset manifest verification.
 
-## M2: complete Cirvane rename
+## M2: kernel novelty and feasibility
+
+- [ ] Complete the systematic prior-art matrix and freeze the bounded recovery transaction hypothesis.
+- [ ] Build a minimal ESP32-C5 kernel spike without FreeRTOS and enumerate every vendor dependency.
+- [ ] Freeze kernel invariants, clean-sheet boundary, pre-registered matched evaluation and governing ADR.
+
+## M3: clean-sheet Cirvane kernel
+
+- [ ] Implement boot, traps, interrupts, timer, static service scheduling, typed messages and capability enforcement.
+- [ ] Implement kernel-owned recovery transactions, bounded reclamation, transactional configuration and signed rollback.
+- [ ] Pass real-board adversarial qualification and matched FreeRTOS baseline evaluation without hidden regressions.
+
+## M4: complete Cirvane migration and rename
 
 - [ ] Rename project identifiers, firmware metadata, shell prompt, commands, source symbols and documentation.
 - [ ] Preserve baseline evidence provenance while labelling historical Nucleus records accurately.
 - [ ] Rebuild, flash and pass functional, rollback, security and quiet-shell hardware gates.
 
-## M3: authenticated OTA transport
+## M5: authenticated OTA transport
 
 - [ ] Freeze the manifest schema, canonical encoding, key identifiers, version policy and replay rules.
 - [ ] Implement bounded HTTPS retrieval with certificate verification and strict redirects/timeouts.
@@ -30,11 +42,11 @@ The detailed path from the current productised identity to the first developer r
 - [ ] Add key rotation and revocation metadata without embedding private keys.
 - [ ] Pass success, corruption, wrong-key, stale-version, replay, truncation, timeout, redirect and rollback tests.
 
-## M4: initial developer release
+## M6: initial developer release
 
 - [ ] Pass authoritative local CI and all supported real-board gates at the release commit.
 - [ ] Produce curated release notes and verify desktop and narrow rendering.
-- [ ] Record energy measurement, hardware security provisioning and independent penetration testing as deferred, not passed.
+- [ ] Record energy measurement, hardware security provisioning, formal verification, independent reproduction, independent novelty challenge and independent penetration testing as deferred, not passed.
 - [ ] Complete licence and trademark gates appropriate to the chosen private or public release channel.
 - [ ] Create the initial developer release only after explicit owner authorization.
 
@@ -42,4 +54,5 @@ The detailed path from the current productised identity to the first developer r
 
 - [ ] Practitioner interviews and comprehension study.
 - [ ] Additional hardware ports and adoption cohort.
-- [ ] Novel-kernel research ADR, prototype and matched baseline evaluation.
+- [ ] Independent novelty challenge, clean-room reproduction and formal verification.
+- [ ] Independent penetration testing and external security review.
