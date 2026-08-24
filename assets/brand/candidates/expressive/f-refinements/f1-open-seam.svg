@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 96" role="img" aria-labelledby="title desc">
+  <title id="title">Cirvane Faceted Aperture refinement F1: Open Seam</title>
+  <desc id="desc">An asymmetric faceted boundary opens at one controlled seam with a returning facet.</desc>
+  <path fill="#0E7C78" fill-rule="evenodd" d="M54 6 96 21 84 39l-26-11-20 14 4 22 24 8 18-10 26 8-38 22-50-14L8 42zm56 64-26-8 4-24 28-10z"/>
+  <path fill="#3A2748" d="m98 22 18 6-6 42-18-6 4-28-10-4z"/>
+</svg>

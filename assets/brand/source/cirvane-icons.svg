@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 64" role="img" aria-labelledby="title desc">
+  <title id="title">Cirvane canonical operational icons</title>
+  <desc id="desc">Boundary, recovery, evidence and refusal icons on a shared grid.</desc>
+  <g fill="none" stroke="#1F2326" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 18v28m0-28h12m-12 28h12m22-28v28m0-28H32m12 28H32"/><path d="M22 25v14h10"/>
+    <path d="M78 14c-11 4-16 17-10 27 6 11 21 13 30 4m0 0V32m0 13H85"/><path d="m78 41 7-7 7 7"/>
+    <path d="M138 14h28v36h-28z"/><path d="m145 26 5 5 9-10m-14 20h14"/>
+    <path d="M204 14h28l10 18-10 18h-28l-10-18z"/><path d="m210 24 16 16m0-16-16 16"/>
+  </g>
+</svg>

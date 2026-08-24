@@ -1,12 +1,14 @@
 # Cirvane
 
+![Cirvane Recovery Scar identity](assets/brand/source/cirvane-horizontal.svg)
+
 Cirvane is a bounded, supervised embedded operating-system project for constrained connected devices. Its first supported vertical is the Seeed Studio XIAO ESP32-C5.
 
 The imported implementation currently uses ESP-IDF and FreeRTOS beneath a static service supervisor, bounded message bus, capability checks, transactional configuration, operational telemetry and signed dual-slot rollback. A future clean-sheet kernel is a research option, not a current claim or release dependency.
 
 ## Status
 
-Cirvane is private and under productisation. The current firmware baseline is implemented and hardware-tested under its former Nucleus development identity. The Cirvane rename, authenticated OTA transport, permanent visual identity and initial developer release are planned and separately gated.
+Cirvane is private and under productisation. The enduring Recovery Scar identity is complete and source-controlled. The current firmware baseline is implemented and hardware-tested under its former Nucleus development identity. The Cirvane firmware rename, authenticated OTA transport and initial developer release are planned and separately gated.
 
 Cirvane is not currently claimed to be a novel kernel, production-ready, physically secure, independently penetration-tested, energy-qualified or suitable for safety-critical deployment.
 
@@ -26,6 +28,7 @@ Raw evidence and reproducible harnesses live under `benchmarks/`. The authoritat
 - [Implementation plan](docs/IMPLEMENTATION_PLAN.md)
 - [Threat model](docs/THREAT_MODEL.md)
 - [Brand identity](docs/BRAND_IDENTITY.md)
+- [Brand asset usage](docs/brand/ASSET_USAGE.md)
 - [Validation](docs/VALIDATION.md)
 - [Release policy](docs/RELEASE.md)
 - [Prior art and claim boundary](docs/NOVELTY.md)

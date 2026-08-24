@@ -7,7 +7,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 REQUIRED = [
-    "README.md", "AGENTS.md", "docs/PRODUCT_SPECIFICATION.md",
+    "README.md", "AGENTS.md", "LICENSE", "docs/PRODUCT_SPECIFICATION.md",
     "docs/ARCHITECTURE.md", "docs/ADOPTION_AND_INTEGRATION.md",
     "docs/BRAND_IDENTITY.md", "docs/IMPLEMENTATION_PLAN.md",
     "docs/E2E_TESTING.md", "docs/VALIDATION.md", "docs/THREAT_MODEL.md",
@@ -15,6 +15,7 @@ REQUIRED = [
     "docs/REQUIREMENTS_TRACEABILITY.md", "docs/NOVELTY.md",
     "docs/PRIOR_ART_MATRIX.md", "docs/RELEASE.md",
     "docs/ENGINEERING_REVIEW.md", "docs/DECISIONS/0001-project-scope.md",
+    "docs/brand/ASSET_USAGE.md",
 ]
 
 

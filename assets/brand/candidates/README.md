@@ -1,6 +1,6 @@
 # Quiet Horizon symbol candidates
 
-These are deterministic vector candidates for the approved Cirvane Quiet Horizon direction. They are decision artefacts, not canonical brand assets.
+These are the rejected first-round deterministic vector candidates for the approved Cirvane Quiet Horizon direction. The owner found the set too visually anonymous. They remain as negative design evidence, not canonical brand assets.
 
 ## Shared construction
 

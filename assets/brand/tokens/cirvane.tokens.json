@@ -1,0 +1,69 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "brandVersion": "1.0.0",
+  "color": {
+    "brand": {
+      "aubergine": {"$type": "color", "$value": "#3A2748"},
+      "mineralTeal": {"$type": "color", "$value": "#0E7C78"},
+      "seaGlass": {"$type": "color", "$value": "#CDE7E2"},
+      "warmWhite": {"$type": "color", "$value": "#F8F6EF"},
+      "graphite": {"$type": "color", "$value": "#1F2326"}
+    },
+    "semantic": {
+      "success": {"$type": "color", "$value": "#146B4A"},
+      "warning": {"$type": "color", "$value": "#7A4B00"},
+      "failure": {"$type": "color", "$value": "#A1283B"},
+      "information": {"$type": "color", "$value": "#285D88"},
+      "unknown": {"$type": "color", "$value": "#625B66"}
+    },
+    "surface": {
+      "light": {"$type": "color", "$value": "#F8F6EF"},
+      "lightRaised": {"$type": "color", "$value": "#FFFFFF"},
+      "dark": {"$type": "color", "$value": "#1F2326"},
+      "darkRaised": {"$type": "color", "$value": "#2A292E"}
+    },
+    "text": {
+      "onLight": {"$type": "color", "$value": "#1F2326"},
+      "mutedOnLight": {"$type": "color", "$value": "#625B66"},
+      "onDark": {"$type": "color", "$value": "#F8F6EF"},
+      "accentOnLight": {"$type": "color", "$value": "#0A6663"},
+      "accentOnDark": {"$type": "color", "$value": "#9AD8D1"}
+    }
+  },
+  "typography": {
+    "sans": {"$type": "fontFamily", "$value": "ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"},
+    "mono": {"$type": "fontFamily", "$value": "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"},
+    "weightRegular": {"$type": "fontWeight", "$value": 400},
+    "weightMedium": {"$type": "fontWeight", "$value": 550},
+    "weightBold": {"$type": "fontWeight", "$value": 700}
+  },
+  "space": {
+    "1": {"$type": "dimension", "$value": "4px"},
+    "2": {"$type": "dimension", "$value": "8px"},
+    "3": {"$type": "dimension", "$value": "12px"},
+    "4": {"$type": "dimension", "$value": "16px"},
+    "6": {"$type": "dimension", "$value": "24px"},
+    "8": {"$type": "dimension", "$value": "32px"},
+    "12": {"$type": "dimension", "$value": "48px"}
+  },
+  "radius": {
+    "control": {"$type": "dimension", "$value": "6px"},
+    "panel": {"$type": "dimension", "$value": "12px"},
+    "pill": {"$type": "dimension", "$value": "999px"}
+  },
+  "motion": {
+    "fast": {"$type": "duration", "$value": "120ms"},
+    "standard": {"$type": "duration", "$value": "200ms"},
+    "recovery": {"$type": "duration", "$value": "360ms"}
+  },
+  "contrastPairs": [
+    ["#1F2326", "#F8F6EF", 7.0],
+    ["#F8F6EF", "#3A2748", 7.0],
+    ["#F8F6EF", "#0E7C78", 4.5],
+    ["#0A6663", "#F8F6EF", 4.5],
+    ["#9AD8D1", "#1F2326", 4.5],
+    ["#A1283B", "#F8F6EF", 4.5],
+    ["#7A4B00", "#F8F6EF", 4.5],
+    ["#285D88", "#F8F6EF", 4.5]
+  ]
+}

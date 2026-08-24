@@ -12,8 +12,19 @@ if git grep -n "$forbidden_dash" -- .; then
 fi
 python3 scripts/validate_repo.py
 python3 scripts/validate_brand_candidates.py
+python3 scripts/validate_brand.py
 python3 tests/test_contract.py
-python3 -m py_compile scripts/validate_repo.py scripts/validate_brand_candidates.py benchmarks/tools/*.py
+python3 -m py_compile scripts/validate_repo.py scripts/validate_brand.py \
+  scripts/validate_brand_candidates.py scripts/generate_brand_manifest.py benchmarks/tools/*.py
+
+scripts/export-brand-assets.sh build/brand-ci-a
+scripts/export-brand-assets.sh build/brand-ci-b
+diff \
+  <(cd build/brand-ci-a && shasum -a 256 *.png) \
+  <(cd build/brand-ci-b && shasum -a 256 *.png)
+diff \
+  <(cd assets/brand/exports && shasum -a 256 *.png) \
+  <(cd build/brand-ci-a && shasum -a 256 *.png)
 
 if [[ -z "${IDF_PATH:-}" || ! -f "${IDF_PATH}/tools/cmake/project.cmake" ]]; then
   echo "IDF_PATH must reference the bootstrapped ESP-IDF checkout" >&2

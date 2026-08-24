@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 216 64" role="img" aria-labelledby="title desc">
+  <title id="title">Cirvane reversed wordmark</title>
+  <desc id="desc">The Cirvane name in a light custom path-based humanist wordmark.</desc>
+  <g fill="none" stroke="#F8F6EF" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M34 14C27 7 12 9 8 23c-4 14 5 28 19 27 4 0 7-2 10-5"/><path d="M48 24v25"/><path d="M48 13h.1"/><path d="M62 49V25m0 8c4-7 9-10 15-8"/><path d="m87 25 10 24 11-24"/><path d="M128 27c-6-5-17-2-17 9s11 16 17 9m0-18v22"/><path d="M142 49V25m0 8c4-7 15-11 20-3 2 3 2 7 2 11v8"/><path d="M205 44c-4 5-14 7-21 1-7-6-5-18 2-22 8-4 18 1 18 10h-23"/>
+  </g>
+</svg>

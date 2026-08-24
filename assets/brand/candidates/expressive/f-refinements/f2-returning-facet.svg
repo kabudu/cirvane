@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 96" role="img" aria-labelledby="title desc">
+  <title id="title">Cirvane Faceted Aperture refinement F2: Returning Facet</title>
+  <desc id="desc">A bounded outer field folds one lower facet back toward an offset central aperture.</desc>
+  <path fill="#0E7C78" fill-rule="evenodd" d="M54 6 116 28l-6 42-38 22-17-5 9-15 2 0 18-10 4-24-30-10-20 14 4 22 13 5-9 15-24-6L8 42z"/>
+  <path fill="#3A2748" d="m8 42 30 0 4 22 13 5-9 15-24-6zm76 20 26 8-38 22-17-5 9-15z"/>
+</svg>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 320" role="img" aria-labelledby="title desc">
+  <title id="title">Cirvane chart palette example</title>
+  <desc id="desc">A chart that retains success, failure, unknown and excluded outcomes with labels and patterns.</desc>
+  <defs><pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M0 8 8 0" stroke="#625B66" stroke-width="2"/></pattern></defs>
+  <rect width="640" height="320" rx="16" fill="#F8F6EF"/>
+  <g font-family="ui-sans-serif,system-ui,sans-serif" font-size="16" fill="#1F2326">
+    <text x="32" y="36" font-size="20" font-weight="700">Outcome distribution</text>
+    <path d="M56 64v192h544" fill="none" stroke="#625B66" stroke-width="2"/>
+    <rect x="96" y="112" width="72" height="144" fill="#146B4A"/><text x="98" y="280">Passed 48</text>
+    <rect x="216" y="190" width="72" height="66" fill="#A1283B"/><text x="212" y="280">Failed 22</text>
+    <rect x="336" y="220" width="72" height="36" fill="url(#hatch)" stroke="#625B66"/><text x="326" y="280">Unknown 12</text>
+    <rect x="456" y="232" width="72" height="24" fill="#FFFFFF" stroke="#1F2326" stroke-width="3"/><text x="443" y="280">Excluded 8</text>
+  </g>
+</svg>
