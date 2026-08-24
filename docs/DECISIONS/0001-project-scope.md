@@ -9,7 +9,7 @@ The verified Nucleus v2 prototype requires an enduring name, independent private
 
 ## Decision
 
-Use Cirvane as the maturity-neutral product identity. Ship the initial developer release on ESP-IDF/FreeRTOS after the rename, brand and authenticated OTA gates pass. Treat a clean-sheet kernel as an optional later research programme with its own ADR, prior-art study and matched evaluation.
+Use Cirvane as the maturity-neutral product identity. This ADR originally selected ESP-IDF/FreeRTOS for the initial developer release and treated a clean-sheet kernel as optional later research. ADR 0002 supersedes that release-substrate decision while preserving the identity and claim-discipline decisions here.
 
 ## Consequences
 

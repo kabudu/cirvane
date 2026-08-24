@@ -7,16 +7,18 @@ The imported benchmark corpus records controlled v1 and optimized v2 restart and
 ## Research questions
 
 - Does Cirvane retain bounded behaviour and recovery under malformed input and service failure?
+- Does a kernel-owned bounded recovery transaction eliminate stale post-restart work and reduce recovery variance relative to matched application-level supervision?
+- Does the production image own scheduling and recovery without a hidden FreeRTOS runtime?
 - Does authenticated OTA refuse every incomplete, stale, mismatched or unauthenticated update without changing the selected boot target?
 - Does the renamed release preserve the established boot and command-latency envelope?
 
 ## Baselines and metrics
 
-Use the preserved v1 firmware and imported Nucleus v2 evidence at identical hardware, compiler profile, serial transport and sample procedure. Primary metrics are restart median and p95, restart variance, shell command latency, recovery outcome and rollback outcome. Energy is excluded until calibrated instrumentation exists.
+Use the preserved v1 firmware and imported Nucleus v2/FreeRTOS evidence at identical hardware, clock, compiler profile, service scope, resource ceilings, serial transport and sample procedure. Primary metrics are stale-work violations, recovery outcome, recovery latency median and tail, recovery variance, scheduler and message latency tails, boot variance, bounded RAM and flash use, and rollback outcome. Record admission refusal, missing samples, timeouts and incomparable driver paths. Energy is excluded until calibrated instrumentation exists.
 
 ## Claim discipline
 
-No novelty, production, safety, energy, physical-security or independent-validation claim may be inferred from branding or from the current corpus. Negative results, refusals, timeouts and unavailable measurements remain in evidence.
+No novelty, production, safety, energy, physical-security, formal-verification or independent-validation claim may be inferred from branding or from the current corpus. A qualified candidate-novelty statement requires the planned internal systematic comparison and matched falsification evidence. Negative results, refusals, timeouts and unavailable measurements remain in evidence.
 
 ## Brand identity evidence
 

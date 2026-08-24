@@ -19,15 +19,15 @@ Cirvane boots into a privileged local shell, starts a fixed set of statically al
 
 ## Supported workflow
 
-1. Build a signed production image with ESP-IDF v6.0.2.
+1. Build a signed production image with the pinned Cirvane kernel toolchain and the enumerated Espressif boot, ROM, HAL and driver dependencies.
 2. Flash through USB Serial/JTAG.
 3. Operate and inspect the device through the Cirvane shell.
 4. Diagnose services, resources, configuration and OTA state through explicit commands.
-5. Stage authenticated updates when OTA transport is implemented, boot pending, confirm health or roll back.
+5. Stage authenticated updates, boot pending, confirm health or roll back.
 
 ## Non-goals for the initial developer release
 
-- A novel kernel, hard real-time certification or safety certification.
+- Definitive worldwide novelty, formal verification, hard real-time certification or safety certification.
 - Hardware-rooted Secure Boot, flash encryption or irreversible eFuse provisioning on the only development board.
 - Energy superiority claims without calibrated external instrumentation.
 - Remote shell administration, multi-user authorization or general-purpose process execution.
@@ -35,4 +35,4 @@ Cirvane boots into a privileged local shell, starts a fixed set of statically al
 
 ## Initial release success
 
-The initial developer release requires consistent Cirvane identity, passing local CI, a signed production build, real-board functional and rollback evidence, authenticated OTA transport with adversarial tests, complete release documentation and explicit deferral notices for energy, hardware provisioning and independent penetration testing.
+The initial developer release requires a qualified clean-sheet Cirvane kernel on the ESP32-C5, consistent Cirvane identity, passing local CI, a signed production build, real-board functional and rollback evidence, matched FreeRTOS baseline evidence, authenticated OTA transport with adversarial tests, complete release documentation and explicit deferral notices for energy, hardware provisioning, formal verification, independent reproduction and independent penetration testing.
