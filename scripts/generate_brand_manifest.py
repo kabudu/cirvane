@@ -14,6 +14,7 @@ from xml.etree import ElementTree
 ROOT = Path(__file__).resolve().parents[1]
 BRAND = ROOT / "assets" / "brand"
 EXPORT_SOURCES = {
+    "cirvane-symbol-mono-dimensional.png": "assets/brand/source/cirvane-symbol-dimensional.png",
     "cirvane-symbol-16.png": "assets/brand/source/cirvane-symbol-small.svg",
     "cirvane-symbol-32.png": "assets/brand/source/cirvane-symbol-small.svg",
     "cirvane-symbol-64.png": "assets/brand/source/cirvane-symbol.svg",
@@ -90,6 +91,13 @@ def main() -> int:
             relative = path.relative_to(ROOT)
         except ValueError:
             relative = Path("assets/brand/exports") / path.name
+        is_export = relative.parts[:3] == ("assets", "brand", "exports")
+        is_dimensional_source = relative.name in {
+            "cirvane-symbol-dimensional.png", "cirvane-symbol-mono-dimensional.png"
+        }
+        is_figtree_wordmark = relative.name in {
+            "cirvane-wordmark.svg", "cirvane-wordmark-reversed.svg"
+        }
         entry = {
             "path": str(relative),
             "sha256": digest(path),
@@ -98,14 +106,25 @@ def main() -> int:
             "colourSpace": "sRGB" if media_type.startswith("image/") else None,
             "licence": "MIT",
             "creator": "OpenAI Codex under owner direction",
-            "provenance": "manually authored deterministic source" if path.suffix != ".png" else "deterministic librsvg export",
+            "provenance": (
+                "owner-approved AI-assisted raster master and deterministic derivative"
+                if is_dimensional_source else
+                "Figtree weight 450 outlines under the SIL Open Font License 1.1"
+                if is_figtree_wordmark else
+                "deterministic librsvg export" if is_export else
+                "manually authored deterministic source"
+            ),
             "allowedUse": allowed_use(relative),
-            "exportCommand": "scripts/export-brand-assets.sh" if path.suffix == ".png" else None,
+            "exportCommand": (
+                "scripts/export-brand-assets.sh" if is_export else
+                "scripts/generate-brand-derivatives.sh" if relative.name == "cirvane-symbol-mono-dimensional.png" else
+                None
+            ),
             "sourcePath": EXPORT_SOURCES.get(path.name),
             "sourceSha256": digest(ROOT / EXPORT_SOURCES[path.name]) if path.name in EXPORT_SOURCES else None,
         }
         entries.append(entry)
-    document = {"schemaVersion": 1, "brandVersion": "1.0.0", "assets": entries}
+    document = {"schemaVersion": 1, "brandVersion": "2.0.0", "assets": entries}
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(document, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(f"Generated manifest with {len(entries)} entries at {output}")

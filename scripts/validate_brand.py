@@ -19,9 +19,15 @@ REQUIRED_SOURCES = {
     "cirvane-horizontal-reversed.svg", "cirvane-horizontal.svg",
     "cirvane-icons.svg", "cirvane-stacked.svg", "cirvane-symbol-mono.svg",
     "cirvane-symbol-reversed.svg", "cirvane-symbol-small.svg",
-    "cirvane-symbol.svg", "cirvane-wordmark-reversed.svg", "cirvane-wordmark.svg",
+    "cirvane-symbol.svg", "cirvane-symbol-dimensional.png",
+    "cirvane-symbol-mono-dimensional.png", "cirvane-wordmark-reversed.svg",
+    "cirvane-wordmark.svg",
 }
-FORBIDDEN_TAGS = {"script", "foreignObject", "image", "iframe", "audio", "video"}
+FORBIDDEN_TAGS = {"script", "foreignObject", "iframe", "audio", "video"}
+ALLOWED_LOCAL_IMAGES = {
+    "cirvane-symbol-dimensional.png", "cirvane-symbol-mono-dimensional.png",
+    "cirvane-wordmark.svg", "cirvane-wordmark-reversed.svg",
+}
 MATURITY = re.compile(r"\b(?:alpha|beta|evaluation|experimental|preview|release candidate|production-ready)\b", re.I)
 
 
@@ -53,7 +59,7 @@ def png_dimensions(path: Path) -> list[int]:
 
 def main() -> int:
     failures: list[str] = []
-    actual_sources = {path.name for path in (BRAND / "source").glob("*.svg")}
+    actual_sources = {path.name for path in (BRAND / "source").iterdir() if path.is_file()}
     if actual_sources != REQUIRED_SOURCES:
         failures.append(f"canonical source inventory mismatch: {sorted(actual_sources)}")
 
@@ -79,8 +85,8 @@ def main() -> int:
                 attribute = local_name(name)
                 if attribute.lower().startswith("on"):
                     failures.append(f"{path.relative_to(ROOT)}: event attribute {attribute}")
-                if attribute in {"href", "src"}:
-                    failures.append(f"{path.relative_to(ROOT)}: external resource attribute {attribute}")
+                if attribute in {"href", "src"} and value not in ALLOWED_LOCAL_IMAGES:
+                    failures.append(f"{path.relative_to(ROOT)}: undeclared or external resource {value}")
                 if "url(" in value and "url(#" not in value:
                     failures.append(f"{path.relative_to(ROOT)}: external URL reference")
         if "/overlays/" not in f"/{path.relative_to(BRAND)}" and MATURITY.search(raw):
@@ -120,7 +126,7 @@ def main() -> int:
                 failures.append(f"manifest digest mismatch: {entry['path']}")
             if path.suffix == ".png" and png_dimensions(path) != entry["dimensions"]:
                 failures.append(f"manifest dimensions mismatch: {entry['path']}")
-            if path.suffix == ".png":
+            if path.suffix == ".png" and "/exports/" in f"/{entry['path']}":
                 source_path = entry.get("sourcePath")
                 source_digest = entry.get("sourceSha256")
                 if not source_path or not (ROOT / source_path).is_file():
