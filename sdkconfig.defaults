@@ -1,0 +1,37 @@
+# nucleus project config (inherits XIAO ESP32-C5 settings)
+CONFIG_IDF_TARGET="esp32c5"
+CONFIG_ESPTOOLPY_FLASHSIZE_8MB=y
+
+# Two 1.7 MiB OTA slots with bootloader-enforced pending-image rollback.
+CONFIG_PARTITION_TABLE_TWO_OTA_LARGE=y
+CONFIG_BOOTLOADER_APP_ROLLBACK_ENABLE=y
+
+# Verify ECDSA-P256 signed applications during OTA without irreversibly
+# enabling hardware secure boot or burning eFuses on this development board.
+CONFIG_SECURE_SIGNED_APPS_NO_SECURE_BOOT=y
+CONFIG_SECURE_SIGNED_APPS_ECDSA_V2_SCHEME=y
+CONFIG_SECURE_BOOT_ECDSA_KEY_LEN_256_BITS=y
+CONFIG_SECURE_SIGNED_ON_UPDATE_NO_SECURE_BOOT=y
+CONFIG_SECURE_BOOT_BUILD_SIGNED_BINARIES=y
+CONFIG_SECURE_BOOT_SIGNING_KEY="secure_boot_signing_key.pem"
+
+# Detect stack smashing in functions with vulnerable local objects while
+# retaining the existing FreeRTOS stack overflow checks and watchdog.
+CONFIG_COMPILER_STACK_CHECK_MODE_STRONG=y
+
+# Interactive shell and logs live on built-in USB-Serial/JTAG.
+CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG=y
+
+# `ps` needs task introspection + per-task runtime accounting
+# (RUN_TIME_STATS selects USE_TRACE_FACILITY + STATS_FORMATTING_FUNCTIONS)
+CONFIG_FREERTOS_USE_TRACE_FACILITY=y
+CONFIG_FREERTOS_GENERATE_RUN_TIME_STATS=y
+
+# Supervisor: watchdog covers the idle task so a wedged system
+# panics loudly with a backtrace instead of hanging silently
+CONFIG_ESP_TASK_WDT_INIT=y
+CONFIG_ESP_TASK_WDT_CHECK_IDLE_TASK_CPU0=y
+CONFIG_ESP_TASK_WDT_PANIC=y
+
+# Required by the watchdog power budget's timed light sleep path.
+CONFIG_PM_ENABLE=y

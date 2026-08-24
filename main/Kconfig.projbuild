@@ -1,0 +1,12 @@
+menu "Nucleus development options"
+
+config NUCLEUS_HIL_DIAGNOSTICS
+    bool "Enable destructive hardware-in-the-loop diagnostics"
+    default n
+    help
+        Exposes commands that deliberately corrupt an inactive OTA image or
+        one transactional configuration slot to prove rejection and recovery.
+        Enable only on development boards; production builds must leave this
+        disabled.
+
+endmenu

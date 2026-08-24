@@ -1,0 +1,16 @@
+# nucleus project config (inherits XIAO ESP32-C5 settings)
+CONFIG_IDF_TARGET="esp32c5"
+CONFIG_ESPTOOLPY_FLASHSIZE_8MB=y
+
+# Interactive shell lives on the built-in USB-Serial/JTAG port
+CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG=y
+
+# `ps` needs task introspection + per-task runtime accounting
+CONFIG_FREERTOS_USE_TRACE_FACILITY=y
+CONFIG_FREERTOS_GENERATE_RUN_TIME_STATS=y
+CONFIG_FREERTOS_USE_STATS_FORMATTING_FUNCTIONS=y
+
+# Supervisor: watchdog covers the idle task so a wedged system
+# panics loudly with a backtrace instead of hanging silently
+CONFIG_ESP_TASK_WDT_INIT=y
+CONFIG_ESP_TASK_WDT_CHECK_IDLE_TASK_CPU0=y

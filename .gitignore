@@ -1,0 +1,12 @@
+build/
+log/
+sdkconfig
+sdkconfig.old
+sdkconfig.secrets
+dependencies.lock
+managed_components/
+secure_boot_signing_key.pem
+.DS_Store
+.venv/
+**/__pycache__/
+*.pyc
