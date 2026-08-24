@@ -2,7 +2,7 @@
 
 ## Productisation decision
 
-The owner approved Cirvane as the enduring product identity on 2026-08-24. The identity must remain valid for the current supervised ESP-IDF runtime and a possible future custom kernel. Product maturity belongs in separately versioned release copy, badges and notices, never in the canonical name, mark, palette, tagline or category.
+The owner approved Cirvane as the enduring product identity on 2026-08-24. The identity remains valid for the current supervised ESP-IDF baseline and the planned clean-sheet kernel. Product maturity belongs in separately versioned release copy, badges and notices, never in the canonical name, mark, palette, tagline or category.
 
 ## Name and category
 

@@ -10,11 +10,13 @@ REQUIRED = [
     "README.md", "AGENTS.md", "LICENSE", "docs/PRODUCT_SPECIFICATION.md",
     "docs/ARCHITECTURE.md", "docs/ADOPTION_AND_INTEGRATION.md",
     "docs/BRAND_IDENTITY.md", "docs/IMPLEMENTATION_PLAN.md",
+    "docs/PRODUCTISATION_COMPLETION_PLAN.md",
     "docs/E2E_TESTING.md", "docs/VALIDATION.md", "docs/THREAT_MODEL.md",
     "docs/OPERATIONS.md", "docs/RISK_REGISTER.md",
     "docs/REQUIREMENTS_TRACEABILITY.md", "docs/NOVELTY.md",
     "docs/PRIOR_ART_MATRIX.md", "docs/RELEASE.md",
     "docs/ENGINEERING_REVIEW.md", "docs/DECISIONS/0001-project-scope.md",
+    "docs/DECISIONS/0002-clean-sheet-kernel-release.md",
     "docs/brand/ASSET_USAGE.md",
 ]
 

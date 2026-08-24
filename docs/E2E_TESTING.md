@@ -5,6 +5,9 @@ Tests exercise public device workflows through USB shell, build artefacts and OT
 ## Required scenarios
 
 - Clean production build, flash, boot, `info`, `selftest`, service/resource inspection and quiet prompt.
+- Link-map and runtime inspection proving the production scheduler and recovery path contain no FreeRTOS runtime dependency.
+- Trap, timer, malformed syscall, invalid capability, stale epoch, exhausted message pool and restart-budget refusal paths.
+- Recovery transaction success and fault paths proving stale work cannot execute after an epoch advance.
 - Supported and malformed shell inputs, oversized lines and unsupported commands.
 - Service fault, bounded recovery and degraded-state reporting in the explicit HIL profile.
 - Configuration commit, torn/corrupt slot fallback and redundancy restoration.
