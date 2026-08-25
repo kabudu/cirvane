@@ -5,8 +5,10 @@ Stage 1 artefact. The production Cirvane kernel is not implemented here.
 ## What the spike proves
 
 `kernel/spike` is a RAM-resident ESP32-C5 image with no FreeRTOS, no ESP-IDF
-app_main and no allocator. The existing second-stage bootloader loads it. It
-must demonstrate:
+app_main and no allocator. The existing second-stage bootloader loads it. The
+image includes two flash-mapped stub segments (app descriptor + IROM dummy)
+because ESP32-C5 `unpack_load_app` requires exactly two MMU mappings; the spike
+body still runs from SRAM. It must demonstrate:
 
 - Reset entry, BSS clear and a deterministic panic/idle path (`wfi` loop).
 - Trap handling via `ecall`.

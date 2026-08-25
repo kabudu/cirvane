@@ -43,8 +43,8 @@ This is a candidate contribution, not an established novelty claim. Scheduling, 
 - [x] Record mechanism, trust boundary, hardware assumptions, resource model, failure semantics, evaluation and exact overlap for every close system.
 - [x] Search recent papers, preprints, conference programmes, patents and source repositories; retain negative and contradictory results.
 - [x] Freeze the top-level kernel invariants, state machine, syscall or message ABI, trusted-computing-base ledger and forbidden failure-state collapses.
-- [ ] Confirm ESP32-C5 Machine/User privilege, PMP/PMA and access-control behaviour from Espressif documentation and hardware probes.
-- [ ] Prove boot, trap, interrupt, timer, UART, allocator-free static memory and flash access in a minimal kernel spike.
+- [x] Confirm ESP32-C5 Machine/User privilege, PMP/PMA and access-control behaviour from Espressif documentation and hardware probes.
+- [x] Prove boot, trap, interrupt, timer, UART, allocator-free static memory and flash access in a minimal kernel spike.
 - [x] Determine whether Wi-Fi and required vendor components can run through a bounded compatibility boundary without scheduling on FreeRTOS; reject any architecture that merely hides FreeRTOS below Cirvane.
 - [x] Choose implementation language and unsafe-code boundary based on measurable correctness and toolchain support, not novelty theatre.
 - [x] Pre-register matched baselines, workloads, metrics, resource ceilings, statistical treatment, stopping rules and missing-data handling before performance tuning.

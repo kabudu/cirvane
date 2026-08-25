@@ -19,6 +19,7 @@ _start:
 2:
     la t0, cirvane_trap_entry
     andi t0, t0, -64
+    ori t0, t0, 3
     csrw mtvec, t0
     call kernel_main
 3:

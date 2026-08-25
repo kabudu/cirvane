@@ -12,6 +12,40 @@
 
 #include <stdint.h>
 
+/* First bytes of segment 0. ESP32-C5 2nd-stage bootloader requires this
+ * magic before it will copy any application into SRAM.
+ */
+struct spike_app_desc {
+    uint32_t magic_word;
+    uint32_t secure_version;
+    uint32_t reserv1[2];
+    char version[32];
+    char project_name[32];
+    char time[16];
+    char date[16];
+    char idf_ver[32];
+    uint8_t app_elf_sha256[32];
+    uint16_t min_efuse_blk_rev_full;
+    uint16_t max_efuse_blk_rev_full;
+    uint8_t mmu_page_size;
+    uint8_t reserv3[3];
+    uint32_t reserv2[18];
+};
+
+_Static_assert(sizeof(struct spike_app_desc) == 256, "esp_app_desc_t is 256 bytes");
+
+__attribute__((section(".appdesc"), used))
+const struct spike_app_desc g_app_desc = {
+    .magic_word = 0xABCD5432u,
+    .version = "stage1",
+    .project_name = "cirvane-spike",
+    .max_efuse_blk_rev_full = 0xffffu,
+    .mmu_page_size = 16u,
+};
+
+__attribute__((section(".iromdummy"), used))
+const uint32_t g_irom_dummy[4] = { 0, 0, 0, 0 };
+
 volatile uint32_t g_interrupt_count;
 volatile uint32_t g_ecall_count;
 volatile uint32_t g_other_trap_count;
@@ -41,38 +75,40 @@ static void disable_watchdogs(void)
     }
 }
 
-static int fifo_ready(uint32_t spins)
+typedef int (*rom_usb_tx_one_char_fn)(uint8_t);
+typedef void (*rom_usb_tx_flush_fn)(void);
+
+static void enable_usb_serial_jtag(void)
 {
-    uint32_t n = 0;
-    while (n < spins) {
-        if (REG32(USB_SERIAL_JTAG_EP1_CONF_REG) &
-            USB_SERIAL_JTAG_SERIAL_IN_EP_DATA_FREE) {
-            return 1;
-        }
-        n++;
+    uint32_t pcr = REG32(PCR_USB_DEVICE_CONF_REG);
+    uint32_t conf0;
+    volatile uint32_t wait = 0;
+
+    pcr |= PCR_USB_DEVICE_CLK_EN;
+    pcr &= ~(1u << 1);
+    REG32(PCR_USB_DEVICE_CONF_REG) = pcr;
+    /* Do not write CONFIG_UPDATE: that can drop the host CDC session. */
+    conf0 = REG32(USB_SERIAL_JTAG_CONF0_REG);
+    conf0 &= ~USB_SERIAL_JTAG_PHY_SEL;
+    conf0 |= USB_SERIAL_JTAG_USB_PAD_ENABLE;
+    REG32(USB_SERIAL_JTAG_CONF0_REG) = conf0;
+    while (wait < 4000000u) {
+        wait++;
     }
-    return 0;
 }
 
 static void usb_write(const char *s)
 {
-    uint32_t pending = 0;
+    rom_usb_tx_one_char_fn rom_tx =
+        (rom_usb_tx_one_char_fn)(uintptr_t)ROM_USB_TX_ONE_CHAR;
+    rom_usb_tx_flush_fn rom_flush =
+        (rom_usb_tx_flush_fn)(uintptr_t)ROM_USB_TX_FLUSH;
 
     while (*s) {
-        if (!fifo_ready(200000u)) {
-            return;
-        }
-        REG32(USB_SERIAL_JTAG_EP1_REG) = (uint8_t)*s;
-        pending++;
+        rom_tx((uint8_t)*s);
         s++;
-        if (pending == 64u) {
-            REG32(USB_SERIAL_JTAG_EP1_CONF_REG) = USB_SERIAL_JTAG_WR_DONE;
-            pending = 0;
-        }
     }
-    if (pending != 0) {
-        REG32(USB_SERIAL_JTAG_EP1_CONF_REG) = USB_SERIAL_JTAG_WR_DONE;
-    }
+    rom_flush();
 }
 
 static void usb_hex(uint32_t value, unsigned digits)
@@ -128,11 +164,11 @@ uint32_t cirvane_trap(uint32_t mcause, uint32_t mepc)
         g_interrupt_count += 1;
         REG32(INTPRI_CPU_INTR_FROM_CPU_0_REG) = 0;
         REG32(CLIC_INT_CTRL_REG(CLIC_EXT_INTR_NUM_OFFSET + 1)) =
-            CLIC_INT_ATTR_MODE_M | CLIC_INT_IE;
+            CLIC_INT_CTL_PRIO | CLIC_INT_ATTR_MODE_M | CLIC_INT_IE;
         return mepc;
     }
-    if ((mcause & 0x7fffffffu) == MCAUSE_ECALL_M ||
-        (mcause & 0x7fffffffu) == MCAUSE_ECALL_U) {
+    if ((mcause & 0x7ffu) == MCAUSE_ECALL_M ||
+        (mcause & 0x7ffu) == MCAUSE_ECALL_U) {
         g_ecall_count += 1;
         return mepc + 4u;
     }
@@ -190,8 +226,12 @@ static void setup_clic_software_interrupt(void)
     uint32_t clic_id = CLIC_EXT_INTR_NUM_OFFSET + 1u;
     uint32_t mtvec;
 
+    REG32(CLIC_INT_THRESH_REG) = 0;
+    REG32(CLIC_INT_CONFIG_REG) = 3u;
     REG32(INTERRUPT_CORE0_CPU_INTR_FROM_CPU_0_MAP_REG) = 1u;
-    REG32(CLIC_INT_CTRL_REG(clic_id)) = CLIC_INT_ATTR_MODE_M | CLIC_INT_IE;
+    REG32(CLIC_INT_CTRL_REG(clic_id)) =
+        CLIC_INT_CTL_PRIO | CLIC_INT_ATTR_MODE_M | CLIC_INT_ATTR_TRIG_EDGE |
+        CLIC_INT_IE;
 
     mtvec = ((uint32_t)&cirvane_trap_entry) & ~63u;
     mtvec |= 3u;
@@ -201,7 +241,10 @@ static void setup_clic_software_interrupt(void)
 
 static void fire_software_interrupt(void)
 {
+    uint32_t clic_id = CLIC_EXT_INTR_NUM_OFFSET + 1u;
+
     REG32(INTPRI_CPU_INTR_FROM_CPU_0_REG) = 1u;
+    REG32(CLIC_INT_CTRL_REG(clic_id)) |= CLIC_INT_IP;
 }
 
 static uint32_t umode_implemented(void)
@@ -253,8 +296,9 @@ void kernel_main(void)
     uint32_t magic;
     static uint32_t static_marker = 0xC12A0001u;
     uint32_t ecalls_before;
-    disable_watchdogs();
+    enable_usb_serial_jtag();
     line("cirvane-spike boot=ok");
+    disable_watchdogs();
 
     ecalls_before = g_ecall_count;
     __asm__ volatile("ecall");
@@ -319,4 +363,13 @@ void kernel_main(void)
     line("cirvane-spike freertos=absent");
     line("cirvane-spike uart=ok");
     line("cirvane-spike result=PASS");
+    for (;;) {
+        line("cirvane-spike result=PASS");
+        {
+            volatile uint32_t wait = 0;
+            while (wait < 800000u) {
+                wait++;
+            }
+        }
+    }
 }

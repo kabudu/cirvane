@@ -13,4 +13,11 @@ The imported firmware has established hardware evidence for bounded service oper
 
 ## Completion audit state
 
-The private repository identity work is complete. Kernel novelty research, the clean-sheet kernel, migration and rename, authenticated OTA and developer release remain incomplete until their roadmap evidence is present. Stage 1 has a systematic prior-art matrix, ADR 0003, a pre-registered evaluation protocol and a host-tested recovery model; real-board spike qualification is still required. Energy, irreversible hardware provisioning, independent novelty challenge, clean-room reproduction, formal verification and independent penetration testing are accepted release deferrals and must remain visible limitations.
+The private repository identity work is complete. Kernel novelty research, the
+host recovery model and a FreeRTOS-free ESP32-C5 spike with real-board
+`benchmarks/results/kernel-spike.json` `pass` evidence are in; the production
+clean-sheet kernel, migration and rename, authenticated OTA and developer
+release remain incomplete. Stage 1 novelty remains a provisional hypothesis.
+Energy, irreversible hardware provisioning, independent novelty challenge,
+clean-room reproduction, formal verification and independent penetration testing
+are accepted release deferrals and must remain visible limitations.

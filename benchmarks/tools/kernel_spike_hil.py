@@ -18,8 +18,8 @@ EVIDENCE = ROOT / "benchmarks" / "results" / "kernel-spike.json"
 
 REQUIRED_MARKERS = (
     "cirvane-spike boot=ok",
-    "cirvane-spike trap",
-    "cirvane-spike interrupt",
+    "cirvane-spike trap ecall=1",
+    "cirvane-spike interrupt count=1",
     "cirvane-spike timer",
     "cirvane-spike memory static=",
     "cirvane-spike flash magic=",
@@ -88,38 +88,71 @@ def maybe_sign(image: Path) -> Path:
     return signed
 
 
-def flash(port: str, image: Path, offset: str) -> None:
-    idf_run(
-        [
-            "esptool",
-            "--chip",
-            "esp32c5",
-            "--port",
-            port,
-            "--before",
-            "usb-reset",
-            "--after",
-            "hard-reset",
-            "write-flash",
-            "--force",
-            offset,
-            str(image),
-        ]
-    )
+def unsigned_bootloader() -> Path | None:
+    overlay = ROOT / "build" / "spike-boot" / "bootloader" / "bootloader.bin"
+    return overlay if overlay.is_file() else None
+
+
+def flash(port: str, image: Path, offset: str, bootloader: Path | None) -> None:
+    cmd = [
+        "esptool",
+        "--chip",
+        "esp32c5",
+        "--port",
+        port,
+        "--before",
+        "no-reset",
+        "--after",
+        "watchdog-reset",
+        "write-flash",
+        "--flash-mode",
+        "dio",
+        "--flash-freq",
+        "80m",
+        "--flash-size",
+        "8MB",
+        "--force",
+    ]
+    if bootloader is not None:
+        cmd.extend(["0x2000", str(bootloader)])
+    cmd.extend([offset, str(image)])
+    idf_run(cmd)
 
 
 def capture(port_path: str, timeout_s: float) -> str:
+    import glob
     import serial
 
     deadline = time.monotonic() + timeout_s
     last_error: Exception | None = None
     received = bytearray()
+    vanished = False
     while time.monotonic() < deadline:
+        ports = glob.glob("/dev/cu.usbmodem*")
+        if not vanished:
+            if port_path not in ports and not ports:
+                vanished = True
+            elif time.monotonic() + timeout_s - deadline > 1.5:
+                vanished = True
+            else:
+                time.sleep(0.05)
+                continue
+        if not ports:
+            time.sleep(0.05)
+            continue
         try:
-            port = serial.Serial(port_path, 115200, timeout=0.1)
+            port = serial.Serial()
+            port.port = ports[0]
+            port.baudrate = 115200
+            port.timeout = 0.1
+            port.dsrdtr = False
+            port.rtscts = False
+            port.dtr = False
+            port.rts = False
+            port.open()
         except (OSError, serial.SerialException) as error:
             last_error = error
-            time.sleep(0.1)
+            time.sleep(0.05)
             continue
         try:
             while time.monotonic() < deadline:
@@ -127,8 +160,8 @@ def capture(port_path: str, timeout_s: float) -> str:
                 if chunk:
                     received.extend(chunk)
                     if b"cirvane-spike result=" in received:
-                        time.sleep(0.2)
-                        received.extend(port.read(512))
+                        time.sleep(0.3)
+                        received.extend(port.read(2048))
                         return received.decode("utf-8", errors="replace")
         finally:
             port.close()
@@ -154,12 +187,18 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--port", default="")
     parser.add_argument("--offset", default="0x20000")
-    parser.add_argument("--timeout", type=float, default=20.0)
+    parser.add_argument("--timeout", type=float, default=35.0)
     parser.add_argument("--flash", action="store_true")
+    parser.add_argument(
+        "--unsigned-bootloader",
+        action="store_true",
+        help="Also flash the HIL unsigned second-stage overlay at 0x2000.",
+    )
     args = parser.parse_args()
     port = args.port or default_port()
     elf, image = build()
     image = maybe_sign(image)
+    bootloader = unsigned_bootloader() if args.unsigned_bootloader else None
     record = {
         "schema": 1,
         "captured_at": datetime.now(timezone.utc).isoformat(),
@@ -170,8 +209,8 @@ def main() -> None:
     }
     try:
         if args.flash:
-            flash(port, image, args.offset)
-            time.sleep(1.0)
+            flash(port, image, args.offset, bootloader)
+            time.sleep(0.2)
         log = capture(port, args.timeout)
         record["result"] = classify(log)
         record["log"] = log

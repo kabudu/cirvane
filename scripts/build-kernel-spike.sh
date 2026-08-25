@@ -61,6 +61,8 @@ if [[ -z "$esptool_py" ]]; then
   esptool_py="$IDF_PATH/components/esptool_py/esptool/esptool.py"
 fi
 
-python3 "$esptool_py" --chip esp32c5 elf2image --output "$bin" "$elf" >/dev/null
+python3 "$esptool_py" --chip esp32c5 elf2image \
+  --flash-mode dio --flash-freq 80m --flash-size 8MB \
+  --output "$bin" "$elf" >/dev/null
 echo "$elf"
 echo "$bin"
