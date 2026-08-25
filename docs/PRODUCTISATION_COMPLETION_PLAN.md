@@ -72,16 +72,16 @@ Implement the smallest kernel that realizes the frozen recovery semantics, boots
 
 ### Kernel implementation checklist
 
-- [ ] Implement reset entry, linker layout, stack initialization, trap vectors, interrupt dispatch, monotonic timer and deterministic panic path.
-- [ ] Implement a fixed-capacity task or service table with explicit lifecycle states and no unbounded allocation after boot.
-- [ ] Implement a scheduler with documented admission, priority, deadline, fairness and starvation semantics; keep the policy no more complex than the candidate mechanism requires.
-- [ ] Implement typed fixed-capacity message transport with ownership, epoch tagging, bounded copy or transfer semantics and visible refusal on exhaustion.
-- [ ] Implement capability grants and revocation with a machine-checkable mapping to PMP/PMA or documented software-only limits.
-- [ ] Implement recovery transactions, stale-work invalidation, bounded reclamation, restart budgets, backoff and fixed-size evidence records as kernel-owned semantics.
+- [x] Implement reset entry, linker layout, stack initialization, trap vectors, interrupt dispatch, monotonic timer and deterministic panic path.
+- [x] Implement a fixed-capacity task or service table with explicit lifecycle states and no unbounded allocation after boot.
+- [x] Implement a scheduler with documented admission, priority, deadline, fairness and starvation semantics; keep the policy no more complex than the candidate mechanism requires.
+- [x] Implement typed fixed-capacity message transport with ownership, epoch tagging, bounded copy or transfer semantics and visible refusal on exhaustion.
+- [x] Implement capability grants and revocation with a machine-checkable mapping to PMP/PMA or documented software-only limits.
+- [x] Implement recovery transactions, stale-work invalidation, bounded reclamation, restart budgets, backoff and fixed-size evidence records as kernel-owned semantics.
 - [ ] Implement transactional configuration and dual-slot signed rollback without weakening the proven fail-closed behaviour.
 - [ ] Implement the minimum UART, GPIO, timer, flash, watchdog, entropy and radio or network boundaries required by the supported workflow.
-- [ ] Keep vendor ROM, HAL and binary dependencies behind an enumerated adapter boundary; record licence, privilege, memory, callback and scheduling assumptions for each.
-- [ ] Add deterministic host models for state machines plus emulator or simulator coverage where the target boundary permits it.
+- [x] Keep vendor ROM, HAL and binary dependencies behind an enumerated adapter boundary; record licence, privilege, memory, callback and scheduling assumptions for each.
+- [x] Add deterministic host models for state machines plus emulator or simulator coverage where the target boundary permits it.
 - [ ] Add production and HIL profiles; destructive diagnostics must remain compile-gated out of production images.
 - [ ] Define stable crash and evidence formats, bounded observability and a quiet interactive shell path.
 

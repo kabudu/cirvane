@@ -4,7 +4,7 @@
 
 The current baseline is an ESP-IDF application using FreeRTOS as its scheduler and hardware integration substrate. Cirvane owns the service model, supervisor, bounded message bus, capability checks, configuration journal, power policy, shell and OTA policy. ESP-IDF owns boot, drivers, networking primitives, partitions and low-level update APIs. This baseline is implemented and preserved for migration and matched evaluation.
 
-The target architecture is a clean-sheet Cirvane kernel that owns reset-to-runtime scheduling, typed messaging, capability decisions and bounded recovery transactions. Vendor ROM, HAL, boot, radio and cryptographic code may remain only behind an enumerated boundary that does not schedule on FreeRTOS or reinterpret kernel outcomes. Stage 1 froze that boundary, the recovery ABI and a FreeRTOS-free spike; the production kernel is still not implemented. ESP-IDF Wi-Fi remains an owner decision because the vendor adapter requires FreeRTOS.
+The target architecture is a clean-sheet Cirvane kernel that owns reset-to-runtime scheduling, typed messaging, capability decisions and bounded recovery transactions. Vendor ROM, HAL, boot, radio and cryptographic code may remain only behind an enumerated boundary that does not schedule on FreeRTOS or reinterpret kernel outcomes. Stage 1 froze that boundary, the recovery ABI and a FreeRTOS-free spike. Stage 2 now has a portable kernel core and C5 HIL image for boot, traps, interrupts, timer, cooperative scheduling, typed messages, software capability leases and recovery syscalls. Transactional configuration, signed rollback, drivers beyond the spike probes, live user-mode isolation and matched evaluation are not implemented. ESP-IDF Wi-Fi remains an owner decision because the vendor adapter requires FreeRTOS.
 
 ## Current baseline components and invariants
 
@@ -27,4 +27,4 @@ Services are statically registered and use fixed stacks and kernel-owned message
 
 ## Compatibility boundary
 
-ESP-IDF v6.0.2 and the ESP32-C5 remain the baseline compatibility surface. The target kernel may preserve selected Espressif ROM, HAL or driver components through a narrow adapter, but must enumerate their privilege, memory, callback and scheduler assumptions. No production clean-sheet kernel is implemented yet. The Stage 1 spike and dependency inventory live under `kernel/` and `docs/DEPENDENCY_INVENTORY.md`.
+ESP-IDF v6.0.2 and the ESP32-C5 remain the baseline compatibility surface. The target kernel may preserve selected Espressif ROM, HAL or driver components through a narrow adapter, but must enumerate their privilege, memory, callback and scheduler assumptions. The Stage 2 portable core lives under `kernel/` with the C5 port in `kernel/spike`. It is not yet a complete production kernel. The dependency inventory is `docs/DEPENDENCY_INVENTORY.md`.

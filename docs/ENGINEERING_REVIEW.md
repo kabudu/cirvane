@@ -14,10 +14,11 @@ The imported firmware has established hardware evidence for bounded service oper
 ## Completion audit state
 
 The private repository identity work is complete. Kernel novelty research, the
-host recovery model and a FreeRTOS-free ESP32-C5 spike with real-board
-`benchmarks/results/kernel-spike.json` `pass` evidence are in; the production
-clean-sheet kernel, migration and rename, authenticated OTA and developer
-release remain incomplete. Stage 1 novelty remains a provisional hypothesis.
+portable kernel core with host tests, and a FreeRTOS-free ESP32-C5 spike with
+real-board `benchmarks/results/kernel-spike.json` evidence are in. Transactional
+configuration and rollback on that kernel, adversarial qualification, matched
+evaluation, migration and rename, authenticated OTA and developer release
+remain incomplete. Stage 1 novelty remains a provisional hypothesis.
 Energy, irreversible hardware provisioning, independent novelty challenge,
 clean-room reproduction, formal verification and independent penetration testing
 are accepted release deferrals and must remain visible limitations.

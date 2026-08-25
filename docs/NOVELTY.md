@@ -13,9 +13,10 @@ invalidation, fixed resource reclamation, restart budget, recoverable state
 generation and fixed-size observable outcome. The hypothesis is narrow and
 falsifiable. Stage 1 recorded a systematic comparison (see
 `PRIOR_ART_MATRIX.md`), a portable model with host tests, and a FreeRTOS-free
-ESP32-C5 spike. Hubris remains the closest reviewed MCU OS. Novelty remains a
-hypothesis until matched fault workloads (NOV-02) and any closer prior art
-review complete the Stage 2 gates.
+ESP32-C5 spike. Stage 2 adds a host-testable kernel core for scheduling,
+messages and software leases. Hubris remains the closest reviewed MCU OS.
+Novelty remains a hypothesis until matched fault workloads (NOV-02) and any
+closer prior art review complete the remaining Stage 2 gates.
 
 ## Candidate kernel research
 

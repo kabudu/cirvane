@@ -124,6 +124,25 @@ static void test_malformed_and_pool_exhaustion(void)
     expect(cirvane_rtx_alloc_slot(&world, 0) >= 0, "alloc after reclaim");
 }
 
+static void test_free_slot_and_capabilities(void)
+{
+    cirvane_world_t world;
+    int slot;
+
+    cirvane_rtx_reset(&world);
+    cirvane_rtx_bind(&world, 0, 2, 0);
+    expect(!cirvane_rtx_cap_check(&world, 0, 1), "no lease");
+    expect(cirvane_rtx_cap_grant(&world, 0, 0x12), "grant");
+    expect(cirvane_rtx_cap_check(&world, 0, 0x02), "has bit");
+    expect(!cirvane_rtx_cap_check(&world, 0, 0x21), "missing bit");
+    slot = cirvane_rtx_alloc_slot(&world, 0);
+    expect(cirvane_rtx_free_slot(&world, slot), "free");
+    expect(!cirvane_rtx_free_slot(&world, slot), "double free");
+    expect(cirvane_rtx_cap_revoke(&world, 0), "revoke");
+    expect(!cirvane_rtx_cap_check(&world, 0, 0x12), "revoked");
+    expect(!cirvane_rtx_cap_grant(&world, 9, 1), "bad service grant");
+}
+
 static void test_evidence_is_fixed_and_replaced(void)
 {
     cirvane_world_t world;
@@ -149,6 +168,7 @@ int main(void)
     test_nested_admit_is_refused();
     test_deadline_is_backoff_not_ok();
     test_malformed_and_pool_exhaustion();
+    test_free_slot_and_capabilities();
     test_evidence_is_fixed_and_replaced();
     if (failures != 0) {
         fprintf(stderr, "%d recovery model checks failed\n", failures);

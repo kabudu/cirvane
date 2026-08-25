@@ -79,11 +79,28 @@ class KernelStage1Contract(unittest.TestCase):
     def test_spike_docs_and_adr_exist(self):
         for relative in (
             "docs/KERNEL_SPIKE.md",
+            "docs/KERNEL.md",
             "docs/DEPENDENCY_INVENTORY.md",
             "docs/MATCHED_EVALUATION.md",
             "docs/DECISIONS/0003-bounded-recovery-transaction.md",
         ):
             self.assertTrue((ROOT / relative).is_file())
+
+
+    def test_syscall_abi_numbers_remain_frozen(self):
+        header = read("kernel/kernel.h")
+        self.assertRegex(header, r"#define\s+CIRVANE_SYS_RTX_BIND\s+1u\b")
+        self.assertRegex(header, r"#define\s+CIRVANE_SYS_RTX_ADMIT\s+2u\b")
+        self.assertRegex(header, r"#define\s+CIRVANE_SYS_MSG_ALLOC\s+3u\b")
+        self.assertRegex(header, r"#define\s+CIRVANE_SYS_MSG_SEND\s+4u\b")
+        self.assertRegex(header, r"#define\s+CIRVANE_SYS_MSG_RECV\s+5u\b")
+        self.assertRegex(header, r"#define\s+CIRVANE_SYS_MSG_FREE\s+6u\b")
+        self.assertRegex(header, r"#define\s+CIRVANE_SYS_CAP_GRANT\s+7u\b")
+        self.assertRegex(header, r"#define\s+CIRVANE_SYS_CAP_REVOKE\s+8u\b")
+        self.assertRegex(header, r"#define\s+CIRVANE_MSG_PAYLOAD_MAX\s+24\b")
+        kernel_doc = read("docs/KERNEL.md")
+        self.assertIn("software-only", kernel_doc)
+        self.assertIn("starvation", kernel_doc.lower())
 
 
 if __name__ == "__main__":
