@@ -17,6 +17,10 @@ REQUIRED = [
     "docs/PRIOR_ART_MATRIX.md", "docs/RELEASE.md",
     "docs/ENGINEERING_REVIEW.md", "docs/DECISIONS/0001-project-scope.md",
     "docs/DECISIONS/0002-clean-sheet-kernel-release.md",
+    "docs/DECISIONS/0003-bounded-recovery-transaction.md",
+    "docs/KERNEL_SPIKE.md",
+    "docs/DEPENDENCY_INVENTORY.md",
+    "docs/MATCHED_EVALUATION.md",
     "docs/brand/ASSET_USAGE.md",
 ]
 

@@ -14,7 +14,7 @@ The imported benchmark corpus records controlled v1 and optimized v2 restart and
 
 ## Baselines and metrics
 
-Use the preserved v1 firmware and imported Nucleus v2/FreeRTOS evidence at identical hardware, clock, compiler profile, service scope, resource ceilings, serial transport and sample procedure. Primary metrics are stale-work violations, recovery outcome, recovery latency median and tail, recovery variance, scheduler and message latency tails, boot variance, bounded RAM and flash use, and rollback outcome. Record admission refusal, missing samples, timeouts and incomparable driver paths. Energy is excluded until calibrated instrumentation exists.
+Use the preserved v1 firmware and imported Nucleus v2/FreeRTOS evidence at identical hardware, clock, compiler profile, service scope, resource ceilings, serial transport and sample procedure. Primary metrics are stale-work violations, recovery outcome, recovery latency median and tail, recovery variance, scheduler and message latency tails, boot variance, bounded RAM and flash use, and rollback outcome. Record admission refusal, missing samples, timeouts and incomparable driver paths. Energy is excluded until calibrated instrumentation exists. The Stage 2 comparison must follow `docs/MATCHED_EVALUATION.md`; the Stage 1 spike is not a matched performance trial.
 
 ## Claim discipline
 

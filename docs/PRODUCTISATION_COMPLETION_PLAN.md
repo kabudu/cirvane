@@ -38,17 +38,17 @@ This is a candidate contribution, not an established novelty claim. Scheduling, 
 
 ### Prior-art and platform checklist
 
-- [ ] Record systematic searches across embedded kernels, fault-tolerant systems, recovery-oriented computing, restartable services, epoch reclamation, capability revocation, transactional state recovery and deterministic event logging.
-- [ ] Compare at minimum FreeRTOS, Zephyr, Tock, RIOT, Apache NuttX, seL4/Microkit and relevant research kernels at identical claim scope.
-- [ ] Record mechanism, trust boundary, hardware assumptions, resource model, failure semantics, evaluation and exact overlap for every close system.
-- [ ] Search recent papers, preprints, conference programmes, patents and source repositories; retain negative and contradictory results.
-- [ ] Freeze the top-level kernel invariants, state machine, syscall or message ABI, trusted-computing-base ledger and forbidden failure-state collapses.
-- [ ] Confirm ESP32-C5 Machine/User privilege, PMP/PMA and access-control behaviour from Espressif documentation and hardware probes.
-- [ ] Prove boot, trap, interrupt, timer, UART, allocator-free static memory and flash access in a minimal kernel spike.
-- [ ] Determine whether Wi-Fi and required vendor components can run through a bounded compatibility boundary without scheduling on FreeRTOS; reject any architecture that merely hides FreeRTOS below Cirvane.
-- [ ] Choose implementation language and unsafe-code boundary based on measurable correctness and toolchain support, not novelty theatre.
-- [ ] Pre-register matched baselines, workloads, metrics, resource ceilings, statistical treatment, stopping rules and missing-data handling before performance tuning.
-- [ ] Write an ADR freezing the candidate contribution, clean-sheet boundary, platform dependencies, non-goals and evidence required to change the decision.
+- [x] Record systematic searches across embedded kernels, fault-tolerant systems, recovery-oriented computing, restartable services, epoch reclamation, capability revocation, transactional state recovery and deterministic event logging.
+- [x] Compare at minimum FreeRTOS, Zephyr, Tock, RIOT, Apache NuttX, seL4/Microkit and relevant research kernels at identical claim scope.
+- [x] Record mechanism, trust boundary, hardware assumptions, resource model, failure semantics, evaluation and exact overlap for every close system.
+- [x] Search recent papers, preprints, conference programmes, patents and source repositories; retain negative and contradictory results.
+- [x] Freeze the top-level kernel invariants, state machine, syscall or message ABI, trusted-computing-base ledger and forbidden failure-state collapses.
+- [x] Confirm ESP32-C5 Machine/User privilege, PMP/PMA and access-control behaviour from Espressif documentation and hardware probes.
+- [x] Prove boot, trap, interrupt, timer, UART, allocator-free static memory and flash access in a minimal kernel spike.
+- [x] Determine whether Wi-Fi and required vendor components can run through a bounded compatibility boundary without scheduling on FreeRTOS; reject any architecture that merely hides FreeRTOS below Cirvane.
+- [x] Choose implementation language and unsafe-code boundary based on measurable correctness and toolchain support, not novelty theatre.
+- [x] Pre-register matched baselines, workloads, metrics, resource ceilings, statistical treatment, stopping rules and missing-data handling before performance tuning.
+- [x] Write an ADR freezing the candidate contribution, clean-sheet boundary, platform dependencies, non-goals and evidence required to change the decision.
 
 ### Feasibility and claim gate
 
@@ -249,7 +249,7 @@ Do not release while any of the following is present:
 
 | Stage | State | Completion evidence |
 |---|---|---|
-| 1. Kernel novelty and feasibility | Planned | Pending prior-art matrix, kernel spike, ADR and pre-registered evaluation |
+| 1. Kernel novelty and feasibility | In progress | Prior-art matrix, ADR 0003, pre-registered evaluation and host model recorded; real-board spike evidence pending |
 | 2. Clean-sheet kernel | Planned | Pending kernel implementation, matched baselines and real-board qualification |
 | 3. Cirvane migration and rename | Planned | Pending migrated services, merged rename PR and real-board qualification bundle |
 | 4. Authenticated OTA | Planned | Pending merged protocol implementation and adversarial evidence matrix |

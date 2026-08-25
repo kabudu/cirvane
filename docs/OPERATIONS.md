@@ -2,7 +2,7 @@
 
 ## Lifecycle and recovery
 
-The preserved comparison build is deterministic against its pinned ESP-IDF baseline. Release builds use a separately pinned Cirvane kernel toolchain, an enumerated vendor dependency set and explicit production or HIL configuration. Production images exclude destructive diagnostics. Operators inspect device identity, services, resources, configuration and OTA state through explicit shell commands. A failed pending image rolls back; an accepted image requires explicit confirmation.
+The preserved comparison build is deterministic against its pinned ESP-IDF baseline. Release builds use a separately pinned Cirvane kernel toolchain, an enumerated vendor dependency set and explicit production or HIL configuration. The Stage 1 spike is a destructive app-slot overlay used only for feasibility captures; operators must restore a known Nucleus or Cirvane image afterwards. Production images exclude destructive diagnostics. Operators inspect device identity, services, resources, configuration and OTA state through explicit shell commands. A failed pending image rolls back; an accepted image requires explicit confirmation.
 
 ## Capacity and observability
 

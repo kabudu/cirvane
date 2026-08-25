@@ -14,8 +14,11 @@ python3 scripts/validate_repo.py
 python3 scripts/validate_brand_candidates.py
 python3 scripts/validate_brand.py
 python3 tests/test_contract.py
+python3 tests/test_recovery_model.py
+python3 tests/test_kernel_stage1.py
 python3 -m py_compile scripts/validate_repo.py scripts/validate_brand.py \
-  scripts/validate_brand_candidates.py scripts/generate_brand_manifest.py benchmarks/tools/*.py
+  scripts/validate_brand_candidates.py scripts/generate_brand_manifest.py \
+  benchmarks/tools/*.py
 
 scripts/export-brand-assets.sh build/brand-ci-a
 scripts/export-brand-assets.sh build/brand-ci-b
@@ -30,6 +33,8 @@ if [[ -z "${IDF_PATH:-}" || ! -f "${IDF_PATH}/tools/cmake/project.cmake" ]]; the
   echo "IDF_PATH must reference the bootstrapped ESP-IDF checkout" >&2
   exit 1
 fi
+
+scripts/build-kernel-spike.sh "$repo_dir/build/kernel-spike-ci"
 
 mkdir -p build/ci
 if [[ ! -f build/ci/signing-key.pem ]]; then
