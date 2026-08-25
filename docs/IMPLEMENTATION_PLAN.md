@@ -18,9 +18,9 @@ The detailed path from the current productised identity to the first developer r
 
 ## M2: kernel novelty and feasibility
 
-- [ ] Complete the systematic prior-art matrix and freeze the bounded recovery transaction hypothesis.
-- [ ] Build a minimal ESP32-C5 kernel spike without FreeRTOS and enumerate every vendor dependency.
-- [ ] Freeze kernel invariants, clean-sheet boundary, pre-registered matched evaluation and governing ADR.
+- [x] Complete the systematic prior-art matrix and freeze the bounded recovery transaction hypothesis.
+- [x] Build a minimal ESP32-C5 kernel spike without FreeRTOS and enumerate every vendor dependency.
+- [x] Freeze kernel invariants, clean-sheet boundary, pre-registered matched evaluation and governing ADR.
 
 ## M3: clean-sheet Cirvane kernel
 
