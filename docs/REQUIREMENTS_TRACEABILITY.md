@@ -10,8 +10,8 @@
 | SEC-03 | Authenticated OTA transport | OTA adapter and policy | Adversarial public-workflow E2E | OTA evidence matrix | Planned |
 | REL-02 | Explicit developer-release limitations | Release owner | Claim/deferred-state scan | Curated release notes | Planned |
 | PERF-01 | Preserve performance envelope | Runtime owners | Matched controlled measurement | New summary JSON | Planned |
-| NOV-01 | Bounded recovery transaction differs from reviewed kernel mechanisms | Research and kernel owners | Systematic matrix plus matched prototype | Novelty claim matrix | Planned |
-| SEM-01 | Recovery atomically invalidates stale epoch-owned work and emits one bounded outcome | Kernel | Model tests plus adversarial HIL | Kernel qualification bundle | Planned |
-| REL-04 | Production image owns scheduling without FreeRTOS runtime | Kernel and build | Link-map, symbol and runtime inspection | Dependency inventory | Planned |
+| NOV-01 | Bounded recovery transaction differs from reviewed kernel mechanisms | Research and kernel owners | Systematic matrix plus matched prototype | Novelty claim matrix | Candidate |
+| SEM-01 | Recovery atomically invalidates stale epoch-owned work and emits one bounded outcome | Kernel | Model tests plus adversarial HIL | Kernel qualification bundle | Implemented host model; HIL pending |
+| REL-04 | Production image owns scheduling without FreeRTOS runtime | Kernel and build | Link-map, symbol and runtime inspection | Dependency inventory | Spike source; board evidence pending |
 
 States are implemented, verified, candidate, planned or deferred. Documentation alone cannot advance a behavioural requirement to implemented or verified.

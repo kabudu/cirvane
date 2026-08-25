@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "captured_at": "2026-08-25T21:20:00+00:00",
+  "port": "/dev/cu.usbmodem3101",
+  "offset": "0x20000",
+  "elf": "build/kernel-spike/cirvane-spike.elf",
+  "result": "blocked",
+  "reason": "esptool could not enter download mode: no serial data received on USB Serial/JTAG after usb-reset, default-reset and no-reset. The CDC device node was present. Host spike build and symbol checks passed; this file is not real-board qualification.",
+  "attempts": [
+    "esptool --chip esp32c5 --port /dev/cu.usbmodem3101 --before usb-reset chip-id",
+    "esptool --chip esp32c5 --port /dev/tty.usbmodem3101 --before usb-reset chip-id",
+    "esptool --chip esp32c5 --port /dev/cu.usbmodem3101 --before default-reset chip-id",
+    "esptool --chip esp32c5 --port /dev/cu.usbmodem3101 --before no-reset chip-id"
+  ]
+}

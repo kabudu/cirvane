@@ -13,4 +13,4 @@ The imported firmware has established hardware evidence for bounded service oper
 
 ## Completion audit state
 
-The private repository, kernel novelty research, clean-sheet kernel, migration and rename, authenticated OTA and developer release remain incomplete until their roadmap evidence is present. Energy, irreversible hardware provisioning, independent novelty challenge, clean-room reproduction, formal verification and independent penetration testing are accepted release deferrals and must remain visible limitations.
+The private repository identity work is complete. Kernel novelty research, the clean-sheet kernel, migration and rename, authenticated OTA and developer release remain incomplete until their roadmap evidence is present. Stage 1 has a systematic prior-art matrix, ADR 0003, a pre-registered evaluation protocol and a host-tested recovery model; real-board spike qualification is still required. Energy, irreversible hardware provisioning, independent novelty challenge, clean-room reproduction, formal verification and independent penetration testing are accepted release deferrals and must remain visible limitations.

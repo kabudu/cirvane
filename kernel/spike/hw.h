@@ -1,0 +1,73 @@
+/*
+ * SPDX-FileCopyrightText: 2026 kabudu
+ * SPDX-License-Identifier: MIT
+ *
+ * Minimal ESP32-C5 MMIO constants for the FreeRTOS-free spike.
+ * Addresses are from ESP-IDF v6.0 ESP32-C5 soc headers.
+ */
+
+#pragma once
+
+#include <stdint.h>
+
+#define REG32(addr) (*(volatile uint32_t *)(uintptr_t)(addr))
+
+#define DR_REG_TIMERG0_BASE 0x60008000u
+#define DR_REG_TIMERG1_BASE 0x60009000u
+#define DR_REG_SYSTIMER_BASE 0x6000A000u
+#define DR_REG_USB_SERIAL_JTAG_BASE 0x6000F000u
+#define DR_REG_INTMTX_BASE 0x60010000u
+#define DR_REG_INTPRI_BASE 0x600C5000u
+#define DR_REG_LP_WDT_BASE 0x600B1C00u
+#define DR_REG_CLIC_BASE 0x20800000u
+#define DR_REG_CLIC_CTRL_BASE 0x20801000u
+
+#define WDT_UNLOCK_KEY 0x50D83AA1u
+
+#define TIMG_WDTCONFIG0_REG(base) ((base) + 0x48u)
+#define TIMG_WDTWPROTECT_REG(base) ((base) + 0x64u)
+#define TIMG_WDT_EN (1u << 31)
+#define TIMG_WDT_FLASHBOOT_MOD_EN (1u << 14)
+
+#define LP_WDT_CONFIG0_REG (DR_REG_LP_WDT_BASE + 0x0u)
+#define LP_WDT_WPROTECT_REG (DR_REG_LP_WDT_BASE + 0x18u)
+#define LP_WDT_SWD_CONFIG_REG (DR_REG_LP_WDT_BASE + 0x1cu)
+#define LP_WDT_SWD_WPROTECT_REG (DR_REG_LP_WDT_BASE + 0x20u)
+#define LP_WDT_WDT_EN (1u << 31)
+#define LP_WDT_WDT_FLASHBOOT_MOD_EN (1u << 12)
+#define LP_WDT_SWD_DISABLE (1u << 30)
+
+#define USB_SERIAL_JTAG_EP1_REG (DR_REG_USB_SERIAL_JTAG_BASE + 0x0u)
+#define USB_SERIAL_JTAG_EP1_CONF_REG (DR_REG_USB_SERIAL_JTAG_BASE + 0x4u)
+#define USB_SERIAL_JTAG_WR_DONE (1u << 0)
+#define USB_SERIAL_JTAG_SERIAL_IN_EP_DATA_FREE (1u << 1)
+
+#define SYSTIMER_CONF_REG (DR_REG_SYSTIMER_BASE + 0x0u)
+#define SYSTIMER_UNIT0_OP_REG (DR_REG_SYSTIMER_BASE + 0x4u)
+#define SYSTIMER_UNIT0_VALUE_HI_REG (DR_REG_SYSTIMER_BASE + 0x40u)
+#define SYSTIMER_UNIT0_VALUE_LO_REG (DR_REG_SYSTIMER_BASE + 0x44u)
+#define SYSTIMER_TIMER_UNIT0_WORK_EN (1u << 30)
+#define SYSTIMER_TIMER_UNIT0_UPDATE (1u << 30)
+#define SYSTIMER_TIMER_UNIT0_VALUE_VALID (1u << 29)
+
+#define INTPRI_CPU_INTR_FROM_CPU_0_REG (DR_REG_INTPRI_BASE + 0x90u)
+#define INTERRUPT_CORE0_CPU_INTR_FROM_CPU_0_MAP_REG (DR_REG_INTMTX_BASE + 0x5cu)
+
+#define CLIC_EXT_INTR_NUM_OFFSET 16
+#define CLIC_INT_CTRL_REG(i) (DR_REG_CLIC_CTRL_BASE + (uint32_t)(i) * 4u)
+#define CLIC_INT_IE (1u << 8)
+#define CLIC_INT_IP (1u << 0)
+#define CLIC_INT_ATTR_MODE_M (3u << 22)
+
+#define ROM_SPIFLASH_READ 0x40000160u
+#define FLASH_BOOTLOADER_OFF 0x2000u
+#define ESP_IMAGE_MAGIC 0xE9u
+
+#define MSTATUS_MIE (1u << 3)
+#define MSTATUS_MPP_MASK (3u << 11)
+
+#define MCAUSE_INTERRUPT (1u << 31)
+#define MCAUSE_ECALL_U 8u
+#define MCAUSE_ECALL_M 11u
+
+typedef int (*esp_rom_spiflash_read_fn)(uint32_t src, uint32_t *dest, int32_t len);
