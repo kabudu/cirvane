@@ -6,7 +6,8 @@ Tests exercise public device workflows through USB shell, build artefacts and OT
 
 - Clean production build, flash, boot, `info`, `selftest`, service/resource inspection and quiet prompt.
 - Link-map and runtime inspection proving the production scheduler and recovery path contain no FreeRTOS runtime dependency. The Stage 1 spike source must also be FreeRTOS-free.
-- Trap, timer, malformed syscall, invalid capability, stale epoch, exhausted message pool and restart-budget refusal paths.
+- Host models for recovery transactions, malformed syscalls, invalid capability, stale epoch, exhausted message pool, restart-budget refusal and panic sticky-refuse.
+- Trap, timer, malformed syscall, invalid capability, stale epoch, exhausted message pool and restart-budget refusal paths on the real board.
 - Recovery transaction success and fault paths proving stale work cannot execute after an epoch advance.
 - Supported and malformed shell inputs, oversized lines and unsupported commands.
 - Service fault, bounded recovery and degraded-state reporting in the explicit HIL profile.

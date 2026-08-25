@@ -15,6 +15,7 @@ python3 scripts/validate_brand_candidates.py
 python3 scripts/validate_brand.py
 python3 tests/test_contract.py
 python3 tests/test_recovery_model.py
+python3 tests/test_kernel_core.py
 python3 tests/test_kernel_stage1.py
 python3 -m py_compile scripts/validate_repo.py scripts/validate_brand.py \
   scripts/validate_brand_candidates.py scripts/generate_brand_manifest.py \

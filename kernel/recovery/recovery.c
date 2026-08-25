@@ -210,3 +210,57 @@ const cirvane_evidence_t *cirvane_rtx_evidence(const cirvane_world_t *world,
     }
     return &world->evidence[service];
 }
+
+bool cirvane_rtx_free_slot(cirvane_world_t *world, int slot)
+{
+    if (slot < 0 || slot >= CIRVANE_RTX_SLOT_COUNT) {
+        return false;
+    }
+    if (!world->slots[slot].in_use) {
+        return false;
+    }
+    world->slots[slot].in_use = 0;
+    world->slots[slot].epoch = 0;
+    world->slots[slot].owner = 0;
+    return true;
+}
+
+bool cirvane_rtx_cap_grant(cirvane_world_t *world, uint8_t service,
+                           uint8_t lease)
+{
+    cirvane_service_t *svc;
+
+    if (!valid_service(service)) {
+        return false;
+    }
+    svc = &world->services[service];
+    if (!svc->bound || svc->recovering || svc->health == CIRVANE_HEALTH_FAILED) {
+        return false;
+    }
+    svc->cap_lease = lease;
+    return true;
+}
+
+bool cirvane_rtx_cap_revoke(cirvane_world_t *world, uint8_t service)
+{
+    if (!valid_service(service) || !world->services[service].bound) {
+        return false;
+    }
+    world->services[service].cap_lease = 0;
+    return true;
+}
+
+bool cirvane_rtx_cap_check(const cirvane_world_t *world, uint8_t service,
+                           uint8_t need)
+{
+    const cirvane_service_t *svc;
+
+    if (!valid_service(service) || need == 0) {
+        return false;
+    }
+    svc = &world->services[service];
+    if (!svc->bound || svc->recovering || svc->health == CIRVANE_HEALTH_FAILED) {
+        return false;
+    }
+    return (svc->cap_lease & need) == need;
+}

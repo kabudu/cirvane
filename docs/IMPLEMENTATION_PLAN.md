@@ -24,7 +24,7 @@ The detailed path from the current productised identity to the first developer r
 
 ## M3: clean-sheet Cirvane kernel
 
-- [ ] Implement boot, traps, interrupts, timer, static service scheduling, typed messages and capability enforcement.
+- [x] Implement boot, traps, interrupts, timer, static service scheduling, typed messages and capability enforcement.
 - [ ] Implement kernel-owned recovery transactions, bounded reclamation, transactional configuration and signed rollback.
 - [ ] Pass real-board adversarial qualification and matched FreeRTOS baseline evaluation without hidden regressions.
 

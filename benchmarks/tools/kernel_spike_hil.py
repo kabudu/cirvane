@@ -25,6 +25,7 @@ REQUIRED_MARKERS = (
     "cirvane-spike flash magic=",
     "cirvane-spike priv",
     "cirvane-spike recovery",
+    "cirvane-spike kernel sched=",
     "cirvane-spike freertos=absent",
     "cirvane-spike result=PASS",
 )

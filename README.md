@@ -8,7 +8,7 @@ The imported implementation currently uses ESP-IDF and FreeRTOS beneath a static
 
 ## Status
 
-Cirvane is private and under productisation. The enduring Recovery Scar identity is complete and source-controlled. The current firmware baseline is implemented and hardware-tested under its former Nucleus development identity. Kernel novelty research has a systematic prior-art matrix, a frozen recovery-transaction hypothesis, a portable host model and a FreeRTOS-free ESP32-C5 spike source; real-board spike qualification, production kernel implementation, service migration and rename, authenticated OTA transport and the initial developer release remain separately gated.
+Cirvane is private and under productisation. The enduring Recovery Scar identity is complete and source-controlled. The current firmware baseline is implemented and hardware-tested under its former Nucleus development identity. Kernel novelty research has a systematic prior-art matrix, a frozen recovery-transaction hypothesis, a portable kernel core with host tests, and a FreeRTOS-free ESP32-C5 spike. Transactional configuration and rollback on that kernel, real-board adversarial qualification, matched evaluation, service migration and rename, authenticated OTA transport and the initial developer release remain separately gated.
 
 Cirvane is not currently claimed to have an implemented or proven novel kernel, to be production-ready, physically secure, independently penetration-tested, energy-qualified, formally verified or suitable for safety-critical deployment.
 
