@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: MIT
  *
  * Host-testable model of the Cirvane bounded recovery transaction.
- * This freezes Stage 1 semantics. It is not a novelty claim and is not
- * the production kernel.
+ * Stage 2 kernel syscalls own this ABI. It is not a novelty claim.
  */
 
 #pragma once
@@ -85,3 +84,9 @@ bool cirvane_rtx_service_has_stale_work(const cirvane_world_t *world,
                                         uint8_t service);
 const cirvane_evidence_t *cirvane_rtx_evidence(const cirvane_world_t *world,
                                                uint8_t service);
+bool cirvane_rtx_free_slot(cirvane_world_t *world, int slot);
+bool cirvane_rtx_cap_grant(cirvane_world_t *world, uint8_t service,
+                           uint8_t lease);
+bool cirvane_rtx_cap_revoke(cirvane_world_t *world, uint8_t service);
+bool cirvane_rtx_cap_check(const cirvane_world_t *world, uint8_t service,
+                           uint8_t need);
