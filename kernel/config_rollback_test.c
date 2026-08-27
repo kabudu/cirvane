@@ -6,7 +6,9 @@
  */
 
 #include "config.h"
+#include "config_flash.h"
 #include "rollback.h"
+#include "hal.h"
 
 #include <stdio.h>
 
@@ -32,6 +34,38 @@ static int verify_fail(uint8_t slot, uint32_t length)
     (void)slot;
     (void)length;
     return -1;
+}
+
+static void test_config_flash_persist_and_fallback(void)
+{
+    cirvane_cfg_journal_t journal;
+    cirvane_cfg_t cfg;
+    cirvane_cfg_t loaded;
+
+    expect(cirvane_hal_init() == CIRVANE_HAL_OK, "hal init");
+    cirvane_cfg_reset(&journal);
+    expect(cirvane_cfg_flash_load(&journal, &loaded) == CIRVANE_CFG_OK,
+           "empty flash load");
+    expect(cirvane_cfg_generation(&journal) == 0, "empty gen 0");
+    cfg = loaded;
+    cfg.heartbeat_ms = 2000;
+    expect(cirvane_cfg_flash_commit(&journal, &cfg) == CIRVANE_CFG_OK,
+           "flash commit");
+    expect(cirvane_cfg_generation(&journal) == 1, "flash gen 1");
+    cirvane_cfg_reset(&journal);
+    expect(cirvane_cfg_flash_load(&journal, &loaded) == CIRVANE_CFG_OK,
+           "reload flash");
+    expect(cirvane_cfg_generation(&journal) == 1, "persisted gen");
+    expect(loaded.heartbeat_ms == 2000, "persisted heartbeat");
+    expect(cirvane_cfg_flash_inject_corrupt(&journal) == CIRVANE_CFG_OK,
+           "flash corrupt fallback");
+    expect(cirvane_cfg_generation(&journal) == 2, "flash restored");
+    cirvane_cfg_reset(&journal);
+    expect(cirvane_cfg_flash_load(&journal, &loaded) == CIRVANE_CFG_OK,
+           "reload after fallback");
+    expect(loaded.heartbeat_ms == 2000, "kept after fallback");
+    expect(cirvane_cfg_flash_commit(&journal, 0) == CIRVANE_CFG_REFUSED,
+           "null flash commit");
 }
 
 static void test_config_commit_and_corrupt_fallback(void)
@@ -178,6 +212,7 @@ static void test_ota_refuses_nested_and_same_slot(void)
 int main(void)
 {
     test_config_commit_and_corrupt_fallback();
+    test_config_flash_persist_and_fallback();
     test_config_refuses_malformed();
     test_config_picks_highest_valid_generation();
     test_ota_rejects_corrupt_before_select();

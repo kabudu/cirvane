@@ -5,7 +5,7 @@
  * FreeRTOS-free ESP32-C5 kernel spike. Proves boot, traps, interrupt
  * dispatch, timer, USB Serial/JTAG, static memory, flash ROM read,
  * PMP/privilege probes, recovery syscalls, cooperative scheduling,
- * configuration fallback, fail-closed OTA selection and a bounded HAL.
+ * configuration fallback from flash, fail-closed OTA selection and a bounded HAL.
  */
 
 #include "hw.h"
@@ -13,6 +13,7 @@
 #include "kernel.h"
 #include "obs.h"
 #include "config.h"
+#include "config_flash.h"
 #include "rollback.h"
 
 #include <stdint.h>
@@ -344,22 +345,32 @@ static void demo_config(void)
     cirvane_cfg_journal_t journal;
     cirvane_cfg_t cfg;
     int fallback;
+    int durable;
 
     cirvane_cfg_reset(&journal);
-    if (cirvane_cfg_load(&journal, &cfg) != CIRVANE_CFG_OK) {
+    if (cirvane_cfg_flash_load(&journal, &cfg) != CIRVANE_CFG_OK) {
         line("cirvane-spike config=load-fail");
         return;
     }
     cfg.heartbeat_ms = 2000;
-    if (cirvane_cfg_commit(&journal, &cfg) != CIRVANE_CFG_OK) {
+    if (cirvane_cfg_flash_commit(&journal, &cfg) != CIRVANE_CFG_OK) {
         line("cirvane-spike config=commit-fail");
         return;
     }
-    fallback = cirvane_cfg_inject_corrupt(&journal) == CIRVANE_CFG_OK ? 1 : 0;
+    cirvane_cfg_reset(&journal);
+    durable = 0;
+    if (cirvane_cfg_flash_load(&journal, &cfg) == CIRVANE_CFG_OK &&
+        cirvane_cfg_generation(&journal) != 0 && cfg.heartbeat_ms == 2000) {
+        durable = 1;
+    }
+    fallback = cirvane_cfg_flash_inject_corrupt(&journal) == CIRVANE_CFG_OK ? 1
+                                                                           : 0;
     usb_write("cirvane-spike config gen=");
     usb_u32(cirvane_cfg_generation(&journal));
     usb_write(" fallback=");
     usb_u32((uint32_t)fallback);
+    usb_write(" durable=");
+    usb_u32((uint32_t)durable);
     usb_write("\r\n");
 }
 
@@ -525,8 +536,12 @@ void kernel_main(void)
 #else
     {
         cirvane_shell_t sh;
+        cirvane_cfg_journal_t journal;
+        cirvane_cfg_t cfg;
         char reply[CIRVANE_OBS_LINE_MAX];
         cirvane_shell_init(&sh);
+        cirvane_cfg_reset(&journal);
+        (void)cirvane_cfg_flash_load(&journal, &cfg);
         line("cirvane boot=ok");
         usb_write(CIRVANE_SHELL_PROMPT);
         usb_write(" ");
