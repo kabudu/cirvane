@@ -14,5 +14,6 @@
 | SEM-01 | Recovery atomically invalidates stale epoch-owned work and emits one bounded outcome | Kernel | Model tests plus adversarial HIL | Kernel qualification bundle | Implemented as kernel syscalls; spike HIL demonstrates one transaction; adversarial matrix pending |
 | REL-04 | Production image owns scheduling without FreeRTOS runtime | Kernel and build | Link-map, symbol and runtime inspection | Dependency inventory | Spike board evidence recorded; production kernel incomplete |
 | HAL-01 | Bounded UART, GPIO, timer, flash-read, watchdog and entropy without radio | Kernel HAL | Host refuse tests plus spike HIL | kernel-spike.json | Implemented on spike; radio excluded (R9) |
+| REL-05 | Kernel HIL diagnostics compile-gated out of production profile | Spike build | Dual-profile ci-local strings/nm | HIL kernel-spike.json; production strings check | Compile profiles implemented; production image is idle boot, not a product |
 
 States are implemented, verified, candidate, planned or deferred. Documentation alone cannot advance a behavioural requirement to implemented or verified.

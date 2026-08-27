@@ -84,7 +84,7 @@ Implement the smallest kernel that realizes the frozen recovery semantics, boots
 UART, GPIO 27, SYSTIMER, flash read, watchdog mute and LPPERI entropy are implemented on the spike HAL with host refuse tests and a required HIL marker. Radio remains blocked on owner decision R9 (ESP-IDF Wi-Fi needs FreeRTOS), so this combined checkbox stays open.
 - [x] Keep vendor ROM, HAL and binary dependencies behind an enumerated adapter boundary; record licence, privilege, memory, callback and scheduling assumptions for each.
 - [x] Add deterministic host models for state machines plus emulator or simulator coverage where the target boundary permits it.
-- [ ] Add production and HIL profiles; destructive diagnostics must remain compile-gated out of production images.
+- [x] Add production and HIL profiles; destructive diagnostics must remain compile-gated out of production images.
 - [ ] Define stable crash and evidence formats, bounded observability and a quiet interactive shell path.
 
 ### Kernel verification matrix

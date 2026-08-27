@@ -127,6 +127,21 @@ class KernelStage1Contract(unittest.TestCase):
         self.assertNotIn("nvs_", read("kernel/config.c"))
         self.assertNotIn("esp_ota_", read("kernel/rollback.c"))
 
+    def test_spike_profiles_gate_destructive_diagnostics(self):
+        build = read("scripts/build-kernel-spike.sh")
+        ci = read("scripts/ci-local.sh")
+        spike = read("kernel/spike/kernel.c")
+        self.assertIn('profile="${2:-${CIRVANE_SPIKE_PROFILE:-hil}}"', build)
+        self.assertIn("CIRVANE_SPIKE_PRODUCTION", build)
+        self.assertIn("kernel-spike-ci-prod", ci)
+        self.assertIn("hil_run_probes", spike)
+        self.assertIn("cirvane boot=ok", spike)
+        self.assertIn("result=PASS", spike)
+        self.assertIn(
+            "- [x] Add production and HIL profiles",
+            read("docs/PRODUCTISATION_COMPLETION_PLAN.md"),
+        )
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

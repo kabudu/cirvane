@@ -95,10 +95,19 @@ recovery evidence. Host tests cover the sticky refuse behaviour. The HIL image
 still reprints `result=PASS` after a successful probe sequence so capture can
 see the marker; that loop is idle, not panic.
 
+## Compile profiles
+
+`scripts/build-kernel-spike.sh` accepts `hil` (default) or `production`.
+HIL defines `CIRVANE_HIL_SPIKE` and includes corrupt-config injection plus the
+`result=PASS` reprint loop. Production defines `CIRVANE_SPIKE_PRODUCTION`,
+prints `cirvane boot=ok`, then waits in `wfi`. Inject symbols and PASS reprint
+must be absent from the production image. Neither profile is a complete
+product kernel or a matched-evaluation image.
+
 ## Not in this increment
 
 Durable flash-backed config, live ESP `otadata` selection, live user-mode
-`mret`, radio/Wi-Fi, production vs HIL profiles, crash/shell formats, matched
-FreeRTOS evaluation and adversarial kernel qualification remain unchecked. The
-Stage 2 UART/GPIO/timer/flash/watchdog/entropy/radio checkbox stays open because
-radio is blocked on owner decision R9.
+`mret`, radio/Wi-Fi, crash/shell formats, matched FreeRTOS evaluation and
+adversarial kernel qualification remain unchecked. The Stage 2
+UART/GPIO/timer/flash/watchdog/entropy/radio checkbox stays open because radio
+is blocked on owner decision R9.
