@@ -61,6 +61,7 @@ fi
   "$repo_dir/kernel/spike/hal_c5.c" \
   "$repo_dir/kernel/kernel.c" \
   "$repo_dir/kernel/config.c" \
+  "$repo_dir/kernel/config_flash.c" \
   "$repo_dir/kernel/rollback.c" \
   "$repo_dir/kernel/obs.c" \
   "$repo_dir/kernel/recovery/recovery.c"

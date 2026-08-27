@@ -107,6 +107,9 @@ class KernelStage1Contract(unittest.TestCase):
         self.assertRegex(header, r"#define\s+CIRVANE_GPIO_LED\s+27u\b")
         self.assertRegex(header, r"#define\s+CIRVANE_GPIO_LIMIT\s+32u\b")
         self.assertRegex(header, r"#define\s+CIRVANE_FLASH_READ_MAX\s+256u\b")
+        self.assertRegex(header, r"#define\s+CIRVANE_FLASH_WRITE_MAX\s+256u\b")
+        self.assertRegex(header, r"#define\s+CIRVANE_FLASH_SECTOR\s+4096u\b")
+        self.assertRegex(header, r"#define\s+CIRVANE_CFG_FLASH_BASE\s+0x7FE000u\b")
         self.assertIn("Radio and network are excluded", header)
         self.assertNotIn("esp_wifi", read("kernel/spike/hal_c5.c"))
         self.assertNotIn("hal_host.c", read("scripts/build-kernel-spike.sh"))
@@ -126,6 +129,9 @@ class KernelStage1Contract(unittest.TestCase):
         self.assertIn("CIRVANE_HIL_SPIKE", read("kernel/config.c"))
         self.assertNotIn("nvs_", read("kernel/config.c"))
         self.assertNotIn("esp_ota_", read("kernel/rollback.c"))
+        self.assertIn("config_flash.c", read("scripts/build-kernel-spike.sh"))
+        self.assertIn("CIRVANE_CFG_FLASH_BASE", read("kernel/config_flash.c"))
+        self.assertNotIn("otadata", read("kernel/config_flash.c"))
 
     def test_spike_profiles_gate_destructive_diagnostics(self):
         build = read("scripts/build-kernel-spike.sh")

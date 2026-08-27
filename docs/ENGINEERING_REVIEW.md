@@ -14,13 +14,13 @@ The imported firmware has established hardware evidence for bounded service oper
 ## Completion audit state
 
 The private repository identity work is complete. Kernel novelty research, the
-portable kernel core with host tests, a RAM-backed configuration journal, a
-fail-closed dual-slot rollback policy, a fail-closed UART, GPIO, timer, flash-read,
-watchdog and entropy HAL (radio excluded), HIL and production spike compile
-profiles, a quiet production `cirvane>` shell with frozen crash and evidence
-lines, and a FreeRTOS-free ESP32-C5 spike with real-board
-`benchmarks/results/kernel-spike.json` evidence are in. Durable
-flash/`otadata` adapters, radio, adversarial qualification, matched evaluation,
+portable kernel core with host tests, a flash-backed two-slot configuration
+journal, a fail-closed dual-slot rollback policy, a fail-closed UART, GPIO,
+timer, flash-read/erase/write, watchdog and entropy HAL (radio excluded), HIL
+and production spike compile profiles, a quiet production `cirvane>` shell
+with frozen crash and evidence lines, and a FreeRTOS-free ESP32-C5 spike with
+real-board `benchmarks/results/kernel-spike.json` evidence are in. Live
+`otadata` adapters, radio, adversarial qualification, matched evaluation,
 migration and rename, authenticated OTA and developer release remain
 incomplete. Stage 1 novelty remains a provisional hypothesis.
 Energy, irreversible hardware provisioning, independent novelty challenge,

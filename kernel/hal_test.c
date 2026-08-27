@@ -60,6 +60,30 @@ static void test_flash_timer_wdt_entropy(void)
     expect(cirvane_hal_flash_read(CIRVANE_FLASH_SIZE, buf, 4) ==
                CIRVANE_HAL_REFUSED,
            "oob");
+    expect(cirvane_hal_flash_erase(0, CIRVANE_FLASH_SECTOR) == CIRVANE_HAL_REFUSED,
+           "erase boot");
+    expect(cirvane_hal_flash_erase(CIRVANE_CFG_FLASH_BASE, 1) ==
+               CIRVANE_HAL_REFUSED,
+           "erase unaligned");
+    expect(cirvane_hal_flash_write(0, buf, 4) == CIRVANE_HAL_REFUSED,
+           "write boot");
+    expect(cirvane_hal_flash_write(CIRVANE_CFG_FLASH_BASE, buf, 1) ==
+               CIRVANE_HAL_REFUSED,
+           "write unaligned");
+    expect(cirvane_hal_flash_erase(CIRVANE_CFG_FLASH_BASE, CIRVANE_FLASH_SECTOR) ==
+               CIRVANE_HAL_OK,
+           "erase cfg");
+    buf[0] = 0x11;
+    buf[1] = 0x22;
+    buf[2] = 0x33;
+    buf[3] = 0x44;
+    expect(cirvane_hal_flash_write(CIRVANE_CFG_FLASH_BASE, buf, 4) ==
+               CIRVANE_HAL_OK,
+           "write cfg");
+    expect(cirvane_hal_flash_read(CIRVANE_CFG_FLASH_BASE, buf, 4) ==
+               CIRVANE_HAL_OK,
+           "read cfg");
+    expect(buf[0] == 0x11 && buf[3] == 0x44, "cfg payload");
     expect(cirvane_hal_entropy(&e0) == CIRVANE_HAL_OK, "e0");
     expect(cirvane_hal_entropy(&e1) == CIRVANE_HAL_OK, "e1");
     expect(e0 != e1, "entropy changes");

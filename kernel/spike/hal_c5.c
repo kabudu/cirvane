@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: MIT
  *
  * ESP32-C5 HAL: USB Serial/JTAG UART, GPIO 27 LED, SYSTIMER, ROM SPI flash
- * read, TIMG/LP watchdog mute, LPPERI RNG. No FreeRTOS, no allocator.
+ * read/erase/write in the config window, TIMG/LP watchdog mute, LPPERI RNG.
+ * No FreeRTOS, no allocator.
  */
 
 #include "hal.h"
@@ -95,6 +96,33 @@ uint32_t cirvane_hal_timer_now(void)
     return 0;
 }
 
+static int flash_in_cfg_window(uint32_t offset, uint32_t length)
+{
+    if (length == 0 || offset < CIRVANE_CFG_FLASH_BASE) {
+        return 0;
+    }
+    if (length > CIRVANE_CFG_FLASH_SIZE) {
+        return 0;
+    }
+    if (offset > CIRVANE_CFG_FLASH_BASE + CIRVANE_CFG_FLASH_SIZE - length) {
+        return 0;
+    }
+    return 1;
+}
+
+static uint32_t irq_suspend(void)
+{
+    uint32_t mstatus;
+
+    __asm__ volatile("csrrc %0, mstatus, %1" : "=r"(mstatus) : "r"(8));
+    return mstatus;
+}
+
+static void irq_restore(uint32_t mstatus)
+{
+    __asm__ volatile("csrw mstatus, %0" ::"r"(mstatus));
+}
+
 int cirvane_hal_flash_read(uint32_t offset, void *buf, uint32_t length)
 {
     esp_rom_spiflash_read_fn read_fn =
@@ -108,6 +136,62 @@ int cirvane_hal_flash_read(uint32_t offset, void *buf, uint32_t length)
     if (read_fn(offset, buf, (int32_t)length) != 0) {
         return CIRVANE_HAL_REFUSED;
     }
+    return CIRVANE_HAL_OK;
+}
+
+int cirvane_hal_flash_erase(uint32_t offset, uint32_t length)
+{
+    esp_rom_spiflash_unlock_fn unlock_fn =
+        (esp_rom_spiflash_unlock_fn)(uintptr_t)ROM_SPIFLASH_UNLOCK;
+    esp_rom_spiflash_erase_sector_fn erase_fn =
+        (esp_rom_spiflash_erase_sector_fn)(uintptr_t)ROM_SPIFLASH_ERASE_SECTOR;
+    uint32_t saved;
+    uint32_t pos;
+
+    if ((offset & (CIRVANE_FLASH_SECTOR - 1u)) != 0 ||
+        (length & (CIRVANE_FLASH_SECTOR - 1u)) != 0 ||
+        !flash_in_cfg_window(offset, length)) {
+        return CIRVANE_HAL_REFUSED;
+    }
+    saved = irq_suspend();
+    if (unlock_fn() != 0) {
+        irq_restore(saved);
+        return CIRVANE_HAL_REFUSED;
+    }
+    for (pos = offset; pos < offset + length; pos += CIRVANE_FLASH_SECTOR) {
+        if (erase_fn(pos / CIRVANE_FLASH_SECTOR) != 0) {
+            irq_restore(saved);
+            return CIRVANE_HAL_REFUSED;
+        }
+    }
+    irq_restore(saved);
+    return CIRVANE_HAL_OK;
+}
+
+int cirvane_hal_flash_write(uint32_t offset, const void *buf, uint32_t length)
+{
+    esp_rom_spiflash_unlock_fn unlock_fn =
+        (esp_rom_spiflash_unlock_fn)(uintptr_t)ROM_SPIFLASH_UNLOCK;
+    esp_rom_spiflash_write_fn write_fn =
+        (esp_rom_spiflash_write_fn)(uintptr_t)ROM_SPIFLASH_WRITE;
+    uint32_t saved;
+
+    if (buf == 0 || (length & 3u) != 0 || ((uintptr_t)buf & 3u) != 0 ||
+        (offset & 3u) != 0 || length > CIRVANE_FLASH_WRITE_MAX ||
+        (offset & (CIRVANE_FLASH_SECTOR - 1u)) + length > CIRVANE_FLASH_SECTOR ||
+        !flash_in_cfg_window(offset, length)) {
+        return CIRVANE_HAL_REFUSED;
+    }
+    saved = irq_suspend();
+    if (unlock_fn() != 0) {
+        irq_restore(saved);
+        return CIRVANE_HAL_REFUSED;
+    }
+    if (write_fn(offset, (const uint32_t *)buf, (int32_t)length) != 0) {
+        irq_restore(saved);
+        return CIRVANE_HAL_REFUSED;
+    }
+    irq_restore(saved);
     return CIRVANE_HAL_OK;
 }
 
