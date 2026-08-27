@@ -37,6 +37,7 @@ bin="$out_dir/cirvane-spike.bin"
   -march=rv32imc_zicsr_zifencei -mabi=ilp32 \
   -nostdlib -ffreestanding -fno-builtin -fno-pic \
   -Os -Wall -Wextra -Werror \
+  -DCIRVANE_HIL_SPIKE \
   -I "$repo_dir/kernel" \
   -I "$repo_dir/kernel/recovery" \
   -I "$repo_dir/kernel/spike" \
@@ -47,6 +48,8 @@ bin="$out_dir/cirvane-spike.bin"
   "$repo_dir/kernel/spike/start.S" \
   "$repo_dir/kernel/spike/kernel.c" \
   "$repo_dir/kernel/kernel.c" \
+  "$repo_dir/kernel/config.c" \
+  "$repo_dir/kernel/rollback.c" \
   "$repo_dir/kernel/recovery/recovery.c"
 
 if "${nm_bin}" "$elf" | grep -Ei 'freertos|xTaskCreate|vTaskStartScheduler|xQueueCreate'; then

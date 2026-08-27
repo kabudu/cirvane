@@ -102,6 +102,16 @@ class KernelStage1Contract(unittest.TestCase):
         self.assertIn("software-only", kernel_doc)
         self.assertIn("starvation", kernel_doc.lower())
 
+    def test_config_and_rollback_bounds_are_frozen(self):
+        cfg = read("kernel/config.h")
+        ota = read("kernel/rollback.h")
+        self.assertRegex(cfg, r"#define\s+CIRVANE_CFG_SLOTS\s+2\b")
+        self.assertRegex(ota, r"#define\s+CIRVANE_OTA_SLOTS\s+2\b")
+        self.assertRegex(ota, r"#define\s+CIRVANE_OTA_BLOCK\s+1024\b")
+        self.assertIn("CIRVANE_HIL_SPIKE", read("kernel/config.c"))
+        self.assertNotIn("nvs_", read("kernel/config.c"))
+        self.assertNotIn("esp_ota_", read("kernel/rollback.c"))
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

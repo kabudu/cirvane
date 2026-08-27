@@ -4,9 +4,9 @@ Stage 2 portable kernel. This is not a complete production kernel and not a
 novelty claim.
 
 C5 reset, BSS, trap entry, SYSTIMER, CLIC/INTMTX, USB Serial/JTAG and the
-ESP-IDF second-stage bootloader remain in `kernel/spike`. The portable core
-owns panic, interrupt dispatch, cooperative scheduling, typed messages,
-capability leases and the frozen syscalls that wrap the recovery transaction.
+ESP-IDF second-stage bootloader remain in `kernel/spike`. The portable core owns panic, interrupt dispatch, cooperative scheduling, typed
+messages, capability leases, frozen recovery syscalls, the two-slot
+configuration journal and dual-slot rollback selection policy.
 
 ## Scheduler policy
 
@@ -51,6 +51,29 @@ already zeros the lease before health may become `OK` or `DEGRADED`.
 
 Unknown numbers refuse. After panic, every syscall and scheduler step refuses.
 
+## Configuration journal
+
+Two 24-byte CRC-protected records. Highest valid generation wins. Commit writes
+the next generation into `generation & 1`, then verifies the stored record
+before publishing. Out-of-range heartbeat, supervisor period, LED mode or
+schema refuses without writing. A corrupt CRC on the newest slot falls back to
+the other valid slot or to compile-time defaults. The journal in this increment
+is RAM-backed; a flash adapter is not yet wired. Corrupt-slot injection is
+compile-gated (`CIRVANE_HIL_SPIKE` / `CIRVANE_CFG_TEST`).
+
+## Dual-slot rollback policy
+
+Two application slots. Copies are bounded to 1024-byte writes. `end` requires
+the declared length and a successful injected verifier. `select` is refused
+unless verification succeeded. Abort, truncation, oversize chunks, nested begin
+and same-slot staging refuse and leave the boot slot unchanged. Confirm marks a
+pending running image valid. Rollback of an unconfirmed pending image returns
+to the previous valid slot.
+
+Image signature parsing and ESP `otadata` writes stay in a vendor adapter. This
+module owns the fail-closed selection rule: Cirvane never selects a slot when
+the adapter reports failure. This increment does not rewrite board `otadata`.
+
 ## Panic
 
 Unexpected traps set a sticky panic reason and wait in `wfi`. They do not
@@ -61,6 +84,7 @@ see the marker; that loop is idle, not panic.
 
 ## Not in this increment
 
-Transactional configuration, signed dual-slot rollback, UART/GPIO/watchdog
-drivers beyond the spike probes, live user-mode `mret`, radio/Wi-Fi, matched
-FreeRTOS evaluation and adversarial kernel qualification remain unchecked.
+UART/GPIO/watchdog drivers beyond the spike probes, durable flash-backed
+config, live ESP `otadata` selection, live user-mode `mret`, radio/Wi-Fi,
+matched FreeRTOS evaluation and adversarial kernel qualification remain
+unchecked.
