@@ -27,6 +27,7 @@ REQUIRED_MARKERS = (
     "cirvane-spike recovery",
     "cirvane-spike kernel sched=",
     "cirvane-spike config gen=",
+    "durable=1",
     "cirvane-spike ota refuse=",
     "cirvane-spike hal gpio=",
     "cirvane-spike freertos=absent",

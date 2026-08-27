@@ -25,10 +25,12 @@ body still runs from SRAM. It must demonstrate:
 - One recovery-transaction demonstration through `SYS_RTX_BIND`,
   `SYS_MSG_ALLOC` and `SYS_RTX_ADMIT`.
 - Cooperative scheduling, typed send/recv and a software capability check.
-- Two-slot CRC configuration fallback after a compile-gated corrupt injection.
+- Two-slot CRC configuration fallback after a compile-gated corrupt injection
+  that reloads the committed value from flash (`durable=1`).
 - Dual-slot rollback policy refusing select after injected verify failure.
 - Bounded HAL: GPIO 27 output readback, LPPERI entropy changing or non-zero,
-  watchdog flashboot mute, ROM flash read and USB Serial/JTAG TX.
+  watchdog flashboot mute, ROM flash read, config-window erase/write and USB
+  Serial/JTAG TX.
 
 Machine-readable HIL evidence lives in `benchmarks/results/kernel-spike.json`.
 A `result` of `pass` is required before spike checkboxes are closed. A

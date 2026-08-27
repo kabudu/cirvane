@@ -24,6 +24,8 @@ class ConfigRollbackTests(unittest.TestCase):
                     "-I",
                     str(ROOT / "kernel"),
                     str(ROOT / "kernel" / "config.c"),
+                    str(ROOT / "kernel" / "config_flash.c"),
+                    str(ROOT / "kernel" / "hal_host.c"),
                     str(ROOT / "kernel" / "rollback.c"),
                     str(ROOT / "kernel" / "config_rollback_test.c"),
                     "-o",
