@@ -72,7 +72,10 @@
 #define CLIC_INT_ATTR_TRIG_EDGE (1u << 17)
 #define CLIC_INT_CTL_PRIO (0x1fu << 24)
 
+#define ROM_SPIFLASH_ERASE_SECTOR 0x40000154u
+#define ROM_SPIFLASH_WRITE 0x4000015cu
 #define ROM_SPIFLASH_READ 0x40000160u
+#define ROM_SPIFLASH_UNLOCK 0x40000164u
 #define FLASH_BOOTLOADER_OFF 0x2000u
 #define ESP_IMAGE_MAGIC 0xE9u
 
@@ -104,6 +107,10 @@
 #define MCAUSE_ECALL_U 8u
 #define MCAUSE_ECALL_M 11u
 
+typedef int (*esp_rom_spiflash_erase_sector_fn)(uint32_t sector_num);
+typedef int (*esp_rom_spiflash_write_fn)(uint32_t dest, const uint32_t *src,
+                                         int32_t len);
 typedef int (*esp_rom_spiflash_read_fn)(uint32_t src, uint32_t *dest, int32_t len);
+typedef int (*esp_rom_spiflash_unlock_fn)(void);
 typedef int (*rom_usb_tx_one_char_fn)(uint8_t);
 typedef void (*rom_usb_tx_flush_fn)(void);

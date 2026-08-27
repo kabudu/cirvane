@@ -4,7 +4,8 @@
  *
  * Bounded kernel HAL. UART, GPIO, timer, flash read, watchdog and entropy.
  * Radio and network are excluded (owner decision; ESP-IDF Wi-Fi needs FreeRTOS).
- * No allocator. Flash writes and otadata are not in this increment.
+ * No allocator. Erase and write are refused outside the two-sector config
+ * window. Otadata is not in this increment.
  */
 
 #pragma once
@@ -17,7 +18,11 @@
 #define CIRVANE_GPIO_LED 27u
 #define CIRVANE_GPIO_LIMIT 32u
 #define CIRVANE_FLASH_SIZE 0x800000u
+#define CIRVANE_FLASH_SECTOR 4096u
 #define CIRVANE_FLASH_READ_MAX 256u
+#define CIRVANE_FLASH_WRITE_MAX 256u
+#define CIRVANE_CFG_FLASH_BASE 0x7FE000u
+#define CIRVANE_CFG_FLASH_SIZE (2u * CIRVANE_FLASH_SECTOR)
 
 int cirvane_hal_init(void);
 int cirvane_hal_uart_write(const char *s);
@@ -26,6 +31,8 @@ int cirvane_hal_gpio_set(uint8_t pin, uint8_t level);
 int cirvane_hal_gpio_get(uint8_t pin, uint8_t *level);
 uint32_t cirvane_hal_timer_now(void);
 int cirvane_hal_flash_read(uint32_t offset, void *buf, uint32_t length);
+int cirvane_hal_flash_erase(uint32_t offset, uint32_t length);
+int cirvane_hal_flash_write(uint32_t offset, const void *buf, uint32_t length);
 int cirvane_hal_wdt_disarm(void);
 int cirvane_hal_wdt_flashboot_enabled(void);
 int cirvane_hal_entropy(uint32_t *out);

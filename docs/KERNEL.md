@@ -60,9 +60,12 @@ Two 24-byte CRC-protected records. Highest valid generation wins. Commit writes
 the next generation into `generation & 1`, then verifies the stored record
 before publishing. Out-of-range heartbeat, supervisor period, LED mode or
 schema refuses without writing. A corrupt CRC on the newest slot falls back to
-the other valid slot or to compile-time defaults. The journal in this increment
-is RAM-backed; a flash adapter is not yet wired. Corrupt-slot injection is
-compile-gated (`CIRVANE_HIL_SPIKE` / `CIRVANE_CFG_TEST`).
+the other valid slot or to compile-time defaults. The journal is flash-backed
+at two 4096-byte sectors starting at `0x7FE000`, after the large dual-OTA
+partitions. Commit erases one sector, writes the 24-byte record and publishes
+only after a matching read-back. Out-of-window erase and write refuse.
+Corrupt-slot injection is compile-gated (`CIRVANE_HIL_SPIKE` /
+`CIRVANE_CFG_TEST`). Live ESP `otadata` selection is not in this increment.
 
 ## Dual-slot rollback policy
 
@@ -81,11 +84,14 @@ the adapter reports failure. This increment does not rewrite board `otadata`.
 
 The HAL is fail-closed and allocator-free. Empty UART writes, GPIO pins at or
 above 32, levels other than 0/1, flash reads of length 0, unaligned length,
-oversize copies or out-of-range offsets refuse. The C5 port additionally
-restricts GPIO to pin 27 (XIAO user LED), requires 4-byte-aligned flash length
-and destination, and uses ROM SPI read, USB Serial/JTAG TX, SYSTIMER, TIMG/LP
-watchdog mute and LPPERI RNG. Flash writes, `otadata` and radio are not in this
-increment. Host tests link `hal_host.c`; the spike links `spike/hal_c5.c`.
+oversize copies or out-of-range offsets refuse. Flash erase and write are
+refused unless they stay inside the two-sector config window, stay sector or
+4-byte aligned as required, and do not cross a sector on write. The C5 port
+additionally restricts GPIO to pin 27 (XIAO user LED), requires 4-byte-aligned
+flash length and destination, and uses ROM SPI read, erase, write and unlock,
+USB Serial/JTAG TX, SYSTIMER, TIMG/LP watchdog mute and LPPERI RNG. `otadata`
+and radio are not in this increment. Host tests link `hal_host.c`; the spike
+links `spike/hal_c5.c`.
 
 ## Panic
 
@@ -116,8 +122,7 @@ on that path. The shell is privileged and unauthenticated.
 
 ## Not in this increment
 
-Durable flash-backed config, live ESP `otadata` selection, live user-mode
-`mret`, radio/Wi-Fi, matched FreeRTOS evaluation and adversarial kernel
-qualification remain unchecked. The Stage 2
-UART/GPIO/timer/flash/watchdog/entropy/radio checkbox stays open because radio
-is blocked on owner decision R9.
+Live ESP `otadata` selection, live user-mode `mret`, radio/Wi-Fi, matched
+FreeRTOS evaluation and adversarial kernel qualification remain unchecked. The
+Stage 2 UART/GPIO/timer/flash/watchdog/entropy/radio checkbox stays open
+because radio is blocked on owner decision R9.
