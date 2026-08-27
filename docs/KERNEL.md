@@ -4,9 +4,12 @@ Stage 2 portable kernel. This is not a complete production kernel and not a
 novelty claim.
 
 C5 reset, BSS, trap entry, SYSTIMER, CLIC/INTMTX, USB Serial/JTAG and the
-ESP-IDF second-stage bootloader remain in `kernel/spike`. The portable core owns panic, interrupt dispatch, cooperative scheduling, typed
-messages, capability leases, frozen recovery syscalls, the two-slot
-configuration journal and dual-slot rollback selection policy.
+ESP-IDF second-stage bootloader remain in `kernel/spike`. The portable core
+owns panic, interrupt dispatch, cooperative scheduling, typed messages,
+capability leases, frozen recovery syscalls, the two-slot configuration
+journal and dual-slot rollback selection policy. The HAL API is portable; UART,
+GPIO, timer, flash read, watchdog mute and entropy are implemented for C5 in
+the spike. Radio is excluded.
 
 ## Scheduler policy
 
@@ -74,6 +77,16 @@ Image signature parsing and ESP `otadata` writes stay in a vendor adapter. This
 module owns the fail-closed selection rule: Cirvane never selects a slot when
 the adapter reports failure. This increment does not rewrite board `otadata`.
 
+## Hardware abstraction
+
+The HAL is fail-closed and allocator-free. Empty UART writes, GPIO pins at or
+above 32, levels other than 0/1, flash reads of length 0, unaligned length,
+oversize copies or out-of-range offsets refuse. The C5 port additionally
+restricts GPIO to pin 27 (XIAO user LED), requires 4-byte-aligned flash length
+and destination, and uses ROM SPI read, USB Serial/JTAG TX, SYSTIMER, TIMG/LP
+watchdog mute and LPPERI RNG. Flash writes, `otadata` and radio are not in this
+increment. Host tests link `hal_host.c`; the spike links `spike/hal_c5.c`.
+
 ## Panic
 
 Unexpected traps set a sticky panic reason and wait in `wfi`. They do not
@@ -84,7 +97,8 @@ see the marker; that loop is idle, not panic.
 
 ## Not in this increment
 
-UART/GPIO/watchdog drivers beyond the spike probes, durable flash-backed
-config, live ESP `otadata` selection, live user-mode `mret`, radio/Wi-Fi,
-matched FreeRTOS evaluation and adversarial kernel qualification remain
-unchecked.
+Durable flash-backed config, live ESP `otadata` selection, live user-mode
+`mret`, radio/Wi-Fi, production vs HIL profiles, crash/shell formats, matched
+FreeRTOS evaluation and adversarial kernel qualification remain unchecked. The
+Stage 2 UART/GPIO/timer/flash/watchdog/entropy/radio checkbox stays open because
+radio is blocked on owner decision R9.

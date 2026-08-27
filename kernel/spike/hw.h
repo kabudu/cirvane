@@ -75,6 +75,27 @@
 #define FLASH_BOOTLOADER_OFF 0x2000u
 #define ESP_IMAGE_MAGIC 0xE9u
 
+#define DR_REG_GPIO_BASE 0x60091000u
+#define DR_REG_IO_MUX_BASE 0x60090000u
+#define DR_REG_LPPERI_BASE 0x600B2800u
+#define GPIO_OUT_REG (DR_REG_GPIO_BASE + 0x4u)
+#define GPIO_OUT_W1TS_REG (DR_REG_GPIO_BASE + 0x8u)
+#define GPIO_OUT_W1TC_REG (DR_REG_GPIO_BASE + 0xcu)
+#define GPIO_ENABLE_W1TS_REG (DR_REG_GPIO_BASE + 0x38u)
+#define GPIO_FUNC27_OUT_SEL_CFG_REG (DR_REG_GPIO_BASE + 0xb40u)
+#define GPIO_OUT_SEL_GPIO 256u
+#define IO_MUX_GPIO27_REG (DR_REG_IO_MUX_BASE + 0x6cu)
+#define FUN_DRV_S 10u
+#define MCU_SEL_S 12u
+#define FUNC_GPIO27_GPIO 1u
+#define LPPERI_CLK_EN_REG (DR_REG_LPPERI_BASE + 0x0u)
+#define LPPERI_RNG_CK_EN (1u << 24)
+#define LPPERI_CLK_EN (1u << 31)
+#define LPPERI_RNG_DATA_REG (DR_REG_LPPERI_BASE + 0x8u)
+#define LPPERI_RNG_CFG_REG (DR_REG_LPPERI_BASE + 0x24u)
+#define LPPERI_RNG_SAMPLE_ENABLE (1u << 0)
+#define LPPERI_RNG_TIMER_EN (1u << 9)
+
 #define MSTATUS_MIE (1u << 3)
 #define MSTATUS_MPP_MASK (3u << 11)
 
@@ -83,3 +104,5 @@
 #define MCAUSE_ECALL_M 11u
 
 typedef int (*esp_rom_spiflash_read_fn)(uint32_t src, uint32_t *dest, int32_t len);
+typedef int (*rom_usb_tx_one_char_fn)(uint8_t);
+typedef void (*rom_usb_tx_flush_fn)(void);
