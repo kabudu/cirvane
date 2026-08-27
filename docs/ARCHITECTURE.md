@@ -4,7 +4,7 @@
 
 The current baseline is an ESP-IDF application using FreeRTOS as its scheduler and hardware integration substrate. Cirvane owns the service model, supervisor, bounded message bus, capability checks, configuration journal, power policy, shell and OTA policy. ESP-IDF owns boot, drivers, networking primitives, partitions and low-level update APIs. This baseline is implemented and preserved for migration and matched evaluation.
 
-The target architecture is a clean-sheet Cirvane kernel that owns reset-to-runtime scheduling, typed messaging, capability decisions, bounded recovery transactions, a two-slot configuration journal, fail-closed dual-slot rollback selection and a fail-closed UART/GPIO/timer/flash-read/watchdog/entropy HAL. Vendor ROM, HAL, boot, radio, cryptographic verification and `otadata` writes may remain only behind an enumerated boundary that does not schedule on FreeRTOS or reinterpret kernel outcomes. Stage 2 has a portable kernel core, a C5 HIL image and a production compile profile that omits HIL inject and PASS reprint. Durable flash-backed config, live ESP image verify, radio, live user-mode isolation and matched evaluation are not implemented. ESP-IDF Wi-Fi remains an owner decision because the vendor adapter requires FreeRTOS.
+The target architecture is a clean-sheet Cirvane kernel that owns reset-to-runtime scheduling, typed messaging, capability decisions, bounded recovery transactions, a two-slot configuration journal, fail-closed dual-slot rollback selection and a fail-closed UART/GPIO/timer/flash-read/watchdog/entropy HAL. Vendor ROM, HAL, boot, radio, cryptographic verification and `otadata` writes may remain only behind an enumerated boundary that does not schedule on FreeRTOS or reinterpret kernel outcomes. Stage 2 has a portable kernel core, a C5 HIL image, a production compile profile that omits HIL inject and PASS reprint, and a quiet privileged USB shell with frozen crash and evidence lines. Durable flash-backed config, live ESP image verify, radio, live user-mode isolation and matched evaluation are not implemented. ESP-IDF Wi-Fi remains an owner decision because the vendor adapter requires FreeRTOS.
 
 ## Current baseline components and invariants
 
@@ -26,6 +26,7 @@ These rows are the portable Cirvane kernel. They do not replace the Nucleus base
 | Configuration journal | Cirvane kernel | Highest valid CRC generation wins | Fall back to other slot or defaults; refuse malformed commit | 2 records, 24 bytes, RAM-backed |
 | Kernel HAL | Cirvane kernel over C5 MMIO/ROM | Refuse malformed UART, GPIO, flash-read, watchdog and entropy requests | Leave pin, flash and WDT state unchanged on refuse | GPIO pin 27, 256-byte flash read, 8 MiB map |
 | Spike compile profile | Cirvane kernel build | Production omits inject and PASS reprint | Refuse to link or emit HIL diagnostics | hil or production |
+| Quiet kernel shell | Cirvane kernel | Prompt stays readable; no heartbeat | Refuse unknown, oversize and out-of-range commands | 32-byte command, 96-byte line |
 | OTA selection policy | Cirvane kernel over a verify adapter | No boot selection before complete verification | Abort staging and keep current boot target | 2 app slots, 1 KiB copy block |
 
 ## Target release boundary

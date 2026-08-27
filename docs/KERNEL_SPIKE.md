@@ -37,8 +37,9 @@ A `result` of `pass` is required before spike checkboxes are closed. A
 application; restore the Nucleus image afterwards. While the spike holds USB
 Serial/JTAG, `esptool` RTS/hard-reset may not enter the stub. Recorded captures
 use OpenOCD `program_esp` of the HIL `cirvane-spike.bin` at `0x20000`, then
-`kernel_spike_hil.py` capture without `--flash`. The production profile is a
-separate compile and is not the HIL evidence image.
+`kernel_spike_hil.py` capture without `--flash`. The production compile prints `cirvane boot=ok` then a quiet `cirvane>` shell.
+HIL captures remain the probe image. Quiet-shell board evidence lives in
+`benchmarks/results/kernel-shell.json`.
 
 ## Kernel invariants
 

@@ -51,6 +51,8 @@ typedef struct {
     uint8_t next_service;
     uint8_t panicked;
     uint32_t panic_reason;
+    uint32_t panic_mcause;
+    uint32_t panic_mepc;
 } cirvane_kernel_t;
 
 void cirvane_kernel_init(cirvane_kernel_t *k);
@@ -66,4 +68,6 @@ int cirvane_irq_attach(cirvane_kernel_t *k, uint8_t irq, cirvane_isr_fn isr);
 void cirvane_irq_dispatch(cirvane_kernel_t *k, uint8_t irq);
 
 void cirvane_panic(cirvane_kernel_t *k, uint32_t reason);
+void cirvane_panic_fault(cirvane_kernel_t *k, uint32_t reason, uint32_t mcause,
+                         uint32_t mepc);
 uint32_t cirvane_panic_reason(const cirvane_kernel_t *k);
