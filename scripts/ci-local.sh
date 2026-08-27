@@ -37,7 +37,8 @@ if [[ -z "${IDF_PATH:-}" || ! -f "${IDF_PATH}/tools/cmake/project.cmake" ]]; the
   exit 1
 fi
 
-scripts/build-kernel-spike.sh "$repo_dir/build/kernel-spike-ci"
+scripts/build-kernel-spike.sh "$repo_dir/build/kernel-spike-ci" hil
+scripts/build-kernel-spike.sh "$repo_dir/build/kernel-spike-ci-prod" production
 
 mkdir -p build/ci
 if [[ ! -f build/ci/signing-key.pem ]]; then
