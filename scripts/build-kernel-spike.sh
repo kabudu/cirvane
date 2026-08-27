@@ -62,6 +62,7 @@ fi
   "$repo_dir/kernel/kernel.c" \
   "$repo_dir/kernel/config.c" \
   "$repo_dir/kernel/rollback.c" \
+  "$repo_dir/kernel/obs.c" \
   "$repo_dir/kernel/recovery/recovery.c"
 
 if "${nm_bin}" "$elf" | grep -Ei 'freertos|xTaskCreate|vTaskStartScheduler|xQueueCreate'; then
@@ -90,6 +91,10 @@ python3 "$esptool_py" --chip esp32c5 elf2image \
 if [[ "$profile" == "production" ]]; then
   if strings "$bin" | grep -Eq 'result=PASS|inject_corrupt'; then
     echo "production spike image contains HIL diagnostics" >&2
+    exit 1
+  fi
+  if ! strings "$bin" | grep -q 'cirvane>'; then
+    echo "production spike image missing quiet shell prompt" >&2
     exit 1
   fi
 else

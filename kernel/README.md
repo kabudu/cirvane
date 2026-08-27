@@ -8,14 +8,20 @@ Stage 2 portable core plus the C5 spike port.
   selection policy. Image verify remains an injected adapter.
 - `hal.h` plus `hal_host.c` (host mock) and `spike/hal_c5.c` (C5 MMIO/ROM).
   UART, GPIO 27, timer, flash read, watchdog mute and entropy. No radio.
+- `obs.c` crash, evidence and quiet-shell encodings. Prompt `cirvane>`.
+  Commands `help`, `info`, `crash`, `evidence <0-7>`. Oversize and unknown
+  input refuse. No heartbeat.
 - `recovery/` bounded recovery transaction model used by those syscalls.
 - `spike/` FreeRTOS-free ESP32-C5 SRAM image with `hil` and `production`
   compile profiles. `hil` is the HIL probe image. `production` omits inject
-  and `result=PASS` reprint. Neither is a complete product kernel.
+  and `result=PASS` reprint and runs the quiet `cirvane>` shell. Neither is a
+  complete product kernel.
 
 Build the HIL spike with `scripts/build-kernel-spike.sh`. Build the production
 profile with a second `production` argument. Capture board evidence with
 `benchmarks/tools/kernel_spike_hil.py` after OpenOCD `program_esp` of the HIL
-image. Flashing replaces the current application slot; restore the Nucleus
+image. Capture the production quiet shell with
+`benchmarks/tools/kernel_shell_hil.py` after OpenOCD `program_esp` of the
+production image. Flashing replaces the current application slot; restore the Nucleus
 baseline afterwards. Scheduler policy, journal, rollback and HAL rules are in
 `docs/KERNEL.md`.

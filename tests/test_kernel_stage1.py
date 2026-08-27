@@ -142,6 +142,19 @@ class KernelStage1Contract(unittest.TestCase):
             read("docs/PRODUCTISATION_COMPLETION_PLAN.md"),
         )
 
+    def test_obs_and_shell_bounds_are_frozen(self):
+        header = read("kernel/obs.h")
+        self.assertRegex(header, r"#define\s+CIRVANE_OBS_LINE_MAX\s+96\b")
+        self.assertRegex(header, r"#define\s+CIRVANE_SHELL_CMD_MAX\s+32\b")
+        self.assertIn("cirvane>", header)
+        self.assertNotIn("heartbeat", read("kernel/obs.c"))
+        self.assertIn("obs.c", read("scripts/build-kernel-spike.sh"))
+        self.assertIn("test_kernel_obs.py", read("scripts/ci-local.sh"))
+        self.assertIn(
+            "- [x] Define stable crash and evidence formats",
+            read("docs/PRODUCTISATION_COMPLETION_PLAN.md"),
+        )
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

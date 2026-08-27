@@ -75,6 +75,10 @@ static void test_panic_and_irq(void)
     expect(g_isr_count == 1, "isr ran");
     cirvane_irq_dispatch(&k, 9);
     expect(cirvane_panic_reason(&k) == CIRVANE_PANIC_BAD_IRQ, "bad irq panic");
+    expect(k.panic_mcause == 0 && k.panic_mepc == 0, "irq panic detail");
+    cirvane_kernel_init(&k);
+    cirvane_panic_fault(&k, CIRVANE_PANIC_UNKNOWN_TRAP, 0x11u, 0x20u);
+    expect(k.panic_mcause == 0x11u && k.panic_mepc == 0x20u, "trap detail");
     expect(cirvane_syscall(&k, CIRVANE_SYS_RTX_BIND, 0, 2, 1) ==
                CIRVANE_SYS_REFUSED,
            "syscall after panic");
