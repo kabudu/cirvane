@@ -19,8 +19,10 @@ claim.
   possible.
 - Clock, compiler profile, serial transport and USB cable: match the recorded
   v2 baseline procedure in `benchmarks/README.md`.
-- Cirvane image: production kernel profile once Stage 2 exists. Stage 1 spike
-  is feasibility evidence only and is **not** a matched performance trial.
+- Cirvane image: production kernel profile once Stage 2 exists. The current
+  `production` spike compile boots and idles; it is not the matched
+  workload image. The HIL spike is feasibility evidence only and is **not** a
+  matched performance trial.
 - Baseline image: preserved Nucleus v2/FreeRTOS build at the recorded digest.
 
 ## Workload

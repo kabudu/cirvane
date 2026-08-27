@@ -3,7 +3,13 @@ set -euo pipefail
 
 repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 out_dir="${1:-$repo_dir/build/kernel-spike}"
+profile="${2:-${CIRVANE_SPIKE_PROFILE:-hil}}"
 mkdir -p "$out_dir"
+
+if [[ "$profile" != "hil" && "$profile" != "production" ]]; then
+  echo "spike profile must be hil or production" >&2
+  exit 1
+fi
 
 if [[ -z "${IDF_PATH:-}" ]]; then
   if [[ -f "$HOME/esp/esp-idf/tools/cmake/project.cmake" ]]; then
@@ -32,12 +38,17 @@ nm_bin="${gcc_bin%gcc}nm"
 elf="$out_dir/cirvane-spike.elf"
 map="$out_dir/cirvane-spike.map"
 bin="$out_dir/cirvane-spike.bin"
+if [[ "$profile" == "hil" ]]; then
+  profile_define="-DCIRVANE_HIL_SPIKE"
+else
+  profile_define="-DCIRVANE_SPIKE_PRODUCTION"
+fi
 
 "$gcc_bin" \
   -march=rv32imc_zicsr_zifencei -mabi=ilp32 \
   -nostdlib -ffreestanding -fno-builtin -fno-pic \
   -Os -Wall -Wextra -Werror \
-  -DCIRVANE_HIL_SPIKE \
+  "$profile_define" \
   -I "$repo_dir/kernel" \
   -I "$repo_dir/kernel/recovery" \
   -I "$repo_dir/kernel/spike" \
@@ -61,6 +72,12 @@ if "${nm_bin}" "$elf" | grep -E ' [BbDd] (malloc|calloc|realloc|free)$'; then
   echo "spike unexpectedly contains allocator symbols" >&2
   exit 1
 fi
+if [[ "$profile" == "production" ]]; then
+  if "${nm_bin}" "$elf" | grep -E 'inject_corrupt'; then
+    echo "production spike contains HIL inject_corrupt" >&2
+    exit 1
+  fi
+fi
 
 esptool_py="$(command -v esptool.py || true)"
 if [[ -z "$esptool_py" ]]; then
@@ -70,5 +87,16 @@ fi
 python3 "$esptool_py" --chip esp32c5 elf2image \
   --flash-mode dio --flash-freq 80m --flash-size 8MB \
   --output "$bin" "$elf" >/dev/null
+if [[ "$profile" == "production" ]]; then
+  if strings "$bin" | grep -Eq 'result=PASS|inject_corrupt'; then
+    echo "production spike image contains HIL diagnostics" >&2
+    exit 1
+  fi
+else
+  if ! strings "$bin" | grep -q 'result=PASS'; then
+    echo "HIL spike image missing result=PASS" >&2
+    exit 1
+  fi
+fi
 echo "$elf"
 echo "$bin"

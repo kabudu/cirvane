@@ -55,7 +55,9 @@ volatile uint32_t g_ecall_count;
 volatile uint32_t g_other_trap_count;
 volatile uint32_t g_last_mcause;
 static cirvane_kernel_t g_kernel;
+#ifdef CIRVANE_HIL_SPIKE
 static uint32_t g_sched_consumed;
+#endif
 
 void cirvane_trap_entry(void);
 
@@ -92,6 +94,7 @@ static void usb_write(const char *s)
     rom_flush();
 }
 
+#ifdef CIRVANE_HIL_SPIKE
 static void usb_hex(uint32_t value, unsigned digits)
 {
     char buf[9];
@@ -132,15 +135,16 @@ static void usb_u32(uint32_t value)
     }
 }
 
+static void software_isr(void)
+{
+    g_interrupt_count += 1;
+}
+#endif
+
 static void line(const char *s)
 {
     usb_write(s);
     usb_write("\r\n");
-}
-
-static void software_isr(void)
-{
-    g_interrupt_count += 1;
 }
 
 uint32_t cirvane_trap(uint32_t mcause, uint32_t mepc)
@@ -165,6 +169,7 @@ uint32_t cirvane_trap(uint32_t mcause, uint32_t mepc)
     }
 }
 
+#ifdef CIRVANE_HIL_SPIKE
 static uint32_t csr_mstatus(void)
 {
     uint32_t v;
@@ -404,18 +409,15 @@ static void demo_hal(void)
     usb_write("\r\n");
 }
 
-void kernel_main(void)
+static void hil_run_probes(void)
 {
     uint32_t t0_lo;
     uint32_t t1_lo;
     uint32_t magic;
     static uint32_t static_marker = 0xC12A0001u;
     uint32_t ecalls_before;
-    enable_usb_serial_jtag();
+
     line("cirvane-spike boot=ok");
-    cirvane_hal_init();
-    cirvane_hal_wdt_disarm();
-    cirvane_kernel_init(&g_kernel);
     cirvane_irq_attach(&g_kernel, 0, software_isr);
 
     ecalls_before = g_ecall_count;
@@ -501,4 +503,21 @@ void kernel_main(void)
             }
         }
     }
+}
+#endif
+
+void kernel_main(void)
+{
+    enable_usb_serial_jtag();
+    cirvane_hal_init();
+    cirvane_hal_wdt_disarm();
+    cirvane_kernel_init(&g_kernel);
+#ifdef CIRVANE_HIL_SPIKE
+    hil_run_probes();
+#else
+    line("cirvane boot=ok");
+    for (;;) {
+        __asm__ volatile("wfi");
+    }
+#endif
 }
