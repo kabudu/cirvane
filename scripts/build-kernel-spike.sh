@@ -47,6 +47,7 @@ bin="$out_dir/cirvane-spike.bin"
   -o "$elf" \
   "$repo_dir/kernel/spike/start.S" \
   "$repo_dir/kernel/spike/kernel.c" \
+  "$repo_dir/kernel/spike/hal_c5.c" \
   "$repo_dir/kernel/kernel.c" \
   "$repo_dir/kernel/config.c" \
   "$repo_dir/kernel/rollback.c" \

@@ -27,12 +27,17 @@ body still runs from SRAM. It must demonstrate:
 - Cooperative scheduling, typed send/recv and a software capability check.
 - Two-slot CRC configuration fallback after a compile-gated corrupt injection.
 - Dual-slot rollback policy refusing select after injected verify failure.
+- Bounded HAL: GPIO 27 output readback, LPPERI entropy changing or non-zero,
+  watchdog flashboot mute, ROM flash read and USB Serial/JTAG TX.
 
 Machine-readable HIL evidence lives in `benchmarks/results/kernel-spike.json`.
 A `result` of `pass` is required before spike checkboxes are closed. A
 `blocked` or `fail` record is not qualification. Flashing uses app offset
 `0x20000` (`ota_0` in `partitions_two_ota_large.csv`) and replaces the running
-application; restore the Nucleus image afterwards.
+application; restore the Nucleus image afterwards. While the spike holds USB
+Serial/JTAG, `esptool` RTS/hard-reset may not enter the stub. Recorded captures
+use OpenOCD `program_esp` of `cirvane-spike.bin` at `0x20000`, then
+`kernel_spike_hil.py` capture without `--flash`.
 
 ## Kernel invariants
 
@@ -88,7 +93,8 @@ baseline ceilings unless a later ADR changes them with evidence.
 | Portable kernel and recovery model | Machine (linked in) | Syscalls, scheduler, panic, IRQ table | Cooperative; ticks must return |
 | ESP32-C5 ROM second-stage caller + SPI flash ROM | ROM | Load image, optional flash read | None |
 | USB Serial/JTAG MMIO | Machine MMIO | Operator console | None |
-| SYSTIMER, CLIC, INTMTX, INTPRI, TIMG/LP WDT | Machine MMIO | Time, interrupt, watchdog mute | None |
+| SYSTIMER, CLIC, INTMTX, INTPRI, TIMG/LP WDT, GPIO, IO MUX, LPPERI RNG | Machine MMIO | Time, interrupt, watchdog mute, LED, entropy | None |
+| ESP32-C5 ROM USB TX | ROM | Operator console character TX | None |
 | ESP-IDF second-stage bootloader already in flash | Boot | Loads the app image | Not linked into the spike |
 | FreeRTOS | Absent | n/a | Must remain absent |
 | ESP-IDF Wi-Fi/libnet80211 | Not linked | n/a | Requires FreeRTOS if used later |
@@ -97,8 +103,9 @@ baseline ceilings unless a later ADR changes them with evidence.
 
 C11 for the portable kernel, recovery model and spike body. RISC-V assembly
 only in `kernel/spike/start.S` for stack, BSS, `mtvec` and trap entry. MMIO is
-volatile register access in `kernel/spike/kernel.c`. No Rust: the ESP-IDF GCC
-toolchain is already present and is the measurable correctness path.
+volatile register access in `kernel/spike/kernel.c` and `kernel/spike/hal_c5.c`.
+No Rust: the ESP-IDF GCC toolchain is already present and is the measurable
+correctness path.
 
 ## Wi-Fi feasibility
 

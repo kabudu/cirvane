@@ -28,6 +28,7 @@ REQUIRED_MARKERS = (
     "cirvane-spike kernel sched=",
     "cirvane-spike config gen=",
     "cirvane-spike ota refuse=",
+    "cirvane-spike hal gpio=",
     "cirvane-spike freertos=absent",
     "cirvane-spike result=PASS",
 )
@@ -180,6 +181,9 @@ def classify(log: str) -> str:
             and "advance=1" in log
             and "fallback=1" in log
             and "boot_unchanged=1" in log
+            and "gpio=1" in log
+            and "entropy=1" in log
+            and "wdt=0" in log
         ):
             return "pass"
         return "partial"
@@ -211,7 +215,7 @@ def main() -> None:
         "schema": 1,
         "captured_at": datetime.now(timezone.utc).isoformat(),
         "port": port,
-        "offset": args.offset if args.flash else None,
+        "offset": args.offset,
         "elf": str(elf.relative_to(ROOT)),
         "image": str(image.relative_to(ROOT)) if image.is_relative_to(ROOT) else str(image),
     }

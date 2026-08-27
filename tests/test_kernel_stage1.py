@@ -102,6 +102,21 @@ class KernelStage1Contract(unittest.TestCase):
         self.assertIn("software-only", kernel_doc)
         self.assertIn("starvation", kernel_doc.lower())
 
+    def test_hal_bounds_are_frozen(self):
+        header = read("kernel/hal.h")
+        self.assertRegex(header, r"#define\s+CIRVANE_GPIO_LED\s+27u\b")
+        self.assertRegex(header, r"#define\s+CIRVANE_GPIO_LIMIT\s+32u\b")
+        self.assertRegex(header, r"#define\s+CIRVANE_FLASH_READ_MAX\s+256u\b")
+        self.assertIn("Radio and network are excluded", header)
+        self.assertNotIn("esp_wifi", read("kernel/spike/hal_c5.c"))
+        self.assertNotIn("hal_host.c", read("scripts/build-kernel-spike.sh"))
+        self.assertIn("hal_c5.c", read("scripts/build-kernel-spike.sh"))
+        plan = read("docs/PRODUCTISATION_COMPLETION_PLAN.md")
+        self.assertIn(
+            "- [ ] Implement the minimum UART, GPIO, timer, flash, watchdog, entropy and radio",
+            plan,
+        )
+
     def test_config_and_rollback_bounds_are_frozen(self):
         cfg = read("kernel/config.h")
         ota = read("kernel/rollback.h")
