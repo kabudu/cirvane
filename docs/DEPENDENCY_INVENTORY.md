@@ -8,7 +8,7 @@ for a clean-sheet image.
 
 | Component | Source | Licence | Privilege | Memory | Callbacks | Scheduler |
 |---|---|---|---|---|---|---|
-| Cirvane spike + recovery model | this repository | MIT | Machine | Internal SRAM only | Trap handler | None |
+| Cirvane spike + kernel core | this repository | MIT | Machine | Internal SRAM only | Trap handler | Cooperative RR; ticks must return |
 | `riscv32-esp-elf` GCC 15.2 / newlib not linked | Espressif toolchain | toolchain | Build only | n/a | n/a | n/a |
 | ESP32-C5 ROM `esp_rom_spiflash_read` at 0x40000160 | Espressif ROM | ROM binary | ROM | ROM | None from spike besides the call | None |
 | USB Serial/JTAG, SYSTIMER, CLIC, INTMTX, INTPRI, TIMG WDT, LP WDT | ESP32-C5 MMIO | hardware | Machine | Peripheral window | Interrupt via CLIC | None |
