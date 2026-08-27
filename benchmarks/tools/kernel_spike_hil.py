@@ -26,6 +26,8 @@ REQUIRED_MARKERS = (
     "cirvane-spike priv",
     "cirvane-spike recovery",
     "cirvane-spike kernel sched=",
+    "cirvane-spike config gen=",
+    "cirvane-spike ota refuse=",
     "cirvane-spike freertos=absent",
     "cirvane-spike result=PASS",
 )
@@ -173,7 +175,12 @@ def capture(port_path: str, timeout_s: float) -> str:
 
 def classify(log: str) -> str:
     if all(marker in log for marker in REQUIRED_MARKERS):
-        if "stale=0" in log and "advance=1" in log:
+        if (
+            "stale=0" in log
+            and "advance=1" in log
+            and "fallback=1" in log
+            and "boot_unchanged=1" in log
+        ):
             return "pass"
         return "partial"
     return "fail"
