@@ -80,6 +80,8 @@ Implement the smallest kernel that realizes the frozen recovery semantics, boots
 - [x] Implement recovery transactions, stale-work invalidation, bounded reclamation, restart budgets, backoff and fixed-size evidence records as kernel-owned semantics.
 - [x] Implement transactional configuration and dual-slot signed rollback without weakening the proven fail-closed behaviour.
 - [ ] Implement the minimum UART, GPIO, timer, flash, watchdog, entropy and radio or network boundaries required by the supported workflow.
+
+UART, GPIO 27, SYSTIMER, flash read, watchdog mute and LPPERI entropy are implemented on the spike HAL with host refuse tests and a required HIL marker. Radio remains blocked on owner decision R9 (ESP-IDF Wi-Fi needs FreeRTOS), so this combined checkbox stays open.
 - [x] Keep vendor ROM, HAL and binary dependencies behind an enumerated adapter boundary; record licence, privilege, memory, callback and scheduling assumptions for each.
 - [x] Add deterministic host models for state machines plus emulator or simulator coverage where the target boundary permits it.
 - [ ] Add production and HIL profiles; destructive diagnostics must remain compile-gated out of production images.

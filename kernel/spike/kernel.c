@@ -5,10 +5,11 @@
  * FreeRTOS-free ESP32-C5 kernel spike. Proves boot, traps, interrupt
  * dispatch, timer, USB Serial/JTAG, static memory, flash ROM read,
  * PMP/privilege probes, recovery syscalls, cooperative scheduling,
- * configuration fallback and fail-closed OTA selection.
+ * configuration fallback, fail-closed OTA selection and a bounded HAL.
  */
 
 #include "hw.h"
+#include "hal.h"
 #include "kernel.h"
 #include "config.h"
 #include "rollback.h"
@@ -57,30 +58,6 @@ static cirvane_kernel_t g_kernel;
 static uint32_t g_sched_consumed;
 
 void cirvane_trap_entry(void);
-
-static void disable_watchdogs(void)
-{
-    unsigned i;
-    const uint32_t timg[2] = {DR_REG_TIMERG0_BASE, DR_REG_TIMERG1_BASE};
-
-    REG32(LP_WDT_WPROTECT_REG) = WDT_UNLOCK_KEY;
-    REG32(LP_WDT_CONFIG0_REG) &= ~(LP_WDT_WDT_EN | LP_WDT_WDT_FLASHBOOT_MOD_EN);
-    REG32(LP_WDT_WPROTECT_REG) = 0;
-
-    REG32(LP_WDT_SWD_WPROTECT_REG) = WDT_UNLOCK_KEY;
-    REG32(LP_WDT_SWD_CONFIG_REG) |= LP_WDT_SWD_DISABLE;
-    REG32(LP_WDT_SWD_WPROTECT_REG) = 0;
-
-    for (i = 0; i < 2; i++) {
-        REG32(TIMG_WDTWPROTECT_REG(timg[i])) = WDT_UNLOCK_KEY;
-        REG32(TIMG_WDTCONFIG0_REG(timg[i])) &=
-            ~(TIMG_WDT_EN | TIMG_WDT_FLASHBOOT_MOD_EN);
-        REG32(TIMG_WDTWPROTECT_REG(timg[i])) = 0;
-    }
-}
-
-typedef int (*rom_usb_tx_one_char_fn)(uint8_t);
-typedef void (*rom_usb_tx_flush_fn)(void);
 
 static void enable_usb_serial_jtag(void)
 {
@@ -216,23 +193,6 @@ static uint32_t csr_pmpaddr0(void)
     return v;
 }
 
-static uint64_t systimer_now(void)
-{
-    uint32_t spins = 0;
-
-    REG32(SYSTIMER_CONF_REG) |= SYSTIMER_TIMER_UNIT0_WORK_EN;
-    REG32(SYSTIMER_UNIT0_OP_REG) = SYSTIMER_TIMER_UNIT0_UPDATE;
-    while (spins < 10000u) {
-        if (REG32(SYSTIMER_UNIT0_OP_REG) & SYSTIMER_TIMER_UNIT0_VALUE_VALID) {
-            uint32_t lo = REG32(SYSTIMER_UNIT0_VALUE_LO_REG);
-            uint32_t hi = REG32(SYSTIMER_UNIT0_VALUE_HI_REG);
-            return ((uint64_t)hi << 32) | lo;
-        }
-        spins++;
-    }
-    return 0;
-}
-
 static void setup_clic_software_interrupt(void)
 {
     uint32_t clic_id = CLIC_EXT_INTR_NUM_OFFSET + 1u;
@@ -270,9 +230,7 @@ static uint32_t umode_implemented(void)
 static uint32_t flash_magic(void)
 {
     uint32_t word = 0;
-    esp_rom_spiflash_read_fn read_fn =
-        (esp_rom_spiflash_read_fn)(uintptr_t)ROM_SPIFLASH_READ;
-    if (read_fn(FLASH_BOOTLOADER_OFF, &word, 4) != 0) {
+    if (cirvane_hal_flash_read(FLASH_BOOTLOADER_OFF, &word, 4) != CIRVANE_HAL_OK) {
         return 0xffffffffu;
     }
     return word & 0xffu;
@@ -418,6 +376,34 @@ static void demo_ota(void)
     usb_write("\r\n");
 }
 
+static void demo_hal(void)
+{
+    uint8_t level = 0;
+    uint32_t e0 = 0;
+    uint32_t e1 = 0;
+    uint32_t gpio_ok = 0;
+    uint32_t entropy_ok = 0;
+
+    if (cirvane_hal_gpio_config_out(CIRVANE_GPIO_LED) == CIRVANE_HAL_OK &&
+        cirvane_hal_gpio_set(CIRVANE_GPIO_LED, 1) == CIRVANE_HAL_OK &&
+        cirvane_hal_gpio_get(CIRVANE_GPIO_LED, &level) == CIRVANE_HAL_OK &&
+        level == 1u) {
+        gpio_ok = 1;
+    }
+    cirvane_hal_gpio_set(CIRVANE_GPIO_LED, 0);
+    if (cirvane_hal_entropy(&e0) == CIRVANE_HAL_OK &&
+        cirvane_hal_entropy(&e1) == CIRVANE_HAL_OK && (e0 != e1 || e0 != 0)) {
+        entropy_ok = 1;
+    }
+    usb_write("cirvane-spike hal gpio=");
+    usb_u32(gpio_ok);
+    usb_write(" entropy=");
+    usb_u32(entropy_ok);
+    usb_write(" wdt=");
+    usb_u32((uint32_t)cirvane_hal_wdt_flashboot_enabled());
+    usb_write("\r\n");
+}
+
 void kernel_main(void)
 {
     uint32_t t0_lo;
@@ -427,7 +413,8 @@ void kernel_main(void)
     uint32_t ecalls_before;
     enable_usb_serial_jtag();
     line("cirvane-spike boot=ok");
-    disable_watchdogs();
+    cirvane_hal_init();
+    cirvane_hal_wdt_disarm();
     cirvane_kernel_init(&g_kernel);
     cirvane_irq_attach(&g_kernel, 0, software_isr);
 
@@ -451,14 +438,14 @@ void kernel_main(void)
     usb_u32(g_interrupt_count);
     usb_write("\r\n");
 
-    t0_lo = (uint32_t)systimer_now();
+    t0_lo = cirvane_hal_timer_now();
     {
         volatile uint32_t wait = 0;
         while (wait < 20000u) {
             wait++;
         }
     }
-    t1_lo = (uint32_t)systimer_now();
+    t1_lo = cirvane_hal_timer_now();
     usb_write("cirvane-spike timer t0=");
     usb_hex(t0_lo, 8);
     usb_write(" t1=");
@@ -494,8 +481,11 @@ void kernel_main(void)
     demo_kernel_core();
     demo_config();
     demo_ota();
+    demo_hal();
     line("cirvane-spike freertos=absent");
-    line("cirvane-spike uart=ok");
+    if (cirvane_hal_uart_write("cirvane-spike uart=ok\r\n") != CIRVANE_HAL_OK) {
+        line("cirvane-spike uart=fail");
+    }
     line("cirvane-spike result=PASS");
     if (cirvane_panic_reason(&g_kernel) != CIRVANE_PANIC_NONE) {
         for (;;) {

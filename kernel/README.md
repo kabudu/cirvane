@@ -6,9 +6,11 @@ Stage 2 portable core plus the C5 spike port.
   scheduler, typed messages, capability leases and frozen syscalls.
 - `config.c` two-slot CRC journal. `rollback.c` dual-slot fail-closed
   selection policy. Image verify remains an injected adapter.
+- `hal.h` plus `hal_host.c` (host mock) and `spike/hal_c5.c` (C5 MMIO/ROM).
+  UART, GPIO 27, timer, flash read, watchdog mute and entropy. No radio.
 - `recovery/` bounded recovery transaction model used by those syscalls.
-- `spike/` FreeRTOS-free ESP32-C5 SRAM image: reset, trap entry, timer, USB
-  console and HIL probes that exercise the portable core.
+- `spike/` FreeRTOS-free ESP32-C5 SRAM image: reset, trap entry, USB console,
+  HAL probes and HIL sequences that exercise the portable core.
 
 Build the spike with `scripts/build-kernel-spike.sh`. Capture board evidence
 with `benchmarks/tools/kernel_spike_hil.py --flash`. Flashing replaces the
