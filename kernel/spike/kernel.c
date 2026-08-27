@@ -4,11 +4,14 @@
  *
  * FreeRTOS-free ESP32-C5 kernel spike. Proves boot, traps, interrupt
  * dispatch, timer, USB Serial/JTAG, static memory, flash ROM read,
- * PMP/privilege probes, recovery syscalls and cooperative scheduling.
+ * PMP/privilege probes, recovery syscalls, cooperative scheduling,
+ * configuration fallback and fail-closed OTA selection.
  */
 
 #include "hw.h"
 #include "kernel.h"
+#include "config.h"
+#include "rollback.h"
 
 #include <stdint.h>
 
@@ -358,6 +361,63 @@ static void demo_kernel_core(void)
     usb_write("\r\n");
 }
 
+static int verify_fail(uint8_t slot, uint32_t length)
+{
+    (void)slot;
+    (void)length;
+    return -1;
+}
+
+static void demo_config(void)
+{
+    cirvane_cfg_journal_t journal;
+    cirvane_cfg_t cfg;
+    int fallback;
+
+    cirvane_cfg_reset(&journal);
+    if (cirvane_cfg_load(&journal, &cfg) != CIRVANE_CFG_OK) {
+        line("cirvane-spike config=load-fail");
+        return;
+    }
+    cfg.heartbeat_ms = 2000;
+    if (cirvane_cfg_commit(&journal, &cfg) != CIRVANE_CFG_OK) {
+        line("cirvane-spike config=commit-fail");
+        return;
+    }
+    fallback = cirvane_cfg_inject_corrupt(&journal) == CIRVANE_CFG_OK ? 1 : 0;
+    usb_write("cirvane-spike config gen=");
+    usb_u32(cirvane_cfg_generation(&journal));
+    usb_write(" fallback=");
+    usb_u32((uint32_t)fallback);
+    usb_write("\r\n");
+}
+
+static void demo_ota(void)
+{
+    cirvane_ota_t ota;
+    uint8_t boot_before;
+    uint32_t refused;
+    uint32_t unchanged;
+
+    cirvane_ota_reset(&ota, 0);
+    boot_before = cirvane_ota_boot_slot(&ota);
+    if (cirvane_ota_begin(&ota, 1, 1024) != CIRVANE_OTA_OK ||
+        cirvane_ota_write(&ota, 1024) != CIRVANE_OTA_OK) {
+        line("cirvane-spike ota=stage-fail");
+        return;
+    }
+    refused = (cirvane_ota_end(&ota, verify_fail) == CIRVANE_OTA_REFUSED &&
+               cirvane_ota_select(&ota) == CIRVANE_OTA_REFUSED)
+                  ? 1u
+                  : 0u;
+    unchanged = cirvane_ota_boot_slot(&ota) == boot_before ? 1u : 0u;
+    usb_write("cirvane-spike ota refuse=");
+    usb_u32(refused);
+    usb_write(" boot_unchanged=");
+    usb_u32(unchanged);
+    usb_write("\r\n");
+}
+
 void kernel_main(void)
 {
     uint32_t t0_lo;
@@ -432,6 +492,8 @@ void kernel_main(void)
 
     demo_recovery();
     demo_kernel_core();
+    demo_config();
+    demo_ota();
     line("cirvane-spike freertos=absent");
     line("cirvane-spike uart=ok");
     line("cirvane-spike result=PASS");
