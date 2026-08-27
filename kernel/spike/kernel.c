@@ -2,13 +2,13 @@
  * SPDX-FileCopyrightText: 2026 kabudu
  * SPDX-License-Identifier: MIT
  *
- * FreeRTOS-free ESP32-C5 kernel spike. Proves boot, traps, interrupts,
- * timer, USB Serial/JTAG, static memory, flash ROM read, PMP/privilege
- * probes and one recovery-transaction demonstration.
+ * FreeRTOS-free ESP32-C5 kernel spike. Proves boot, traps, interrupt
+ * dispatch, timer, USB Serial/JTAG, static memory, flash ROM read,
+ * PMP/privilege probes, recovery syscalls and cooperative scheduling.
  */
 
 #include "hw.h"
-#include "recovery.h"
+#include "kernel.h"
 
 #include <stdint.h>
 
@@ -50,7 +50,8 @@ volatile uint32_t g_interrupt_count;
 volatile uint32_t g_ecall_count;
 volatile uint32_t g_other_trap_count;
 volatile uint32_t g_last_mcause;
-static cirvane_world_t g_world;
+static cirvane_kernel_t g_kernel;
+static uint32_t g_sched_consumed;
 
 void cirvane_trap_entry(void);
 
@@ -157,14 +158,19 @@ static void line(const char *s)
     usb_write("\r\n");
 }
 
+static void software_isr(void)
+{
+    g_interrupt_count += 1;
+}
+
 uint32_t cirvane_trap(uint32_t mcause, uint32_t mepc)
 {
     g_last_mcause = mcause;
     if (mcause & MCAUSE_INTERRUPT) {
-        g_interrupt_count += 1;
         REG32(INTPRI_CPU_INTR_FROM_CPU_0_REG) = 0;
         REG32(CLIC_INT_CTRL_REG(CLIC_EXT_INTR_NUM_OFFSET + 1)) =
             CLIC_INT_CTL_PRIO | CLIC_INT_ATTR_MODE_M | CLIC_INT_IE;
+        cirvane_irq_dispatch(&g_kernel, 0);
         return mepc;
     }
     if ((mcause & 0x7ffu) == MCAUSE_ECALL_M ||
@@ -173,7 +179,10 @@ uint32_t cirvane_trap(uint32_t mcause, uint32_t mepc)
         return mepc + 4u;
     }
     g_other_trap_count += 1;
-    return mepc + 4u;
+    cirvane_panic(&g_kernel, CIRVANE_PANIC_UNKNOWN_TRAP);
+    for (;;) {
+        __asm__ volatile("wfi");
+    }
 }
 
 static uint32_t csr_mstatus(void)
@@ -250,7 +259,7 @@ static void fire_software_interrupt(void)
 static uint32_t umode_implemented(void)
 {
     /* misa bit 20 is the U extension. A live mret into U-mode is deferred
-     * until Stage 2 because a failed drop would hide the other spike probes.
+     * because a failed drop would hide the other spike probes.
      */
     return (csr_misa() >> 20) & 1u;
 }
@@ -266,26 +275,86 @@ static uint32_t flash_magic(void)
     return word & 0xffu;
 }
 
+static void producer_tick(uint8_t service)
+{
+    int32_t slot = cirvane_syscall(&g_kernel, CIRVANE_SYS_MSG_ALLOC, service, 0, 0);
+    uint8_t *payload;
+
+    if (slot < 0) {
+        return;
+    }
+    payload = cirvane_msg_payload(&g_kernel, (int)slot);
+    if (payload == 0) {
+        return;
+    }
+    payload[0] = 0x5Cu;
+    cirvane_syscall(&g_kernel, CIRVANE_SYS_MSG_SEND, (uint32_t)slot, 2, 1);
+}
+
+static void consumer_tick(uint8_t service)
+{
+    int32_t slot = cirvane_syscall(&g_kernel, CIRVANE_SYS_MSG_RECV, service, 0, 0);
+
+    if (slot < 0) {
+        return;
+    }
+    if (cirvane_msg_payload(&g_kernel, (int)slot)[0] == 0x5Cu) {
+        g_sched_consumed = 1;
+    }
+    cirvane_syscall(&g_kernel, CIRVANE_SYS_MSG_FREE, (uint32_t)slot, 0, 0);
+}
+
 static void demo_recovery(void)
 {
-    int slot;
-    uint8_t outcome;
+    int32_t slot;
+    int32_t outcome;
 
-    cirvane_rtx_reset(&g_world);
-    if (!cirvane_rtx_bind(&g_world, 0, 2, 0x1)) {
+    if (cirvane_syscall(&g_kernel, CIRVANE_SYS_RTX_BIND, 0, 2, CIRVANE_CAP_MSG) !=
+        CIRVANE_SYS_OK) {
         line("cirvane-spike recovery=bind-fail");
         return;
     }
-    slot = cirvane_rtx_alloc_slot(&g_world, 0);
-    outcome = cirvane_rtx_admit(&g_world, 0, CIRVANE_RTX_REASON_FAULT);
+    slot = cirvane_syscall(&g_kernel, CIRVANE_SYS_MSG_ALLOC, 0, 0, 0);
+    outcome = cirvane_syscall(&g_kernel, CIRVANE_SYS_RTX_ADMIT, 0,
+                              CIRVANE_RTX_REASON_FAULT, 0);
     usb_write("cirvane-spike recovery outcome=");
-    usb_u32(outcome);
+    usb_u32((uint32_t)outcome);
     usb_write(" epoch=");
-    usb_u32(cirvane_rtx_evidence(&g_world, 0)->epoch);
+    usb_u32(cirvane_rtx_evidence(&g_kernel.rtx, 0)->epoch);
     usb_write(" stale=");
-    usb_u32(cirvane_rtx_slot_deliverable(&g_world, slot) ? 1u : 0u);
+    usb_u32(cirvane_rtx_slot_deliverable(&g_kernel.rtx, (int)slot) ? 1u : 0u);
     usb_write(" health=");
-    usb_u32(cirvane_rtx_health(&g_world, 0));
+    usb_u32(cirvane_rtx_health(&g_kernel.rtx, 0));
+    usb_write("\r\n");
+}
+
+static void demo_kernel_core(void)
+{
+    int steps = 0;
+
+    if (cirvane_syscall(&g_kernel, CIRVANE_SYS_RTX_BIND, 1, 2, CIRVANE_CAP_MSG) !=
+            CIRVANE_SYS_OK ||
+        cirvane_syscall(&g_kernel, CIRVANE_SYS_RTX_BIND, 2, 2, CIRVANE_CAP_MSG) !=
+            CIRVANE_SYS_OK) {
+        line("cirvane-spike kernel=bind-fail");
+        return;
+    }
+    cirvane_sched_set_tick(&g_kernel, 1, producer_tick);
+    cirvane_sched_set_tick(&g_kernel, 2, consumer_tick);
+    while (steps < 4 && g_sched_consumed == 0) {
+        if (cirvane_sched_step(&g_kernel) < 0) {
+            break;
+        }
+        steps++;
+    }
+    usb_write("cirvane-spike kernel sched=");
+    usb_u32((uint32_t)steps);
+    usb_write(" msg=");
+    usb_u32(g_sched_consumed);
+    usb_write(" cap=");
+    usb_u32(cirvane_rtx_cap_check(&g_kernel.rtx, 1, CIRVANE_CAP_MSG) ? 1u : 0u);
+    usb_write(" panic=");
+    usb_u32(cirvane_panic_reason(&g_kernel));
     usb_write("\r\n");
 }
 
@@ -299,6 +368,8 @@ void kernel_main(void)
     enable_usb_serial_jtag();
     line("cirvane-spike boot=ok");
     disable_watchdogs();
+    cirvane_kernel_init(&g_kernel);
+    cirvane_irq_attach(&g_kernel, 0, software_isr);
 
     ecalls_before = g_ecall_count;
     __asm__ volatile("ecall");
@@ -360,9 +431,15 @@ void kernel_main(void)
     usb_write("\r\n");
 
     demo_recovery();
+    demo_kernel_core();
     line("cirvane-spike freertos=absent");
     line("cirvane-spike uart=ok");
     line("cirvane-spike result=PASS");
+    if (cirvane_panic_reason(&g_kernel) != CIRVANE_PANIC_NONE) {
+        for (;;) {
+            __asm__ volatile("wfi");
+        }
+    }
     for (;;) {
         line("cirvane-spike result=PASS");
         {

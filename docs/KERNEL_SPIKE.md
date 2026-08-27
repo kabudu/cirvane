@@ -1,6 +1,8 @@
 # Kernel spike, invariants and ABI freeze
 
-Stage 1 artefact. The production Cirvane kernel is not implemented here.
+Stage 1 artefact retained as the ESP32-C5 port and HIL image. Syscalls 1-8 are
+implemented by the portable Stage 2 core in `kernel/kernel.c`. That core is
+still not a complete production kernel.
 
 ## What the spike proves
 
@@ -10,19 +12,22 @@ image includes two flash-mapped stub segments (app descriptor + IROM dummy)
 because ESP32-C5 `unpack_load_app` requires exactly two MMU mappings; the spike
 body still runs from SRAM. It must demonstrate:
 
-- Reset entry, BSS clear and a deterministic panic/idle path (`wfi` loop).
+- Reset entry, BSS clear and a deterministic panic/idle path (`wfi` on
+  unexpected traps; USB reprint loop only after a successful probe sequence).
 - Trap handling via `ecall`.
-- A CLIC/INTMTX software interrupt.
+- A CLIC/INTMTX software interrupt dispatched through the kernel IRQ table.
 - SYSTIMER monotonic advance.
 - USB Serial/JTAG console output on the XIAO operator port.
 - Static `.data` presence (allocator-free).
 - ROM SPI flash read of the bootloader image magic.
 - CSR probes of `misa`, `mstatus`, `pmpcfg0` and `pmpaddr0`. User-mode presence
-  is reported from `misa.U`; a live `mret` into U-mode is Stage 2 work.
-- One recovery-transaction demonstration using the portable model.
+  is reported from `misa.U`; a live `mret` into U-mode remains deferred.
+- One recovery-transaction demonstration through `SYS_RTX_BIND`,
+  `SYS_MSG_ALLOC` and `SYS_RTX_ADMIT`.
+- Cooperative scheduling, typed send/recv and a software capability check.
 
 Machine-readable HIL evidence lives in `benchmarks/results/kernel-spike.json`.
-A `result` of `pass` is required before Stage 1 spike checkboxes are closed. A
+A `result` of `pass` is required before spike checkboxes are closed. A
 `blocked` or `fail` record is not qualification. Flashing uses app offset
 `0x20000` (`ota_0` in `partitions_two_ota_large.csv`) and replaces the running
 application; restore the Nucleus image afterwards.
@@ -54,10 +59,10 @@ application; restore the Nucleus image afterwards.
 - Budget exhaustion interpreted as restart.
 - Transport or ROM success interpreted as recovery success.
 
-## Syscall and message ABI (frozen, not implemented as syscalls in the spike)
+## Syscall and message ABI
 
-The spike calls the portable C model directly. Stage 2 must preserve these
-numbers and fail-closed results.
+The C5 image calls the portable kernel. Numbers and fail-closed results stay
+frozen. Argument layout is in `docs/KERNEL.md`.
 
 | Number | Name | Effect |
 |---:|---|---|
@@ -77,8 +82,8 @@ baseline ceilings unless a later ADR changes them with evidence.
 
 | Component | Privilege | Role | Scheduling assumption |
 |---|---|---|---|
-| Cirvane reset, trap, spike C | Machine | Owns probes and recovery demo | None; single hart, no scheduler |
-| Portable recovery model | Machine (linked in) | State machine | None |
+| Cirvane reset, trap, spike C | Machine | Owns probes and recovery demo | Cooperative RR after probes; no preemption |
+| Portable kernel and recovery model | Machine (linked in) | Syscalls, scheduler, panic, IRQ table | Cooperative; ticks must return |
 | ESP32-C5 ROM second-stage caller + SPI flash ROM | ROM | Load image, optional flash read | None |
 | USB Serial/JTAG MMIO | Machine MMIO | Operator console | None |
 | SYSTIMER, CLIC, INTMTX, INTPRI, TIMG/LP WDT | Machine MMIO | Time, interrupt, watchdog mute | None |
@@ -88,13 +93,13 @@ baseline ceilings unless a later ADR changes them with evidence.
 
 ## Language and unsafe boundary
 
-C11 for the recovery model and spike body. RISC-V assembly only in
-`kernel/spike/start.S` for stack, BSS, `mtvec` and trap entry. MMIO is volatile
-register access in `kernel/spike/kernel.c`. No Rust in Stage 1: the ESP-IDF
-GCC toolchain is already present and is the measurable correctness path.
+C11 for the portable kernel, recovery model and spike body. RISC-V assembly
+only in `kernel/spike/start.S` for stack, BSS, `mtvec` and trap entry. MMIO is
+volatile register access in `kernel/spike/kernel.c`. No Rust: the ESP-IDF GCC
+toolchain is already present and is the measurable correctness path.
 
 ## Wi-Fi feasibility
 
 See `docs/DEPENDENCY_INVENTORY.md`. Vendor Wi-Fi cannot run without FreeRTOS
-scheduling through the published ESP-IDF adapter. That is an owner decision
-gate for Stage 2, not a hidden compatibility layer.
+scheduling through the published ESP-IDF adapter. That remains an owner
+decision gate, not a hidden compatibility layer.
