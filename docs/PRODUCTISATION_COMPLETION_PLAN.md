@@ -85,7 +85,7 @@ UART, GPIO 27, SYSTIMER, flash read, watchdog mute and LPPERI entropy are implem
 - [x] Keep vendor ROM, HAL and binary dependencies behind an enumerated adapter boundary; record licence, privilege, memory, callback and scheduling assumptions for each.
 - [x] Add deterministic host models for state machines plus emulator or simulator coverage where the target boundary permits it.
 - [x] Add production and HIL profiles; destructive diagnostics must remain compile-gated out of production images.
-- [ ] Define stable crash and evidence formats, bounded observability and a quiet interactive shell path.
+- [x] Define stable crash and evidence formats, bounded observability and a quiet interactive shell path.
 
 ### Kernel verification matrix
 

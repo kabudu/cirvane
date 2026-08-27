@@ -38,10 +38,18 @@ void cirvane_kernel_init(cirvane_kernel_t *k)
     cirvane_rtx_reset(&k->rtx);
 }
 
-void cirvane_panic(cirvane_kernel_t *k, uint32_t reason)
+void cirvane_panic_fault(cirvane_kernel_t *k, uint32_t reason, uint32_t mcause,
+                         uint32_t mepc)
 {
     k->panicked = 1;
     k->panic_reason = reason;
+    k->panic_mcause = mcause;
+    k->panic_mepc = mepc;
+}
+
+void cirvane_panic(cirvane_kernel_t *k, uint32_t reason)
+{
+    cirvane_panic_fault(k, reason, 0, 0);
 }
 
 uint32_t cirvane_panic_reason(const cirvane_kernel_t *k)

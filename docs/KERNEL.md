@@ -100,14 +100,24 @@ see the marker; that loop is idle, not panic.
 `scripts/build-kernel-spike.sh` accepts `hil` (default) or `production`.
 HIL defines `CIRVANE_HIL_SPIKE` and includes corrupt-config injection plus the
 `result=PASS` reprint loop. Production defines `CIRVANE_SPIKE_PRODUCTION`,
-prints `cirvane boot=ok`, then waits in `wfi`. Inject symbols and PASS reprint
-must be absent from the production image. Neither profile is a complete
-product kernel or a matched-evaluation image.
+prints `cirvane boot=ok`, then a quiet `cirvane>` USB shell with no heartbeat.
+Inject symbols and PASS reprint must be absent from the production image.
+Neither profile is a complete product kernel or a matched-evaluation image.
+
+## Crash, evidence and quiet shell
+
+Crash lines are `cirvane crash reason=<u32> mcause=<8 hex> mepc=<8 hex>`.
+Evidence lines are `cirvane evidence svc=<0-7> epoch= gen= out= reason= rec=
+health=` from the 16-byte record. Info is `cirvane info panic= services= slots=`.
+Lines are at most 96 bytes. The production USB shell prompt is `cirvane>`.
+Commands are `help`, `info`, `crash` and `evidence <0-7>`. Unknown, oversize
+and out-of-range input print `cirvane refuse`. There is no periodic heartbeat
+on that path. The shell is privileged and unauthenticated.
 
 ## Not in this increment
 
 Durable flash-backed config, live ESP `otadata` selection, live user-mode
-`mret`, radio/Wi-Fi, crash/shell formats, matched FreeRTOS evaluation and
-adversarial kernel qualification remain unchecked. The Stage 2
+`mret`, radio/Wi-Fi, matched FreeRTOS evaluation and adversarial kernel
+qualification remain unchecked. The Stage 2
 UART/GPIO/timer/flash/watchdog/entropy/radio checkbox stays open because radio
 is blocked on owner decision R9.

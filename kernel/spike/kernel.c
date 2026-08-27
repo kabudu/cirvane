@@ -11,6 +11,7 @@
 #include "hw.h"
 #include "hal.h"
 #include "kernel.h"
+#include "obs.h"
 #include "config.h"
 #include "rollback.h"
 
@@ -163,7 +164,14 @@ uint32_t cirvane_trap(uint32_t mcause, uint32_t mepc)
         return mepc + 4u;
     }
     g_other_trap_count += 1;
-    cirvane_panic(&g_kernel, CIRVANE_PANIC_UNKNOWN_TRAP);
+    cirvane_panic_fault(&g_kernel, CIRVANE_PANIC_UNKNOWN_TRAP, mcause, mepc);
+    {
+        char crash[CIRVANE_OBS_LINE_MAX];
+        if (cirvane_obs_crash(crash, sizeof(crash), g_kernel.panic_reason,
+                              g_kernel.panic_mcause, g_kernel.panic_mepc) > 0) {
+            line(crash);
+        }
+    }
     for (;;) {
         __asm__ volatile("wfi");
     }
@@ -515,9 +523,27 @@ void kernel_main(void)
 #ifdef CIRVANE_HIL_SPIKE
     hil_run_probes();
 #else
-    line("cirvane boot=ok");
-    for (;;) {
-        __asm__ volatile("wfi");
+    {
+        cirvane_shell_t sh;
+        char reply[CIRVANE_OBS_LINE_MAX];
+        cirvane_shell_init(&sh);
+        line("cirvane boot=ok");
+        usb_write(CIRVANE_SHELL_PROMPT);
+        usb_write(" ");
+        for (;;) {
+            while (REG32(USB_SERIAL_JTAG_EP1_CONF_REG) &
+                   USB_SERIAL_JTAG_SERIAL_OUT_EP_DATA_AVAIL) {
+                uint8_t byte = (uint8_t)REG32(USB_SERIAL_JTAG_EP1_REG);
+                if (cirvane_shell_push(&sh, byte)) {
+                    if (cirvane_shell_run(&sh, &g_kernel, reply, sizeof(reply)) >
+                        0) {
+                        line(reply);
+                    }
+                    usb_write(CIRVANE_SHELL_PROMPT);
+                    usb_write(" ");
+                }
+            }
+        }
     }
 #endif
 }
