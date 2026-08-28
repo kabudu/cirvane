@@ -28,9 +28,13 @@ body still runs from SRAM. It must demonstrate:
 - Two-slot CRC configuration fallback after a compile-gated corrupt injection
   that reloads the committed value from flash (`durable=1`).
 - Dual-slot rollback policy refusing select after injected verify failure.
+- Live otadata write of one copy, ROM-seq CRC, refuse-on-failed-verify, and
+  restore of the backup (`otadata live=1 refuse_write=1 restored=1 crc=1`).
+- Adversarial fail-closed probes (`adv exhaust=1 cap=1 stale=1 budget=1
+  nested=1 syscall=1 wrap=1`) and resource markers (`res sram=`).
 - Bounded HAL: GPIO 27 output readback, LPPERI entropy changing or non-zero,
-  watchdog flashboot mute, ROM flash read, config-window erase/write and USB
-  Serial/JTAG TX.
+  watchdog flashboot mute, ROM flash read, config-window and otadata
+  erase/write and USB Serial/JTAG TX. Radio excluded (ADR 0004).
 
 Machine-readable HIL evidence lives in `benchmarks/results/kernel-spike.json`.
 A `result` of `pass` is required before spike checkboxes are closed. A

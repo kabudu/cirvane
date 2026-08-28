@@ -17,14 +17,24 @@ _start:
     addi t0, t0, 4
     j 1b
 2:
+    la t0, _ebss
+    la t1, _stack_top
+    addi t1, t1, -256
+    li t2, 0xA5A5A5A5
+3:
+    bgeu t0, t1, 4f
+    sw t2, 0(t0)
+    addi t0, t0, 4
+    j 3b
+4:
     la t0, cirvane_trap_entry
     andi t0, t0, -64
     ori t0, t0, 3
     csrw mtvec, t0
     call kernel_main
-3:
+5:
     wfi
-    j 3b
+    j 5b
     .size _start, .-_start
 
     .align 6

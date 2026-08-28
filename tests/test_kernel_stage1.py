@@ -83,6 +83,7 @@ class KernelStage1Contract(unittest.TestCase):
             "docs/DEPENDENCY_INVENTORY.md",
             "docs/MATCHED_EVALUATION.md",
             "docs/DECISIONS/0003-bounded-recovery-transaction.md",
+            "docs/DECISIONS/0004-stage2-workflow-without-wifi.md",
         ):
             self.assertTrue((ROOT / relative).is_file())
 
@@ -110,13 +111,17 @@ class KernelStage1Contract(unittest.TestCase):
         self.assertRegex(header, r"#define\s+CIRVANE_FLASH_WRITE_MAX\s+256u\b")
         self.assertRegex(header, r"#define\s+CIRVANE_FLASH_SECTOR\s+4096u\b")
         self.assertRegex(header, r"#define\s+CIRVANE_CFG_FLASH_BASE\s+0x7FE000u\b")
+        self.assertRegex(header, r"#define\s+CIRVANE_OTA_FLASH_BASE\s+0xF000u\b")
         self.assertIn("Radio and network are excluded", header)
+        self.assertIn("otadata.c", read("scripts/build-kernel-spike.sh"))
+        self.assertIn("CIRVANE_SPIKE_EVAL", read("scripts/build-kernel-spike.sh"))
+        self.assertIn("0004-stage2-workflow-without-wifi", read("docs/DEPENDENCY_INVENTORY.md") + read("docs/DECISIONS/0004-stage2-workflow-without-wifi.md"))
         self.assertNotIn("esp_wifi", read("kernel/spike/hal_c5.c"))
         self.assertNotIn("hal_host.c", read("scripts/build-kernel-spike.sh"))
         self.assertIn("hal_c5.c", read("scripts/build-kernel-spike.sh"))
         plan = read("docs/PRODUCTISATION_COMPLETION_PLAN.md")
         self.assertIn(
-            "- [ ] Implement the minimum UART, GPIO, timer, flash, watchdog, entropy and radio",
+            "- [x] Implement the minimum UART, GPIO, timer, flash, watchdog, entropy and radio",
             plan,
         )
 
@@ -129,17 +134,17 @@ class KernelStage1Contract(unittest.TestCase):
         self.assertIn("CIRVANE_HIL_SPIKE", read("kernel/config.c"))
         self.assertNotIn("nvs_", read("kernel/config.c"))
         self.assertNotIn("esp_ota_", read("kernel/rollback.c"))
-        self.assertIn("config_flash.c", read("scripts/build-kernel-spike.sh"))
-        self.assertIn("CIRVANE_CFG_FLASH_BASE", read("kernel/config_flash.c"))
-        self.assertNotIn("otadata", read("kernel/config_flash.c"))
+        self.assertIn("otadata.c", read("scripts/build-kernel-spike.sh"))
+        self.assertIn("cirvane_otadata_select", read("kernel/otadata.c"))
 
     def test_spike_profiles_gate_destructive_diagnostics(self):
         build = read("scripts/build-kernel-spike.sh")
         ci = read("scripts/ci-local.sh")
         spike = read("kernel/spike/kernel.c")
         self.assertIn('profile="${2:-${CIRVANE_SPIKE_PROFILE:-hil}}"', build)
-        self.assertIn("CIRVANE_SPIKE_PRODUCTION", build)
-        self.assertIn("kernel-spike-ci-prod", ci)
+        self.assertIn("CIRVANE_SPIKE_EVAL", build)
+        self.assertIn("kernel-spike-ci-eval", ci)
+        self.assertIn("eval_run", spike)
         self.assertIn("hil_run_probes", spike)
         self.assertIn("cirvane boot=ok", spike)
         self.assertIn("result=PASS", spike)

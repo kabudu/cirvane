@@ -19,6 +19,7 @@ REQUIRED = [
     "docs/ENGINEERING_REVIEW.md", "docs/DECISIONS/0001-project-scope.md",
     "docs/DECISIONS/0002-clean-sheet-kernel-release.md",
     "docs/DECISIONS/0003-bounded-recovery-transaction.md",
+    "docs/DECISIONS/0004-stage2-workflow-without-wifi.md",
     "docs/DECISIONS/0005-first-cirvane-firmware-on-idf.md",
     "docs/KERNEL_SPIKE.md",
     "docs/KERNEL.md",
@@ -36,6 +37,7 @@ CURRENT_PRODUCT_IDENTITY_FILES = [
     "sdkconfig.defaults",
     "sdkconfig.hil.defaults",
     "sdkconfig.ci.defaults",
+    "sdkconfig.matched-eval.defaults",
     "scripts/ci-local.sh",
     "benchmarks/tools/serial_benchmark.py",
 ]

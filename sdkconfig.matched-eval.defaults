@@ -1,0 +1,12 @@
+# Overlay for matched class-1 recording on development boards only.
+# USB CDC is unusable after a 1 MiB OpenOCD program; do not start the
+# USB Serial/JTAG console so class-1 recording can run and be JTAG-dumped.
+CONFIG_ESP_CONSOLE_NONE=y
+CONFIG_ESP_CONSOLE_SECONDARY_NONE=y
+CONFIG_LOG_DEFAULT_LEVEL_NONE=y
+CONFIG_BOOTLOADER_LOG_LEVEL_NONE=y
+# Matched HIL bootloader must load the image without the production signing
+# gate. The prior verifying bootloader left the CPU in ROM.
+CONFIG_SECURE_SIGNED_APPS_NO_SECURE_BOOT=n
+CONFIG_SECURE_SIGNED_ON_UPDATE_NO_SECURE_BOOT=n
+CONFIG_SECURE_BOOT_BUILD_SIGNED_BINARIES=n

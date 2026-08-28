@@ -80,3 +80,32 @@ A differentiated Cirvane result may be stated only for a pre-registered metric
 with both images present. Worse, missing or incomparable metrics remain
 visible and constrain release copy. Stage 1 does not publish performance
 comparisons from the spike.
+
+## Amendment 2026-08-27 (before Stage 2 sample collection)
+
+Single-board OpenOCD programming makes per-sample A,B,B,A image switching
+impractical. Collection is image-blocked: Cirvane `eval` profile first, then
+Nucleus HIL `svcfail` of service 0 (`led-heartbeat`). Warm-up 3 and n>=30 stay
+in force for every class that both images can run.
+
+Cirvane classes 2 to 5 (deadline, budget exhaustion, nested refuse, pool
+exhaustion) have no matching Nucleus injector on this board. Those classes are
+Cirvane-only and incomparable. Scheduler, message and interrupt tails have no
+matched Nucleus probes. No Wi-Fi samples are collected on either image
+(ADR 0004). Cirvane recovery latency is raw ESP32-C5 SYSTIMER ticks; Nucleus
+class-1 latency is host wall milliseconds around supervisor backoff. Units are
+not converted. Cirvane stale-work must remain 0 on every kept sample or NOV-02
+fails for that class.
+
+The Cirvane matched image is the `eval` compile, not the quiet production
+shell. The HIL spike remains feasibility evidence and is not this trial.
+
+## Amendment 2026-08-28 (after Nucleus class-1 capture)
+
+Nucleus class-1 samples were taken on the same XIAO ESP32-C5 after a chip RST
+that mapped app IROM. The HIL image recorded 33 wall-ms recoveries in
+`s_cirvane_matched` (magic `0xC1455E01`); JTAG dumped the record; warmup 3
+were discarded. `matched-eval.json` `result=pass` with `stale_total=0` and
+Nucleus `stats_ms.n=30`. The 2s/3s/4s cycle is the Nucleus 1s-shifted
+supervisor backoff. Cirvane class-1 remains SYSTIMER ticks. Units are not
+converted. Classes 2-5, tails versus FreeRTOS, and Wi-Fi stay incomparable.

@@ -7,6 +7,7 @@
 
 #include "config.h"
 #include "config_flash.h"
+#include "otadata.h"
 #include "rollback.h"
 #include "hal.h"
 
@@ -66,6 +67,30 @@ static void test_config_flash_persist_and_fallback(void)
     expect(loaded.heartbeat_ms == 2000, "kept after fallback");
     expect(cirvane_cfg_flash_commit(&journal, 0) == CIRVANE_CFG_REFUSED,
            "null flash commit");
+}
+
+static void test_otadata_select_restore_and_refuse(void)
+{
+    cirvane_ota_select_t backup[2];
+    cirvane_ota_select_t after[2];
+    uint8_t slot = 9;
+    uint8_t restored = 9;
+
+    expect(cirvane_hal_init() == CIRVANE_HAL_OK, "otadata hal");
+    expect(cirvane_otadata_seq_crc(1u) == 0x4743989au, "rom crc seq 1");
+    expect(cirvane_otadata_read(backup) == CIRVANE_OTADATA_OK, "read empty");
+    expect(cirvane_otadata_active_slot(&slot) == CIRVANE_OTADATA_OK, "active");
+    expect(slot == 0, "default slot 0");
+    expect(cirvane_otadata_select(0) == CIRVANE_OTADATA_OK, "select 0");
+    expect(cirvane_otadata_active_slot(&slot) == CIRVANE_OTADATA_OK, "active after");
+    expect(slot == 0, "still slot 0");
+    expect(cirvane_otadata_select(2) == CIRVANE_OTADATA_REFUSED, "bad slot");
+    expect(cirvane_otadata_restore(backup) == CIRVANE_OTADATA_OK, "restore");
+    expect(cirvane_otadata_read(after) == CIRVANE_OTADATA_OK, "reread");
+    expect(after[0].ota_seq == backup[0].ota_seq, "seq0 restored");
+    expect(cirvane_otadata_active_slot(&restored) == CIRVANE_OTADATA_OK,
+           "active restored");
+    expect(restored == 0, "restored slot");
 }
 
 static void test_config_commit_and_corrupt_fallback(void)
@@ -213,6 +238,7 @@ int main(void)
 {
     test_config_commit_and_corrupt_fallback();
     test_config_flash_persist_and_fallback();
+    test_otadata_select_restore_and_refuse();
     test_config_refuses_malformed();
     test_config_picks_highest_valid_generation();
     test_ota_rejects_corrupt_before_select();

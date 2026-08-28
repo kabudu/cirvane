@@ -40,6 +40,7 @@ fi
 
 scripts/build-kernel-spike.sh "$repo_dir/build/kernel-spike-ci" hil
 scripts/build-kernel-spike.sh "$repo_dir/build/kernel-spike-ci-prod" production
+scripts/build-kernel-spike.sh "$repo_dir/build/kernel-spike-ci-eval" eval
 
 mkdir -p build/ci
 if [[ ! -f build/ci/signing-key.pem ]]; then

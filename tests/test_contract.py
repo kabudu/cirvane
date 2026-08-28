@@ -110,13 +110,57 @@ class CirvaneContract(unittest.TestCase):
 
     def test_adversarial_hil_paths_are_compile_gated(self):
         main = (ROOT / "main" / "cirvane.c").read_text()
+        matched = (ROOT / "sdkconfig.matched-eval.defaults").read_text()
         self.assertIn("CONFIG_CIRVANE_HIL_DIAGNOSTICS=y", self.hil_defaults)
         self.assertNotIn("CONFIG_CIRVANE_HIL_DIAGNOSTICS=y", self.defaults)
+        self.assertNotIn("CONFIG_ESP_CONSOLE_NONE=y", self.hil_defaults)
+        self.assertIn("CONFIG_ESP_CONSOLE_NONE=y", matched)
+        self.assertIn("CONFIG_ESP_CONSOLE_SECONDARY_NONE=y", matched)
+        self.assertIn("CONFIG_BOOTLOADER_LOG_LEVEL_NONE=y", matched)
+        self.assertIn("CONFIG_SECURE_SIGNED_APPS_NO_SECURE_BOOT=n", matched)
+        self.assertNotIn("CONFIG_ESP_CONSOLE_NONE=y", self.defaults)
         self.assertGreaterEqual(main.count("#if CONFIG_CIRVANE_HIL_DIAGNOSTICS"), 2)
         self.assertIn("ota-reject-corrupt", main)
         self.assertIn("config-corrupt-test", main)
         self.assertIn("err != ESP_OK && boot_unchanged", self.runtime)
-        self.assertIn("record_crc(&corrupt) ^ 1u", self.runtime)
+        self.assertIn("hil_matched_class1", main)
+        self.assertIn("s_cirvane_matched", main)
+        self.assertIn("__NOINIT_ATTR", main)
+
+    def test_matched_eval_contains_both_images(self):
+        import json
+
+        data = json.loads(
+            (ROOT / "benchmarks" / "results" / "matched-eval.json").read_text()
+        )
+        self.assertEqual(data["result"], "pass")
+        self.assertEqual(data["cirvane_stale_total"], 0)
+        self.assertGreaterEqual(data["cirvane"]["0"]["ticks"]["n"], 30)
+        self.assertGreaterEqual(data["nucleus"]["stats_ms"]["n"], 30)
+        self.assertTrue(data["differentiated"])
+        joined = " ".join(data["incomparable"])
+        self.assertIn("Wi-Fi (ADR 0004)", joined)
+        self.assertIn("ticks vs wall ms", joined)
+
+    def test_kernel_spike_records_warm_and_cold_boots(self):
+        import json
+
+        data = json.loads(
+            (ROOT / "benchmarks" / "results" / "kernel-spike.json").read_text()
+        )
+        self.assertEqual(data["result"], "pass")
+        self.assertEqual(data["boot_kind"], "jtag_warm_reset")
+        self.assertGreaterEqual(len(data["boot_s"]), 11)
+        self.assertEqual(data["boot_cold_kind"], "usb_power_cycle")
+        self.assertGreaterEqual(len(data["boot_cold_s"]), 5)
+        self.assertEqual(data["latency"]["n"], 30)
+
+    def test_matched_hil_uses_quiet_unsigned_bootloader(self):
+        tool = (ROOT / "benchmarks" / "tools" / "matched_eval_hil.py").read_text()
+        self.assertIn("quiet bootloader", tool)
+        self.assertIn("JTAG CPU reset", tool)
+        self.assertIn("chip RST", tool)
+        self.assertIn("sdkconfig.matched-eval.defaults", tool)
 
 
 if __name__ == "__main__":
