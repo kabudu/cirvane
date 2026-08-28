@@ -6,11 +6,11 @@ The imported benchmark corpus records controlled v1 and optimized v2 restart and
 
 ## Research questions
 
-- Does Cirvane retain bounded behaviour and recovery under malformed input and service failure?
+- Does the current Cirvane firmware retain bounded behaviour and recovery under malformed input and service failure?
 - Does a kernel-owned bounded recovery transaction eliminate stale post-restart work and reduce recovery variance relative to matched application-level supervision?
-- Does the production image own scheduling and recovery without a hidden FreeRTOS runtime?
+- Does a later kernel-labelled image own scheduling and recovery without a hidden FreeRTOS runtime? The current Cirvane firmware is powered by FreeRTOS.
 - Does authenticated OTA refuse every incomplete, stale, mismatched or unauthenticated update without changing the selected boot target?
-- Does the renamed release preserve the established boot and command-latency envelope?
+- Does the renamed firmware preserve the established boot and command-latency envelope?
 
 ## Baselines and metrics
 

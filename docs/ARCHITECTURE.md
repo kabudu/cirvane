@@ -2,9 +2,9 @@
 
 ## Minimal system
 
-The current baseline is an ESP-IDF application using FreeRTOS as its scheduler and hardware integration substrate. Cirvane owns the service model, supervisor, bounded message bus, capability checks, configuration journal, power policy, shell and OTA policy. ESP-IDF owns boot, drivers, networking primitives, partitions and low-level update APIs. This baseline is implemented and preserved for migration and matched evaluation.
+The current Cirvane product firmware is an ESP-IDF application using FreeRTOS as its scheduler and hardware integration substrate. Cirvane owns the service model, supervisor, bounded message bus, capability checks, configuration journal, power policy, shell and OTA policy. ESP-IDF owns boot, drivers, networking primitives, partitions and low-level update APIs. ADR 0005 records this image as the first labelled Cirvane firmware.
 
-The target architecture is a clean-sheet Cirvane kernel that owns reset-to-runtime scheduling, typed messaging, capability decisions, bounded recovery transactions, a two-slot configuration journal persisted in a reserved flash window, fail-closed dual-slot rollback selection and a fail-closed UART/GPIO/timer/flash-read/erase/write/watchdog/entropy HAL. Vendor ROM, HAL, boot, radio, cryptographic verification and `otadata` writes may remain only behind an enumerated boundary that does not schedule on FreeRTOS or reinterpret kernel outcomes. Stage 2 has a portable kernel core, a C5 HIL image, a production compile profile that omits HIL inject and PASS reprint, a quiet privileged USB shell with frozen crash and evidence lines, and flash-backed config at `0x7FE000`. Live ESP image verify, radio, live user-mode isolation and matched evaluation are not implemented. ESP-IDF Wi-Fi remains an owner decision because the vendor adapter requires FreeRTOS.
+The kernel architecture is a clean-sheet Cirvane kernel that owns reset-to-runtime scheduling, typed messaging, capability decisions, bounded recovery transactions, a two-slot configuration journal persisted in a reserved flash window, fail-closed dual-slot rollback selection and a fail-closed UART/GPIO/timer/flash-read/erase/write/watchdog/entropy HAL. Vendor ROM, HAL, boot, radio, cryptographic verification and `otadata` writes may remain only behind an enumerated boundary that does not schedule on FreeRTOS or reinterpret kernel outcomes. Stage 2 has a portable kernel core, a C5 HIL image, a production compile profile that omits HIL inject and PASS reprint, a quiet privileged USB shell with frozen crash and evidence lines, and flash-backed config at `0x7FE000`. Live ESP image verify, radio, live user-mode isolation and matched evaluation are not implemented. ESP-IDF Wi-Fi remains an owner decision because the vendor adapter requires FreeRTOS. The kernel is research, not the current product image.
 
 ## Current baseline components and invariants
 
@@ -19,7 +19,7 @@ The target architecture is a clean-sheet Cirvane kernel that owns reset-to-runti
 
 ## Stage 2 kernel policy
 
-These rows are the portable Cirvane kernel. They do not replace the Nucleus baseline until migration.
+These rows are the portable Cirvane kernel. They do not replace the current Cirvane ESP-IDF/FreeRTOS firmware until a later kernel-labelled release.
 
 | Component | Owner | Invariant | Failure path | Bound |
 |---|---|---|---|---|
@@ -29,9 +29,13 @@ These rows are the portable Cirvane kernel. They do not replace the Nucleus base
 | Quiet kernel shell | Cirvane kernel | Prompt stays readable; no heartbeat | Refuse unknown, oversize and out-of-range commands | 32-byte command, 96-byte line |
 | OTA selection policy | Cirvane kernel over a verify adapter | No boot selection before complete verification | Abort staging and keep current boot target | 2 app slots, 1 KiB copy block |
 
-## Target release boundary
+## Current firmware boundary
 
-The target trusted computing base includes the Cirvane kernel and services, the enumerated Espressif ROM, boot, HAL, radio and cryptographic components, partition data and configured verification keys. FreeRTOS is excluded. Machine-mode kernel code owns isolation and recovery; user-mode services receive only declared capabilities and mapped resources. The exact hard-isolation claim remains bounded by the implemented PMP/PMA/APM configuration and vendor component audit. The local USB shell is privileged and unauthenticated.
+The first labelled Cirvane firmware trusted computing base includes Cirvane services, ESP-IDF, FreeRTOS, Espressif ROM, boot, drivers, partition data and configured verification keys. The local USB shell is privileged and unauthenticated. Release copy must state that this image is powered by ESP-IDF and FreeRTOS.
+
+## Kernel research boundary
+
+A later kernel-labelled trusted computing base would include the Cirvane kernel and services, the enumerated Espressif ROM, boot, HAL, radio and cryptographic components, partition data and configured verification keys. FreeRTOS is excluded from that claim. Machine-mode kernel code would own isolation and recovery; user-mode services would receive only declared capabilities and mapped resources. The exact hard-isolation claim remains bounded by the implemented PMP/PMA/APM configuration and vendor component audit.
 
 ## Resource and concurrency model
 

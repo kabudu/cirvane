@@ -8,7 +8,8 @@ requires a dated amendment; silent retuning is prohibited.
 
 Does a kernel-owned bounded recovery transaction eliminate stale post-restart
 work and reduce recovery latency variance relative to equivalent
-application-level supervision on the preserved FreeRTOS/Nucleus baseline?
+application-level supervision on the Cirvane ESP-IDF/FreeRTOS firmware
+(historical Nucleus v2 evidence)?
 
 This is NOV-02. NOV-01 remains a prior-art hypothesis and is not a performance
 claim.
@@ -23,7 +24,7 @@ claim.
   `production` spike compile boots a quiet `cirvane>` shell; it is not the
   matched workload image. The HIL spike is feasibility evidence only and is
   **not** a matched performance trial.
-- Baseline image: preserved Nucleus v2/FreeRTOS build at the recorded digest.
+- Baseline image: preserved Nucleus v2/FreeRTOS build at the recorded digest (historical identity of the current Cirvane ESP-IDF firmware before this rename).
 
 ## Workload
 

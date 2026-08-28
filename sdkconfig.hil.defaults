@@ -1,2 +1,2 @@
 # Overlay for destructive diagnostics on development boards only.
-CONFIG_NUCLEUS_HIL_DIAGNOSTICS=y
+CONFIG_CIRVANE_HIL_DIAGNOSTICS=y

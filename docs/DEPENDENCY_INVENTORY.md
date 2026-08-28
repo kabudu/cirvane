@@ -37,11 +37,10 @@ claiming a FreeRTOS-free kernel would hide FreeRTOS below Cirvane.
 library without FreeRTOS as the scheduler. A mailbox to a radio coprocessor
 that does not let vendor code schedule Cirvane outcomes is not implemented.
 
-**Owner decision required** before Stage 2 radio work:
-
-1. First developer release without Wi-Fi, or
-2. A genuinely isolated non-kernel radio boundary with its own evidence, or
-3. Stop the clean-sheet kernel path and keep the FreeRTOS baseline.
+**Owner decision (ADR 0005, 2026-08-28):** the first labelled Cirvane firmware
+keeps the FreeRTOS baseline, including Wi-Fi. The clean-sheet kernel remains
+research without on-chip ESP-IDF Wi-Fi until a later owner decision on a
+narrower kernel release or an isolated radio boundary.
 
 The spike does not implement a hidden FreeRTOS compatibility scheduler.
 
