@@ -63,8 +63,8 @@ def main() -> None:
         "method": {
             "boot_order": ["v1", "v2", "v2", "v1"],
             "latency_order": ["v2", "v1", "v1", "v2"],
-            "boot_definition": "shell restart write to first nucleus prompt",
-            "latency_definition": "info command write to next nucleus prompt",
+            "boot_definition": "shell restart write to first operator prompt",
+            "latency_definition": "info command write to next operator prompt",
             "serial_baud": 115200,
             "latency_reader_timeout_ms": 1,
             "excluded": "latency fields in *-block-[12].json used a 50 ms reader timeout and are retained only as an audit trail",

@@ -2,7 +2,7 @@
 
 ## Lifecycle and recovery
 
-The preserved comparison build is deterministic against its pinned ESP-IDF baseline. Release builds use a separately pinned Cirvane kernel toolchain, an enumerated vendor dependency set and explicit production or HIL configuration. The Stage 1 spike is a destructive app-slot overlay used only for feasibility captures; operators must restore a known Nucleus or Cirvane image afterwards. Production images exclude destructive diagnostics. Operators inspect device identity, services, resources, configuration and OTA state through explicit shell commands. A failed pending image rolls back; an accepted image requires explicit confirmation.
+The current Cirvane firmware is deterministic against its pinned ESP-IDF baseline. Kernel spike overlays are destructive app-slot captures used only for research; operators must restore a known Cirvane ESP-IDF/FreeRTOS image afterwards. Historical Nucleus images remain comparison artefacts, not the current product. After this identity increment the NVS namespace is `cirvane`, which resets the preserved boot counter on boards that still hold the `nucleus` namespace. Production images exclude destructive diagnostics. Operators inspect device identity, services, resources, configuration and OTA state through explicit shell commands. A failed pending image rolls back; an accepted image requires explicit confirmation.
 
 ## Capacity and observability
 

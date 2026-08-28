@@ -284,7 +284,7 @@ def idf_hil_build() -> Path:
         f"source {idf / 'export.sh'} >/dev/null && "
         f"idf.py -B {HIL_NUCLEUS} "
         f"-D SDKCONFIG={HIL_NUCLEUS / 'sdkconfig'} "
-        f"-D 'SDKCONFIG_DEFAULTS=sdkconfig.defaults;sdkconfig.ci.defaults;sdkconfig.hil.defaults' build"
+        f"-D 'SDKCONFIG_DEFAULTS=sdkconfig.defaults;sdkconfig.ci.defaults;sdkconfig.hil.defaults;sdkconfig.matched-eval.defaults' build"
     )
     run(["bash", "-lc", quoted])
     unsigned = HIL_NUCLEUS / "nucleus-unsigned.bin"

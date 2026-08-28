@@ -7,8 +7,8 @@
 ## Initial developer-release gates
 
 - Consistent Cirvane firmware, shell, documentation and asset identity.
-- Clean-sheet Cirvane kernel ownership with no hidden FreeRTOS runtime and an enumerated vendor dependency boundary.
-- Internally challenged recovery-transaction hypothesis and matched FreeRTOS baseline evidence with regressions retained.
+- Honest substrate claim: the first labelled firmware is powered by ESP-IDF and FreeRTOS (ADR 0005). A clean-sheet kernel claim is a later kernel-release gate (ADR 0002) and a stop-ship if used for this image.
+- Internally challenged recovery-transaction hypothesis retained as research; matched FreeRTOS baseline evidence with regressions retained.
 - Passing deterministic local CI at the release commit.
 - Signed production build and real-board functional, security and rollback evidence.
 - Authenticated OTA transport with fail-closed adversarial acceptance matrix.
@@ -18,7 +18,7 @@
 - Explicit limitation notice: independent novelty challenge, clean-room reproduction and formal verification deferred.
 - Owner approval for the exact release and any visibility change.
 
-Stop ship on secret exposure, ambiguous build identity, hidden FreeRTOS runtime beneath a clean-sheet claim, violated recovery-transaction invariants, selected-boot change after any rejected update, broken rollback, missing local-CI evidence, incomplete licence decision, unresolved material name collision, misleading novelty or assurance claims, or accidental public visibility.
+Stop ship on secret exposure, ambiguous build identity, a clean-sheet kernel claim for the ESP-IDF/FreeRTOS firmware, hidden FreeRTOS runtime beneath a later kernel-labelled claim, violated recovery-transaction invariants, selected-boot change after any rejected update, broken rollback, missing local-CI evidence, incomplete licence decision, unresolved material name collision, misleading novelty or assurance claims, or accidental public visibility.
 
 ## Presentation contract
 

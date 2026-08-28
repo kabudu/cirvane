@@ -52,11 +52,11 @@ idf.py -B build/ci \
   -D SDKCONFIG="$repo_dir/build/ci/sdkconfig" \
   -D 'SDKCONFIG_DEFAULTS=sdkconfig.defaults;sdkconfig.ci.defaults' build
 
-if grep -q '^CONFIG_NUCLEUS_HIL_DIAGNOSTICS=y$' build/ci/sdkconfig; then
+if grep -q '^CONFIG_CIRVANE_HIL_DIAGNOSTICS=y$' build/ci/sdkconfig; then
   echo "production CI accidentally enabled HIL diagnostics" >&2
   exit 1
 fi
-if strings build/ci/nucleus.bin | grep -Eq 'ota-reject-corrupt|config-corrupt-test|ota-stage-self|svcfail'; then
+if strings build/ci/cirvane.bin | grep -Eq 'ota-reject-corrupt|config-corrupt-test|ota-stage-self|svcfail'; then
   echo "production image exposes a HIL-only command" >&2
   exit 1
 fi

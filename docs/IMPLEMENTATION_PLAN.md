@@ -28,11 +28,12 @@ The detailed path from the current productised identity to the first developer r
 - [x] Implement kernel-owned recovery transactions, bounded reclamation, transactional configuration and signed rollback.
 - [x] Pass real-board adversarial qualification and matched FreeRTOS baseline evaluation without hidden regressions.
 
-## M4: complete Cirvane migration and rename
+## M4: Cirvane identity on ESP-IDF/FreeRTOS
 
-- [ ] Rename project identifiers, firmware metadata, shell prompt, commands, source symbols and documentation.
-- [ ] Preserve baseline evidence provenance while labelling historical Nucleus records accurately.
-- [ ] Rebuild, flash and pass functional, rollback, security and quiet-shell hardware gates.
+- [x] Rename project identifiers, firmware metadata, shell prompt, commands, source symbols and documentation.
+- [x] Preserve baseline evidence provenance while labelling historical Nucleus records accurately.
+- [x] Flash the renamed image and capture identity, functional and quiet-shell evidence with prompt `cirvane>`.
+- [ ] Recapture rollback and security hardware gates with the renamed image.
 
 ## M5: authenticated OTA transport
 

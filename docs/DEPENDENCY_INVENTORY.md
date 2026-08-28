@@ -43,11 +43,10 @@ Wi-Fi. See `docs/DECISIONS/0004-stage2-workflow-without-wifi.md`. Radio remains
 excluded from the kernel image. A later isolated radio boundary needs a new
 ADR and inventory row.
 
-The previous options were:
-
-1. First developer release without Wi-Fi, or
-2. A genuinely isolated non-kernel radio boundary with its own evidence, or
-3. Stop the clean-sheet kernel path and keep the FreeRTOS baseline.
+**Owner decision (ADR 0005, 2026-08-28):** the first labelled Cirvane firmware
+keeps the FreeRTOS baseline, including Wi-Fi. The clean-sheet kernel remains
+research without on-chip ESP-IDF Wi-Fi until a later owner decision on a
+narrower kernel release or an isolated radio boundary.
 
 The spike does not implement a hidden FreeRTOS compatibility scheduler.
 

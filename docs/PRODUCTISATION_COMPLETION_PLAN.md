@@ -2,17 +2,17 @@
 
 ## Purpose and completion boundary
 
-This plan defines the remaining work required to create Cirvane's first explicitly labelled developer release with a clean-sheet kernel candidate. It combines the original rename, authenticated OTA and release stages with two preceding novelty and kernel implementation stages. A checked item requires implemented behaviour and the named evidence; documentation, an unflashed binary or a passing host-only test is not sufficient where real-board evidence is required.
+This plan defines the remaining work required to create Cirvane's first explicitly labelled developer release. ADR 0005 records that the first labelled Cirvane firmware is the ESP-IDF/FreeRTOS image with an honest substrate claim. A clean-sheet kernel remains a separately gated research and later kernel-release path (ADR 0002). A checked item requires implemented behaviour and the named evidence; documentation, an unflashed binary or a passing host-only test is not sufficient where real-board evidence is required.
 
-The enduring Cirvane brand identity is complete. The current firmware baseline remains implemented under historical Nucleus identifiers on ESP-IDF and FreeRTOS, authenticated OTA transport is not yet implemented, and no Cirvane release has been authorised. FreeRTOS remains the matched baseline and migration source, not the kernel of the first Cirvane release.
+The enduring Cirvane brand identity is complete. Current firmware, USB prompt and application binary use the Cirvane name on ESP-IDF/FreeRTOS. Historical Nucleus evidence is retained with that provenance. Authenticated OTA transport is not yet implemented, and no Cirvane release has been authorised.
 
-Completion means all five stages have passed at one release candidate commit, every stop-ship condition is closed, the accepted deferrals are stated without implying completion, and the owner has approved the exact version and repository visibility. The first release may describe Cirvane as a clean-sheet kernel implementation only when dependency inspection proves that claim. It may describe the kernel mechanism as novel only when the internal prior-art and matched-evidence gates support carefully qualified wording.
+Completion means all five stages have passed at one release candidate commit, every stop-ship condition is closed, the accepted deferrals are stated without implying completion, and the owner has approved the exact version and repository visibility. The first labelled firmware must state that it is powered by ESP-IDF and FreeRTOS. It may describe Cirvane as a clean-sheet kernel implementation only in a later kernel-labelled release when dependency inspection proves that claim. It may describe the kernel mechanism as novel only when the internal prior-art and matched-evidence gates support carefully qualified wording.
 
 ## Delivery sequence
 
 1. Freeze a narrow kernel contribution after systematic prior-art and ESP32-C5 feasibility research.
 2. Build and qualify the clean-sheet Cirvane kernel on the ESP32-C5.
-3. Complete and qualify the Nucleus-to-Cirvane migration and rename on that kernel.
+3. Complete Cirvane identity on the current ESP-IDF/FreeRTOS firmware while retaining historical Nucleus evidence.
 4. Implement and adversarially qualify authenticated OTA transport.
 5. Freeze, validate and publish the initial developer release after explicit owner approval.
 
@@ -96,6 +96,7 @@ This does not claim a product without networking is complete.
 - [x] Add deterministic host models for state machines plus emulator or simulator coverage where the target boundary permits it.
 - [x] Add production and HIL profiles; destructive diagnostics must remain compile-gated out of production images.
 - [x] Define stable crash and evidence formats, bounded observability and a quiet interactive shell path.
+- [ ] Migrate supervised services from the ESP-IDF/FreeRTOS firmware onto the Cirvane kernel without a hidden FreeRTOS scheduler.
 
 ### Kernel verification matrix
 
@@ -131,24 +132,24 @@ Same XIAO ESP32-C5. Collection is image-blocked per the 2026-08-27 amendment (no
 
 Stage 2 passes only when the kernel boots and owns execution on the real ESP32-C5, the recovery transaction invariants pass adversarial tests, the required hardware workflow is supported, FreeRTOS is absent from the runtime kernel boundary, resource use is bounded, and matched evidence supports at least one differentiated result without hiding regressions. Formal proof and independent reproduction are not initial-release blockers, but unsupported proof, safety, hard-isolation and universal-superiority claims remain prohibited.
 
-## Stage 3: complete Cirvane migration and rename
+## Stage 3: Cirvane identity on ESP-IDF/FreeRTOS
 
 ### Objective
 
-Migrate the proven Nucleus service behaviour onto the Cirvane kernel and make Cirvane the consistent current product identity across firmware, source, operator surfaces, documentation and build artefacts while retaining Nucleus only where it truthfully identifies historical evidence.
+Make Cirvane the consistent current product identity across firmware, source, operator surfaces, documentation and build artefacts on the existing ESP-IDF/FreeRTOS image, while retaining Nucleus only where it truthfully identifies historical evidence. Kernel migration of services is a later kernel-release item, not a Stage 3 requirement (ADR 0005).
 
 ### Implementation checklist
 
-- [ ] Rename the ESP-IDF project, application metadata, binary names and current build identifiers from Nucleus to Cirvane.
-- [ ] Rename current source symbols, component-facing identifiers, log tags, shell prompt, help text and operator commands where compatibility does not require an alias.
-- [ ] Define any temporary command or configuration aliases, their warnings and their removal version; do not preserve accidental compatibility silently.
-- [ ] Update current documentation, scripts, tests, fixtures and release surfaces to use Cirvane consistently.
-- [ ] Preserve benchmark and hardware evidence captured under Nucleus with explicit historical provenance rather than rewriting the recorded identity.
-- [ ] Add a repository-wide identity scan that rejects unintended current-product Nucleus references while allowing declared historical paths and quotations.
-- [ ] Build the signed production profile and confirm HIL-only destructive commands remain absent.
-- [ ] Flash the renamed image to the supported Seeed Studio XIAO ESP32-C5 and capture functional, rollback, security and quiet-shell evidence.
+- [x] Rename the ESP-IDF project, application metadata, binary names and current build identifiers from Nucleus to Cirvane.
+- [x] Rename current source symbols, component-facing identifiers, log tags, shell prompt, help text and operator commands where compatibility does not require an alias.
+- [x] Record that there are no operator command aliases; the NVS namespace `cirvane` replaces `nucleus` and resets the preserved boot counter.
+- [x] Update current documentation, scripts, tests, fixtures and release surfaces to use Cirvane consistently.
+- [x] Preserve benchmark and hardware evidence captured under Nucleus with explicit historical provenance rather than rewriting the recorded identity.
+- [x] Add a repository identity scan that rejects unintended current-product Nucleus references while allowing declared historical paths and quotations.
+- [x] Build the signed production profile and confirm HIL-only destructive commands remain absent.
+- [x] Flash the renamed image to the supported Seeed Studio XIAO ESP32-C5 and capture identity, functional and quiet-shell evidence with prompt `cirvane>` (`benchmarks/results/cirvane-identity-hil.json`).
+- [ ] Recapture rollback and security HIL with the renamed image. Historical Nucleus transcripts remain the recorded rollback/security evidence; the project signing key was not present for a signed HIL overlay.
 - [ ] Re-run the performance checks required to show that the rename did not regress the established runtime envelope.
-- [ ] Prove that migrated services use Cirvane kernel primitives rather than a FreeRTOS compatibility scheduler.
 
 ### Required evidence
 
@@ -159,9 +160,11 @@ Migrate the proven Nucleus service behaviour onto the Cirvane kernel and make Ci
 - Quiet-shell evidence proving periodic telemetry does not obscure `cirvane>`.
 - Repository identity-scan result and an inventory of intentionally retained historical Nucleus references.
 
+Intentionally retained Nucleus references: `benchmarks/nucleus-v1/`; recorded HIL JSON under `benchmarks/results/` whose serial transcripts contain `nucleus>`; ADRs and docs that name Nucleus as the former development identity or matched baseline; and `benchmarks/README.md` describing the v1/v2 comparison corpus. Current-product identity boot evidence is `benchmarks/results/cirvane-identity-hil.json`.
+
 ### Exit gate
 
-Stage 3 passes only when the supported board boots and operates entirely as Cirvane on the clean-sheet kernel, all required real-board evidence is tied to the merged commit, historical evidence remains truthful, and no material runtime or rollback regression is open.
+Stage 3 passes only when the supported board boots and operates as Cirvane on the current ESP-IDF/FreeRTOS firmware, operator-visible identity is Cirvane, historical Nucleus evidence remains truthful, the identity scan passes, and no material runtime or rollback regression is open.
 
 ## Stage 4: authenticated OTA transport
 
@@ -214,12 +217,12 @@ Stage 4 passes only when every acceptance-matrix case has a deterministic verdic
 
 ### Objective
 
-Freeze one evidence-backed commit as Cirvane's first clean-sheet-kernel developer release without overstating hardware security, energy performance, independent assurance, platform support, formal verification or novelty scope.
+Freeze one evidence-backed commit as Cirvane's first labelled developer release without overstating hardware security, energy performance, independent assurance, platform support, formal verification or novelty scope. That image is powered by ESP-IDF and FreeRTOS (ADR 0005) and must not be described as a clean-sheet kernel.
 
 ### Release-candidate checklist
 
 - [ ] Select the release version and theme using the title format `Cirvane vX.Y.Z: <theme>`.
-- [ ] Freeze one release candidate commit containing the qualified clean-sheet kernel, completed migration and rename, authenticated OTA transport, documentation, manifests and release metadata.
+- [ ] Freeze one release candidate commit containing the Cirvane ESP-IDF/FreeRTOS firmware, completed identity rename, authenticated OTA transport, documentation, manifests and release metadata.
 - [ ] Run authoritative `./scripts/ci-local.sh` at that exact commit in the documented ESP-IDF environment.
 - [ ] Rebuild the signed production image from the release commit and record its digest, size, toolchain and configuration identity.
 - [ ] Repeat all supported real-board functional, security, OTA, rollback and quiet-shell gates against that exact image.
@@ -242,7 +245,7 @@ The following are explicitly outside the first developer-release completion boun
 - Formal verification of the kernel, recovery state machine or hardware model.
 - Additional hardware ports, adoption cohorts and practitioner studies.
 
-These deferrals do not waive clean-sheet kernel ownership, internal prior-art diligence, matched baseline evaluation, software signing, authenticated OTA, rollback, secret handling, production-profile or claim-discipline requirements. Their absence prohibits claims of independent validation, formal correctness and definitive worldwide novelty.
+These deferrals do not waive honest substrate wording, software signing, authenticated OTA, rollback, secret handling, production-profile or claim-discipline requirements. Clean-sheet kernel ownership remains a later kernel-release gate (ADR 0002), not a first-firmware gate (ADR 0005). Their absence prohibits claims of independent validation, formal correctness and definitive worldwide novelty.
 
 ### Release evidence bundle
 
@@ -280,8 +283,8 @@ Do not release while any of the following is present:
 | Stage | State | Completion evidence |
 |---|---|---|
 | 1. Kernel novelty and feasibility | Verified | Prior-art matrix, ADR 0003, pre-registered evaluation, host model and Stage 1 spike HIL |
-| 2. Clean-sheet kernel | Verified | kernel-spike.json HIL pass; matched-eval.json class-1 pair; warm n=11 and cold n=5 boot samples |
-| 3. Cirvane migration and rename | Planned | Pending migrated services, merged rename PR and real-board qualification bundle |
+| 2. Clean-sheet kernel | Verified | kernel-spike.json HIL pass; matched-eval.json class-1 pair; warm n=11 and cold n=5 boot samples. Research image, not the labelled firmware |
+| 3. Cirvane identity on ESP-IDF/FreeRTOS | In progress | Source, prompt, binary and identity scan renamed; `cirvane-identity-hil.json` captures `cirvane>` boot; rollback/security recapture and performance rerun pending |
 | 4. Authenticated OTA | Planned | Pending merged protocol implementation and adversarial evidence matrix |
 | 5. Developer release | Planned | Pending release-candidate evidence, owner approval and verified release |
 

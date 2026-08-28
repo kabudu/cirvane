@@ -2,7 +2,10 @@
 
 ## Status
 
-Accepted for planning on 2026-08-24; implementation and novelty remain unverified.
+Accepted for planning on 2026-08-24. ADR 0005 supersedes this decision for the
+first labelled Cirvane firmware ship: that image is ESP-IDF/FreeRTOS with an
+honest substrate claim. This ADR still gates any release that claims a
+clean-sheet Cirvane kernel with no hidden FreeRTOS runtime.
 
 ## Context
 
@@ -12,7 +15,7 @@ ESP32-C5 exposes RISC-V Machine and User privilege levels, PMP/PMA and Espressif
 
 ## Decision
 
-Make a clean-sheet Cirvane kernel a blocker for the first developer release. Begin with a narrow bounded recovery transaction hypothesis, systematic prior-art comparison and a minimal FreeRTOS-free hardware spike. Only then implement the production kernel, migrate the existing services, add authenticated OTA and prepare the release.
+Superseded for the first labelled Cirvane firmware by ADR 0005. For any release that claims a clean-sheet Cirvane kernel: make that kernel a blocker. Begin with a narrow bounded recovery transaction hypothesis, systematic prior-art comparison and a minimal FreeRTOS-free hardware spike. Only then implement the production kernel, migrate the existing services, add authenticated OTA and prepare the kernel-labelled release.
 
 Independent penetration testing, independent novelty challenge, clean-room reproduction and formal verification are optional post-release assurance stages. Internal prior-art diligence, matched baseline evaluation, real-board adversarial tests and truthful claim wording remain release blockers.
 

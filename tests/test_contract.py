@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Offline contract checks for Nucleus v2; no board or credentials required."""
+"""Offline contract checks for Cirvane (ESP-IDF/FreeRTOS); no board or credentials required."""
 
 from pathlib import Path
 import re
@@ -8,13 +8,13 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 
 
-class NucleusContract(unittest.TestCase):
+class CirvaneContract(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.defaults = (ROOT / "sdkconfig.defaults").read_text()
         cls.hil_defaults = (ROOT / "sdkconfig.hil.defaults").read_text()
-        cls.header = (ROOT / "main" / "nucleus_os.h").read_text()
-        cls.runtime = (ROOT / "main" / "nucleus_os.c").read_text()
+        cls.header = (ROOT / "main" / "cirvane_os.h").read_text()
+        cls.runtime = (ROOT / "main" / "cirvane_os.c").read_text()
 
     def enabled(self, symbol):
         self.assertRegex(self.defaults, rf"(?m)^{re.escape(symbol)}=y$")
@@ -41,15 +41,15 @@ class NucleusContract(unittest.TestCase):
 
     def test_all_bounded_limits_are_compile_time_constants(self):
         expected = {
-            "NUCLEUS_MAX_SERVICES": 8,
-            "NUCLEUS_MSG_POOL_SLOTS": 32,
-            "NUCLEUS_MSG_PAYLOAD_MAX": 24,
+            "CIRVANE_MAX_SERVICES": 8,
+            "CIRVANE_MSG_POOL_SLOTS": 32,
+            "CIRVANE_MSG_PAYLOAD_MAX": 24,
         }
         for name, value in expected.items():
             self.assertRegex(self.header, rf"#define\s+{name}\s+{value}\b")
         self.assertIn("xTaskCreateStatic", self.runtime)
         self.assertIn("xQueueCreateStatic", self.runtime)
-        self.assertIn("#define NUCLEUS_TASK_STACK_BYTES 4096", self.runtime)
+        self.assertIn("#define CIRVANE_TASK_STACK_BYTES 4096", self.runtime)
         self.assertNotRegex(self.runtime, r"\b(malloc|calloc|realloc)\s*\(")
 
     def test_transactional_config_has_two_slots_crc_and_commit(self):
@@ -78,34 +78,48 @@ class NucleusContract(unittest.TestCase):
         self.assertIn("esp_ota_abort(handle)", self.runtime)
 
     def test_wifi_initialisation_is_lazy_and_retryable(self):
-        main = (ROOT / "main" / "nucleus.c").read_text()
+        main = (ROOT / "main" / "cirvane.c").read_text()
         self.assertLess(main.index("static void run_wifi_scan"), main.index("esp_wifi_init(&cfg)"))
         for stage in ("WIFI_INIT_NETIF", "WIFI_INIT_EVENT_LOOP", "WIFI_INIT_DRIVER"):
             self.assertIn(stage, main)
 
     def test_shell_numbers_are_strict_and_bounded(self):
-        main = (ROOT / "main" / "nucleus.c").read_text()
+        main = (ROOT / "main" / "cirvane.c").read_text()
         self.assertIn("parse_u32_arg", main)
         self.assertIn("errno == ERANGE", main)
         self.assertIn("*end != '\\0'", main)
-        self.assertIn("NUCLEUS_MAX_SLEEP_MS", self.header)
-        self.assertIn("wake_after_ms > NUCLEUS_MAX_SLEEP_MS", self.runtime)
+        self.assertIn("CIRVANE_MAX_SLEEP_MS", self.header)
+        self.assertIn("wake_after_ms > CIRVANE_MAX_SLEEP_MS", self.runtime)
 
     def test_periodic_heartbeat_does_not_obscure_shell_prompt(self):
-        main = (ROOT / "main" / "nucleus.c").read_text()
+        main = (ROOT / "main" / "cirvane.c").read_text()
         self.assertIn('ESP_LOGD(TAG, "heartbeat up=', main)
         self.assertNotIn('ESP_LOGI(TAG, "heartbeat up=', main)
 
+    def test_current_product_identity_is_cirvane(self):
+        cmake = (ROOT / "CMakeLists.txt").read_text()
+        self.assertIn("project(cirvane)", cmake)
+        self.assertNotIn("project(nucleus)", cmake)
+        self.assertFalse((ROOT / "main" / "nucleus.c").exists())
+        main = (ROOT / "main" / "cirvane.c").read_text()
+        self.assertIn('repl_cfg.prompt = "cirvane> "', main)
+        self.assertNotIn("nucleus>", main)
+        ci = (ROOT / "scripts" / "ci-local.sh").read_text()
+        self.assertIn("build/ci/cirvane.bin", ci)
+        self.assertNotIn("nucleus.bin", ci)
+
     def test_adversarial_hil_paths_are_compile_gated(self):
-        main = (ROOT / "main" / "nucleus.c").read_text()
-        self.assertIn("CONFIG_NUCLEUS_HIL_DIAGNOSTICS=y", self.hil_defaults)
-        self.assertNotIn("CONFIG_NUCLEUS_HIL_DIAGNOSTICS=y", self.defaults)
-        self.assertIn("CONFIG_ESP_CONSOLE_NONE=y", self.hil_defaults)
-        self.assertIn("CONFIG_ESP_CONSOLE_SECONDARY_NONE=y", self.hil_defaults)
-        self.assertIn("CONFIG_BOOTLOADER_LOG_LEVEL_NONE=y", self.hil_defaults)
-        self.assertIn("CONFIG_SECURE_SIGNED_APPS_NO_SECURE_BOOT=n", self.hil_defaults)
+        main = (ROOT / "main" / "cirvane.c").read_text()
+        matched = (ROOT / "sdkconfig.matched-eval.defaults").read_text()
+        self.assertIn("CONFIG_CIRVANE_HIL_DIAGNOSTICS=y", self.hil_defaults)
+        self.assertNotIn("CONFIG_CIRVANE_HIL_DIAGNOSTICS=y", self.defaults)
+        self.assertNotIn("CONFIG_ESP_CONSOLE_NONE=y", self.hil_defaults)
+        self.assertIn("CONFIG_ESP_CONSOLE_NONE=y", matched)
+        self.assertIn("CONFIG_ESP_CONSOLE_SECONDARY_NONE=y", matched)
+        self.assertIn("CONFIG_BOOTLOADER_LOG_LEVEL_NONE=y", matched)
+        self.assertIn("CONFIG_SECURE_SIGNED_APPS_NO_SECURE_BOOT=n", matched)
         self.assertNotIn("CONFIG_ESP_CONSOLE_NONE=y", self.defaults)
-        self.assertGreaterEqual(main.count("#if CONFIG_NUCLEUS_HIL_DIAGNOSTICS"), 2)
+        self.assertGreaterEqual(main.count("#if CONFIG_CIRVANE_HIL_DIAGNOSTICS"), 2)
         self.assertIn("ota-reject-corrupt", main)
         self.assertIn("config-corrupt-test", main)
         self.assertIn("err != ESP_OK && boot_unchanged", self.runtime)
@@ -146,6 +160,7 @@ class NucleusContract(unittest.TestCase):
         self.assertIn("quiet bootloader", tool)
         self.assertIn("JTAG CPU reset", tool)
         self.assertIn("chip RST", tool)
+        self.assertIn("sdkconfig.matched-eval.defaults", tool)
 
 
 if __name__ == "__main__":

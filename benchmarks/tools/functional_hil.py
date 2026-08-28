@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Exercise Nucleus v2 operator and supervised-service paths on hardware."""
+"""Exercise Cirvane (ESP-IDF/FreeRTOS) operator and supervised-service paths on hardware."""
 
 from __future__ import annotations
 

@@ -1,6 +1,6 @@
-menu "Nucleus development options"
+menu "Cirvane development options"
 
-config NUCLEUS_HIL_DIAGNOSTICS
+config CIRVANE_HIL_DIAGNOSTICS
     bool "Enable destructive hardware-in-the-loop diagnostics"
     default n
     help
