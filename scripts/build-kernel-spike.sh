@@ -6,8 +6,8 @@ out_dir="${1:-$repo_dir/build/kernel-spike}"
 profile="${2:-${CIRVANE_SPIKE_PROFILE:-hil}}"
 mkdir -p "$out_dir"
 
-if [[ "$profile" != "hil" && "$profile" != "production" ]]; then
-  echo "spike profile must be hil or production" >&2
+if [[ "$profile" != "hil" && "$profile" != "production" && "$profile" != "eval" ]]; then
+  echo "spike profile must be hil, production or eval" >&2
   exit 1
 fi
 
@@ -40,6 +40,8 @@ map="$out_dir/cirvane-spike.map"
 bin="$out_dir/cirvane-spike.bin"
 if [[ "$profile" == "hil" ]]; then
   profile_define="-DCIRVANE_HIL_SPIKE"
+elif [[ "$profile" == "eval" ]]; then
+  profile_define="-DCIRVANE_SPIKE_EVAL"
 else
   profile_define="-DCIRVANE_SPIKE_PRODUCTION"
 fi
@@ -62,6 +64,7 @@ fi
   "$repo_dir/kernel/kernel.c" \
   "$repo_dir/kernel/config.c" \
   "$repo_dir/kernel/config_flash.c" \
+  "$repo_dir/kernel/otadata.c" \
   "$repo_dir/kernel/rollback.c" \
   "$repo_dir/kernel/obs.c" \
   "$repo_dir/kernel/recovery/recovery.c"
@@ -90,12 +93,21 @@ python3 "$esptool_py" --chip esp32c5 elf2image \
   --flash-mode dio --flash-freq 80m --flash-size 8MB \
   --output "$bin" "$elf" >/dev/null
 if [[ "$profile" == "production" ]]; then
-  if strings "$bin" | grep -Eq 'result=PASS|inject_corrupt'; then
+  if strings "$bin" | grep -Eq 'result=PASS|inject_corrupt|cirvane-eval'; then
     echo "production spike image contains HIL diagnostics" >&2
     exit 1
   fi
   if ! strings "$bin" | grep -q 'cirvane>'; then
     echo "production spike image missing quiet shell prompt" >&2
+    exit 1
+  fi
+elif [[ "$profile" == "eval" ]]; then
+  if strings "$bin" | grep -Eq 'result=PASS|inject_corrupt'; then
+    echo "eval spike image contains HIL diagnostics" >&2
+    exit 1
+  fi
+  if ! strings "$bin" | grep -q 'cirvane-eval'; then
+    echo "eval spike image missing eval marker" >&2
     exit 1
   fi
 else

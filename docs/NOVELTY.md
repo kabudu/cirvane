@@ -10,8 +10,10 @@ falsifiable. Stage 1 recorded a systematic comparison (see
 `PRIOR_ART_MATRIX.md`), a portable model with host tests, and a FreeRTOS-free
 ESP32-C5 spike. Stage 2 adds a host-testable kernel core for scheduling,
 messages and software leases. Hubris remains the closest reviewed MCU OS.
-Novelty remains a hypothesis until matched fault workloads (NOV-02) and any
-closer prior art review complete the remaining Stage 2 gates.
+Novelty remains a hypothesis until closer prior-art review. NOV-02 class-1
+matched samples are recorded in `matched-eval.json` with incomparable units,
+Cirvane-only classes 2-5, and Wi-Fi excluded by ADR 0004. That pair does not
+authorise a universal-superiority claim.
 
 ## Candidate kernel research
 

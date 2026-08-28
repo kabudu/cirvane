@@ -96,18 +96,24 @@ uint32_t cirvane_hal_timer_now(void)
     return 0;
 }
 
-static int flash_in_cfg_window(uint32_t offset, uint32_t length)
+static int flash_in_window(uint32_t base, uint32_t size, uint32_t offset,
+                           uint32_t length)
 {
-    if (length == 0 || offset < CIRVANE_CFG_FLASH_BASE) {
+    if (length == 0 || offset < base || length > size) {
         return 0;
     }
-    if (length > CIRVANE_CFG_FLASH_SIZE) {
-        return 0;
-    }
-    if (offset > CIRVANE_CFG_FLASH_BASE + CIRVANE_CFG_FLASH_SIZE - length) {
+    if (offset > base + size - length) {
         return 0;
     }
     return 1;
+}
+
+static int flash_writable(uint32_t offset, uint32_t length)
+{
+    return flash_in_window(CIRVANE_CFG_FLASH_BASE, CIRVANE_CFG_FLASH_SIZE,
+                           offset, length) ||
+           flash_in_window(CIRVANE_OTA_FLASH_BASE, CIRVANE_OTA_FLASH_SIZE,
+                           offset, length);
 }
 
 static uint32_t irq_suspend(void)
@@ -150,7 +156,7 @@ int cirvane_hal_flash_erase(uint32_t offset, uint32_t length)
 
     if ((offset & (CIRVANE_FLASH_SECTOR - 1u)) != 0 ||
         (length & (CIRVANE_FLASH_SECTOR - 1u)) != 0 ||
-        !flash_in_cfg_window(offset, length)) {
+        !flash_writable(offset, length)) {
         return CIRVANE_HAL_REFUSED;
     }
     saved = irq_suspend();
@@ -179,7 +185,7 @@ int cirvane_hal_flash_write(uint32_t offset, const void *buf, uint32_t length)
     if (buf == 0 || (length & 3u) != 0 || ((uintptr_t)buf & 3u) != 0 ||
         (offset & 3u) != 0 || length > CIRVANE_FLASH_WRITE_MAX ||
         (offset & (CIRVANE_FLASH_SECTOR - 1u)) + length > CIRVANE_FLASH_SECTOR ||
-        !flash_in_cfg_window(offset, length)) {
+        !flash_writable(offset, length)) {
         return CIRVANE_HAL_REFUSED;
     }
     saved = irq_suspend();

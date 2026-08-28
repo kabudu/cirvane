@@ -12,6 +12,7 @@ static uint8_t s_gpio_cfg[CIRVANE_GPIO_LIMIT];
 static uint32_t s_timer;
 static uint8_t s_flash[64];
 static uint8_t s_cfg_flash[CIRVANE_CFG_FLASH_SIZE];
+static uint8_t s_ota_flash[CIRVANE_OTA_FLASH_SIZE];
 static uint8_t s_wdt_flashboot;
 static uint32_t s_entropy;
 static uint8_t s_inited;
@@ -35,6 +36,9 @@ int cirvane_hal_init(void)
     s_flash[0] = 0xe9;
     for (i = 0; i < sizeof(s_cfg_flash); i++) {
         s_cfg_flash[i] = 0xffu;
+    }
+    for (i = 0; i < sizeof(s_ota_flash); i++) {
+        s_ota_flash[i] = 0xffu;
     }
     s_wdt_flashboot = 1;
     s_entropy = 0xA5A5A5A5u;
@@ -106,6 +110,9 @@ int cirvane_hal_flash_read(uint32_t offset, void *buf, uint32_t length)
         if (src >= CIRVANE_CFG_FLASH_BASE &&
             src < CIRVANE_CFG_FLASH_BASE + sizeof(s_cfg_flash)) {
             out[i] = s_cfg_flash[src - CIRVANE_CFG_FLASH_BASE];
+        } else if (src >= CIRVANE_OTA_FLASH_BASE &&
+                   src < CIRVANE_OTA_FLASH_BASE + sizeof(s_ota_flash)) {
+            out[i] = s_ota_flash[src - CIRVANE_OTA_FLASH_BASE];
         } else {
             out[i] = src < sizeof(s_flash) ? s_flash[src] : 0xffu;
         }
@@ -113,19 +120,37 @@ int cirvane_hal_flash_read(uint32_t offset, void *buf, uint32_t length)
     return CIRVANE_HAL_OK;
 }
 
+static uint8_t *writable_bank(uint32_t offset, uint32_t length, uint32_t *local)
+{
+    if (offset >= CIRVANE_CFG_FLASH_BASE &&
+        offset <= CIRVANE_CFG_FLASH_BASE + CIRVANE_CFG_FLASH_SIZE - length) {
+        *local = offset - CIRVANE_CFG_FLASH_BASE;
+        return s_cfg_flash;
+    }
+    if (offset >= CIRVANE_OTA_FLASH_BASE &&
+        offset <= CIRVANE_OTA_FLASH_BASE + CIRVANE_OTA_FLASH_SIZE - length) {
+        *local = offset - CIRVANE_OTA_FLASH_BASE;
+        return s_ota_flash;
+    }
+    return 0;
+}
+
 int cirvane_hal_flash_erase(uint32_t offset, uint32_t length)
 {
     uint32_t i;
+    uint32_t local;
+    uint8_t *bank;
 
     if (!s_inited || (offset & (CIRVANE_FLASH_SECTOR - 1u)) != 0 ||
-        (length & (CIRVANE_FLASH_SECTOR - 1u)) != 0 || length == 0 ||
-        offset < CIRVANE_CFG_FLASH_BASE ||
-        length > CIRVANE_CFG_FLASH_SIZE ||
-        offset > CIRVANE_CFG_FLASH_BASE + CIRVANE_CFG_FLASH_SIZE - length) {
+        (length & (CIRVANE_FLASH_SECTOR - 1u)) != 0 || length == 0) {
+        return CIRVANE_HAL_REFUSED;
+    }
+    bank = writable_bank(offset, length, &local);
+    if (bank == 0) {
         return CIRVANE_HAL_REFUSED;
     }
     for (i = 0; i < length; i++) {
-        s_cfg_flash[(offset - CIRVANE_CFG_FLASH_BASE) + i] = 0xffu;
+        bank[local + i] = 0xffu;
     }
     return CIRVANE_HAL_OK;
 }
@@ -135,17 +160,19 @@ int cirvane_hal_flash_write(uint32_t offset, const void *buf, uint32_t length)
     const uint8_t *in = buf;
     uint32_t i;
     uint32_t local;
+    uint8_t *bank;
 
     if (!s_inited || buf == 0 || (length & 3u) != 0 || (offset & 3u) != 0 ||
         length == 0 || length > CIRVANE_FLASH_WRITE_MAX ||
-        (offset & (CIRVANE_FLASH_SECTOR - 1u)) + length > CIRVANE_FLASH_SECTOR ||
-        offset < CIRVANE_CFG_FLASH_BASE ||
-        offset > CIRVANE_CFG_FLASH_BASE + CIRVANE_CFG_FLASH_SIZE - length) {
+        (offset & (CIRVANE_FLASH_SECTOR - 1u)) + length > CIRVANE_FLASH_SECTOR) {
+        return CIRVANE_HAL_REFUSED;
+    }
+    bank = writable_bank(offset, length, &local);
+    if (bank == 0) {
         return CIRVANE_HAL_REFUSED;
     }
     for (i = 0; i < length; i++) {
-        local = (offset - CIRVANE_CFG_FLASH_BASE) + i;
-        s_cfg_flash[local] = (uint8_t)(s_cfg_flash[local] & in[i]);
+        bank[local + i] = (uint8_t)(bank[local + i] & in[i]);
     }
     return CIRVANE_HAL_OK;
 }
