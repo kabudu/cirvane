@@ -20,9 +20,12 @@ timer, flash-read/erase/write, watchdog and entropy HAL (radio excluded), HIL
 and production spike compile profiles, a quiet production `cirvane>` shell
 with frozen crash and evidence lines, and a FreeRTOS-free ESP32-C5 spike with
 real-board `benchmarks/results/kernel-spike.json` evidence are in. Live
-`otadata` adapters, radio, adversarial qualification, matched evaluation,
-migration and rename, authenticated OTA and developer release remain
-incomplete. Stage 1 novelty remains a provisional hypothesis.
+`otadata` backup/write/restore is on the HIL image. Radio is excluded by
+ADR 0004. Adversarial HIL markers pass. Cirvane eval samples are in
+`matched-eval.json` (`result=pass`, Nucleus class-1 n=30, Cirvane `stale_total=0`).
+Matched evaluation still lists incomparable classes, units and Wi-Fi. Migration
+and rename, authenticated OTA and developer release remain incomplete. Stage 1
+novelty remains a provisional hypothesis.
 Energy, irreversible hardware provisioning, independent novelty challenge,
 clean-room reproduction, formal verification and independent penetration testing
 are accepted release deferrals and must remain visible limitations.

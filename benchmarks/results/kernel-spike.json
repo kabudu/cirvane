@@ -1,10 +1,48 @@
 {
   "schema": 1,
-  "captured_at": "2026-08-27T21:40:36.920722+00:00",
+  "captured_at": "2026-08-28T05:43:33.626001+00:00",
   "port": "/dev/cu.usbmodem3101",
   "offset": "0x20000",
   "elf": "build/kernel-spike/cirvane-spike.elf",
   "image": "build/kernel-spike/cirvane-spike.bin",
   "result": "pass",
-  "log": "ESP-ROM:esp32c5-eco2-20250121\r\nBuild:Jan 21 2025\r\nrst:0x15 (USB_UART_HPSYS),boot:0x18 (SPI_FAST_FLASH_BOOT)\r\nSPI mode:DIO, clock div:1\r\nload:0x408556c0,len:0x16c4\r\nload:0x4084bba0,len:0xd64\r\nload:0x4084e5a0,len:0x3388\r\nentry 0x4084bbaa\r\nI (21) boot: ESP-IDF v6.0.2 2nd stage bootloader\r\nI (21) boot: compile time Aug 24 2026 08:56:59\r\nI (22) boot: chip revision: v1.0\r\nI (22) boot: efuse block revision: v0.3\r\nI (22) boot.esp32c5: SPI Speed      : 80MHz\r\nI (23) boot.esp32c5: SPI Mode       : DIO\r\nI (23) boot.esp32c5: SPI Flash Size : 8MB\r\nI (23) boot: Enabling RNG early entropy source...\r\nI (23) boot: Partition Table:\r\nI (24) boot: ## Label            Usage          Type ST Offset   Length\r\nI (24) boot:  0 nvs              WiFi data        01 02 00009000 00006000\r\nI (25) boot:  1 otadata          OTA data         01 00 0000f000 00002000\r\nI (25) boot:  2 phy_init         RF data          01 01 00011000 00001000\r\nI (26) boot:  3 ota_0            OTA app          00 10 00020000 001a9000\r\nI (26) boot:  4 ota_1            OTA app          00 11 001d0000 001a9000\r\nI (27) boot: End of partition table\r\nI (27) esp_image: segment 0: paddr=00020020 vaddr=42000020 size=0fff8h ( 65528) map\r\nI (40) esp_image: segment 1: paddr=00030020 vaddr=42010020 size=00010h (    16) map\r\nI (41) esp_image: segment 2: paddr=00030038 vaddr=40800000 size=02790h ( 10128) load\r\nI (44) boot: Loaded app from partition at offset 0x20000\r\nI (44) boot: Disabling RNG early entropy source...\r\ncirvane-spike boot=ok\r\ncirvane-spike trap ecall=1 mcause=3800000b\r\ncirvane-spike interrupt count=1\r\ncirvane-spike timer t0=0060bd58 t1=00612ac8 advance=1\r\ncirvane-spike memory static=c12a0001\r\ncirvane-spike flash magic=e9\r\ncirvane-spike priv misa=40103105 mstatus=00000089 pmpcfg0=000d809f pmpaddr0=09ffffff\r\ncirvane-spike umode=1\r\ncirvane-spike recovery outcome=0 epoch=2 stale=0 health=0\r\ncirvane-spike kernel sched=2 msg=1 cap=1 panic=0\r\ncirvane-spike config gen=2 fallback=1 durable=1\r\ncirvane-spike ota refuse=1 boot_unchanged=1\r\ncirvane-spike hal gpio=1 entropy=1 wdt=0\r\ncirvane-spike freertos=absent\r\ncirvane-spike uart=ok\r\ncirvane-spike result=PASS\r\ncirvane-spike result=PASS\r\ncirvane-spike result=PASS\r\ncirvane-spike result=PASS\r\ncirvane-spike result=PASS\r\ncirvane-spike result=PASS\r\ncirvane-spike result=PASS\r\ncirvane-spike result=PASS\r\ncirvane-spike result=PASS\r\n"
+  "log": "ESP-ROM:esp32c5-eco2-20250121\r\nBuild:Jan 21 2025\r\nrst:0x15 (USB_UART_HPSYS),boot:0x18 (SPI_FAST_FLASH_BOOT)\r\nSPI mode:DIO, clock div:1\r\nload:0x408556c0,len:0x16c4\r\nload:0x4084bba0,len:0xd64\r\nload:0x4084e5a0,len:0x3388\r\nentry 0x4084bbaa\r\nI (21) boot: ESP-IDF v6.0.2 2nd stage bootloader\r\nI (21) boot: compile time Aug 24 2026 08:56:59\r\nI (22) boot: chip revision: v1.0\r\nI (22) boot: efuse block revision: v0.3\r\nI (22) boot.esp32c5: SPI Speed      : 80MHz\r\nI (23) boot.esp32c5: SPI Mode       : DIO\r\nI (23) boot.esp32c5: SPI Flash Size : 8MB\r\nI (23) boot: Enabling RNG early entropy source...\r\nI (23) boot: Partition Table:\r\nI (24) boot: ## Label            Usage          Type ST Offset   Length\r\nI (24) boot:  0 nvs              WiFi data        01 02 00009000 00006000\r\nI (25) boot:  1 otadata          OTA data         01 00 0000f000 00002000\r\nI (25) boot:  2 phy_init         RF data          01 01 00011000 00001000\r\nI (26) boot:  3 ota_0            OTA app          00 10 00020000 001a9000\r\nI (26) boot:  4 ota_1            OTA app          00 11 001d0000 001a9000\r\nI (27) boot: End of partition table\r\nI (27) esp_image: segment 0: paddr=00020020 vaddr=42000020 size=0fff8h ( 65528) map\r\nI (40) esp_image: segment 1: paddr=00030020 vaddr=42010020 size=00010h (    16) map\r\nI (41) esp_image: segment 2: paddr=00030038 vaddr=40800000 size=036c0h ( 14016) load\r\nI (45) boot: Loaded app from partition at offset 0x20000\r\nI (45) boot: Disabling RNG early entropy source...\r\ncirvane-spike boot=ok\r\ncirvane-spike trap ecall=1 mcause=3800000b\r\ncirvane-spike interrupt count=1\r\ncirvane-spike timer t0=0061e55b t1=006252cb advance=1\r\ncirvane-spike memory static=c12a0001\r\ncirvane-spike flash magic=e9\r\ncirvane-spike priv misa=40103105 mstatus=00000089 pmpcfg0=000d809f pmpaddr0=09ffffff\r\ncirvane-spike umode=1\r\ncirvane-spike recovery outcome=0 epoch=2 stale=0 health=0\r\ncirvane-spike kernel sched=2 msg=1 cap=1 panic=0\r\ncirvane-spike config gen=42 fallback=1 durable=1\r\ncirvane-spike ota refuse=1 boot_unchanged=1\r\ncirvane-spike otadata live=1 refuse_write=1 restored=1 slot=0 crc=1\r\ncirvane-spike adv exhaust=1 cap=1 stale=1 budget=1 nested=1 syscall=1 wrap=1\r\ncirvane-spike hal gpio=1 entropy=1 wdt=0\r\ncirvane-spike res sram=15568 stack=256 sched=136 rec=908\r\ncirvane-spike lat n=30 sched_med=112 sched_p95=131 msg_med=156 msg_p95=161 irq_med=36 irq_p95=39\r\ncirvane-spike freertos=absent\r\ncirvane-spike uart=ok\r\ncirvane-spike result=PASS\r\ncirvane-spike result=PASS\r\ncirvane-spike result=PASS\r\ncirvane-spike result=PASS\r\ncirvane-spike result=PASS\r\ncirvane-spike result=PASS\r\ncirvane-spike result=PASS\r\ncirvane-spike result=PASS\r\n",
+  "resources": {
+    "sram_bytes": 15568,
+    "stack_bytes": 256,
+    "sched_ticks": 136,
+    "rec_ticks": 908
+  },
+  "flash_size": 79648,
+  "boot_kind": "jtag_warm_reset",
+  "boot_s": [
+    0.44929683400550857,
+    0.4457111670053564,
+    0.4446278339601122,
+    0.44496704096673056,
+    0.43593441700795665,
+    0.4428901670034975,
+    0.4437261670245789,
+    0.4437018330208957,
+    0.44273795804474503,
+    0.44143433298449963,
+    0.44394074997399
+  ],
+  "latency": {
+    "n": 30,
+    "sched_med": 112,
+    "sched_p95": 131,
+    "msg_med": 156,
+    "msg_p95": 161,
+    "irq_med": 36,
+    "irq_p95": 39
+  },
+  "boot_cold_kind": "usb_power_cycle",
+  "boot_cold_s": [
+    0.4731927909888327,
+    0.4583559170132503,
+    0.45599266700446606,
+    0.4057873329729773,
+    0.45002016599755734
+  ]
 }

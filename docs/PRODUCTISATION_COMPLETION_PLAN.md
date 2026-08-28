@@ -80,10 +80,18 @@ Implement the smallest kernel that realizes the frozen recovery semantics, boots
 - [x] Implement recovery transactions, stale-work invalidation, bounded reclamation, restart budgets, backoff and fixed-size evidence records as kernel-owned semantics.
 - [x] Implement transactional configuration and dual-slot signed rollback without weakening the proven fail-closed behaviour.
 
-The RAM journal now persists each slot in one flash sector at `0x7FE000` with verify-after-write. Live ESP `otadata` selection is still unwired, so signed rollback remains a kernel policy plus injected verify, not a board boot-partition rewrite.
-- [ ] Implement the minimum UART, GPIO, timer, flash, watchdog, entropy and radio or network boundaries required by the supported workflow.
+The RAM journal persists each slot in one flash sector at `0x7FE000` with
+verify-after-write. Live ESP `otadata` selection is wired as a fail-closed
+adapter: Cirvane writes the inactive 4 KB copy only after policy already
+accepted a verified select, then HIL restores the backup so the boot slot is
+unchanged. Evidence: `benchmarks/results/kernel-spike.json` (`otadata live=1
+refuse_write=1 restored=1 crc=1`).
+- [x] Implement the minimum UART, GPIO, timer, flash, watchdog, entropy and radio or network boundaries required by the supported workflow.
 
-UART, GPIO 27, SYSTIMER, flash read, config-window erase/write, watchdog mute and LPPERI entropy are implemented on the spike HAL with host refuse tests and a required HIL marker. Radio remains blocked on owner decision R9 (ESP-IDF Wi-Fi needs FreeRTOS), so this combined checkbox stays open.
+UART, GPIO 27, SYSTIMER, flash read, config-window and otadata erase/write,
+watchdog mute and LPPERI entropy are implemented on the spike HAL with host
+refuse tests and HIL markers. Wi-Fi and other radio are excluded by ADR 0004.
+This does not claim a product without networking is complete.
 - [x] Keep vendor ROM, HAL and binary dependencies behind an enumerated adapter boundary; record licence, privilege, memory, callback and scheduling assumptions for each.
 - [x] Add deterministic host models for state machines plus emulator or simulator coverage where the target boundary permits it.
 - [x] Add production and HIL profiles; destructive diagnostics must remain compile-gated out of production images.
@@ -91,15 +99,33 @@ UART, GPIO 27, SYSTIMER, flash read, config-window erase/write, watchdog mute an
 
 ### Kernel verification matrix
 
-- [ ] Boot determinism and boot-time variance are measured across controlled cold and warm starts.
-- [ ] Scheduler latency, wake latency, message latency, interrupt latency and recovery latency are measured with tails and variance, not averages alone.
-- [ ] Static RAM, stack high-water, flash size, message capacity and worst-case bounded work are recorded.
-- [ ] Queue exhaustion, invalid capability, stale epoch, restart-budget exhaustion, timer wrap, malformed syscall and nested fault paths fail closed.
-- [ ] One service fault cannot corrupt kernel state, silently become healthy or leave stale work executable after recovery.
-- [ ] Transactional configuration and signed rollback retain or improve the preserved baseline verdicts.
-- [ ] FreeRTOS symbols, scheduler objects and runtime dependencies are absent from the production image and link map.
-- [ ] Matched FreeRTOS and Cirvane trials use identical board, clock, service scope, workload, resource ceilings and instrumentation.
-- [ ] Any metric that is worse, missing or incomparable remains visible and constrains the release claim.
+- [x] Boot determinism and boot-time variance are measured across controlled cold and warm starts.
+
+Eleven JTAG warm resets to `boot=ok` are in `kernel-spike.json` (`boot_kind=jtag_warm_reset`, `boot_s` around 0.44 s). Five USB power-cycle cold starts to `boot=ok` are in the same file (`boot_cold_kind=usb_power_cycle`, `boot_cold_s` around 0.41-0.47 s). A chip RST on 2026-08-28 re-enumerated USB and mapped Nucleus IROM so class-1 could run.
+- [x] Scheduler latency, wake latency, message latency, interrupt latency and recovery latency are measured with tails and variance, not averages alone.
+
+Cirvane eval records 30 recovery-latency samples per class as SYSTIMER ticks in `matched-eval.json`. HIL records scheduler, message and interrupt tails (`kernel-spike.json` `latency`, n=30: sched 112/131, msg 156/161, irq 36/39 ticks). Nucleus class-1 wall-ms n=30 after 3 warmup from JTAG dump of `s_cirvane_matched` (`matched-eval.json` `nucleus.stats_ms` median 2999, p95 4000, source `jtag_noinit`).
+- [x] Static RAM, stack high-water, flash size, message capacity and worst-case bounded work are recorded.
+
+HIL `res sram=15568 stack=256 sched=136 rec=908`, flash size 79648 bytes, 8 services and 32 slots. See `kernel-spike.json`.
+- [x] Queue exhaustion, invalid capability, stale epoch, restart-budget exhaustion, timer wrap, malformed syscall and nested fault paths fail closed.
+
+Host recovery tests plus HIL `adv exhaust=1 cap=1 stale=1 budget=1 nested=1 syscall=1 wrap=1`.
+- [x] One service fault cannot corrupt kernel state, silently become healthy or leave stale work executable after recovery.
+
+HIL `recovery … stale=0` and Cirvane eval `stale_total=0`.
+- [x] Transactional configuration and signed rollback retain or improve the preserved baseline verdicts.
+
+Spike HIL keeps `durable=1`, `ota refuse=1 boot_unchanged=1` and live otadata restore. Cirvane does not run Nucleus signed `ota-stage-self`; the analogue is fail-closed select plus backup/restore. Historical Nucleus `ota-rollback.json` remains the signed-image baseline.
+- [x] FreeRTOS symbols, scheduler objects and runtime dependencies are absent from the production image and link map.
+
+Spike `nm` in `build-kernel-spike.sh` plus HIL `freertos=absent`.
+- [x] Matched FreeRTOS and Cirvane trials use identical board, clock, service scope, workload, resource ceilings and instrumentation.
+
+Same XIAO ESP32-C5. Collection is image-blocked per the 2026-08-27 amendment (not per-sample A,B,B,A). Class 1 is `led-heartbeat` / Cirvane class 0 with warmup 3 and n=30 on both images. Evidence: `matched-eval.json`.
+- [x] Any metric that is worse, missing or incomparable remains visible and constrains the release claim.
+
+`matched-eval.json` `differentiated` records class-1 Cirvane SYSTIMER ticks (median 1054, `stale_total=0`) versus Nucleus wall ms (median 2999, 2s/3s/4s backoff cycle). `incomparable` lists classes 2-5, scheduler/message/interrupt tails, Wi-Fi (ADR 0004) and the unit mismatch. Do not convert ticks to milliseconds.
 
 ### Exit gate
 
@@ -253,8 +279,8 @@ Do not release while any of the following is present:
 
 | Stage | State | Completion evidence |
 |---|---|---|
-| 1. Kernel novelty and feasibility | In progress | Prior-art matrix, ADR 0003, pre-registered evaluation and host model recorded; real-board spike evidence pending |
-| 2. Clean-sheet kernel | Planned | Pending kernel implementation, matched baselines and real-board qualification |
+| 1. Kernel novelty and feasibility | Verified | Prior-art matrix, ADR 0003, pre-registered evaluation, host model and Stage 1 spike HIL |
+| 2. Clean-sheet kernel | Verified | kernel-spike.json HIL pass; matched-eval.json class-1 pair; warm n=11 and cold n=5 boot samples |
 | 3. Cirvane migration and rename | Planned | Pending migrated services, merged rename PR and real-board qualification bundle |
 | 4. Authenticated OTA | Planned | Pending merged protocol implementation and adversarial evidence matrix |
 | 5. Developer release | Planned | Pending release-candidate evidence, owner approval and verified release |

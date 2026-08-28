@@ -65,7 +65,8 @@ at two 4096-byte sectors starting at `0x7FE000`, after the large dual-OTA
 partitions. Commit erases one sector, writes the 24-byte record and publishes
 only after a matching read-back. Out-of-window erase and write refuse.
 Corrupt-slot injection is compile-gated (`CIRVANE_HIL_SPIKE` /
-`CIRVANE_CFG_TEST`). Live ESP `otadata` selection is not in this increment.
+`CIRVANE_CFG_TEST`). Live ESP `otadata` selection is the enumerated adapter
+in `kernel/otadata.c`.
 
 ## Dual-slot rollback policy
 
@@ -76,22 +77,23 @@ and same-slot staging refuse and leave the boot slot unchanged. Confirm marks a
 pending running image valid. Rollback of an unconfirmed pending image returns
 to the previous valid slot.
 
-Image signature parsing and ESP `otadata` writes stay in a vendor adapter. This
-module owns the fail-closed selection rule: Cirvane never selects a slot when
-the adapter reports failure. This increment does not rewrite board `otadata`.
+Image signature parsing stays outside this module. Live ESP `otadata`
+selection is an enumerated adapter: it writes one 32-byte
+`esp_ota_select_entry_t` with ROM CRC32 of `ota_seq`, then HIL restores the
+backup. Cirvane never selects a slot when the verify adapter fails.
 
 ## Hardware abstraction
 
 The HAL is fail-closed and allocator-free. Empty UART writes, GPIO pins at or
 above 32, levels other than 0/1, flash reads of length 0, unaligned length,
 oversize copies or out-of-range offsets refuse. Flash erase and write are
-refused unless they stay inside the two-sector config window, stay sector or
-4-byte aligned as required, and do not cross a sector on write. The C5 port
-additionally restricts GPIO to pin 27 (XIAO user LED), requires 4-byte-aligned
-flash length and destination, and uses ROM SPI read, erase, write and unlock,
-USB Serial/JTAG TX, SYSTIMER, TIMG/LP watchdog mute and LPPERI RNG. `otadata`
-and radio are not in this increment. Host tests link `hal_host.c`; the spike
-links `spike/hal_c5.c`.
+refused unless they stay inside the two-sector config window or the 8 KB
+otadata window, stay sector or 4-byte aligned as required, and do not cross a
+sector on write. The C5 port additionally restricts GPIO to pin 27 (XIAO user
+LED), requires 4-byte-aligned flash length and destination, and uses ROM SPI
+read, erase, write and unlock, USB Serial/JTAG TX, SYSTIMER, TIMG/LP watchdog
+mute and LPPERI RNG. Radio is excluded (ADR 0004). Host tests link
+`hal_host.c`; the spike links `spike/hal_c5.c`.
 
 ## Panic
 
@@ -103,12 +105,14 @@ see the marker; that loop is idle, not panic.
 
 ## Compile profiles
 
-`scripts/build-kernel-spike.sh` accepts `hil` (default) or `production`.
-HIL defines `CIRVANE_HIL_SPIKE` and includes corrupt-config injection plus the
-`result=PASS` reprint loop. Production defines `CIRVANE_SPIKE_PRODUCTION`,
-prints `cirvane boot=ok`, then a quiet `cirvane>` USB shell with no heartbeat.
-Inject symbols and PASS reprint must be absent from the production image.
-Neither profile is a complete product kernel or a matched-evaluation image.
+`scripts/build-kernel-spike.sh` accepts `hil` (default), `production` or
+`eval`. HIL defines `CIRVANE_HIL_SPIKE` and includes corrupt-config injection
+plus the `result=PASS` reprint loop. Production defines
+`CIRVANE_SPIKE_PRODUCTION`, prints `cirvane boot=ok`, then a quiet `cirvane>`
+USB shell with no heartbeat. Eval defines `CIRVANE_SPIKE_EVAL` and emits
+`cirvane-eval` recovery samples. Inject symbols and PASS reprint must be
+absent from production and eval images. None of these is a complete product
+kernel.
 
 ## Crash, evidence and quiet shell
 
@@ -122,7 +126,10 @@ on that path. The shell is privileged and unauthenticated.
 
 ## Not in this increment
 
-Live ESP `otadata` selection, live user-mode `mret`, radio/Wi-Fi, matched
-FreeRTOS evaluation and adversarial kernel qualification remain unchecked. The
-Stage 2 UART/GPIO/timer/flash/watchdog/entropy/radio checkbox stays open
-because radio is blocked on owner decision R9.
+Power-cycle cold-start variance of the spike `boot=ok` path is in
+`kernel-spike.json` (`boot_cold_kind=usb_power_cycle`, n=5, about 0.41-0.47 s)
+beside JTAG warm resets (`boot_kind=jtag_warm_reset`, n=11, about 0.44 s).
+Matched Nucleus class-1 n=30 wall-ms samples are in `matched-eval.json`
+(`source=jtag_noinit`, median 2999, p95 4000) beside Cirvane eval ticks
+(`stale_total=0`). Message and interrupt latency tails are in
+`kernel-spike.json`. Radio/Wi-Fi and live user-mode `mret` remain open.

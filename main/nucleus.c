@@ -37,6 +37,8 @@
 #include "esp_timer.h"
 #include "esp_flash.h"
 #include "esp_console.h"
+#include "esp_system.h"
+#include "esp_attr.h"
 #include "nvs_flash.h"
 #include "nvs.h"
 #include "esp_wifi.h"
@@ -584,10 +586,111 @@ static void wifi_service_tick(void *ctx)
     }
 }
 
+#if CONFIG_NUCLEUS_HIL_DIAGNOSTICS
+#define CIRVANE_MATCHED_MAGIC 0xC1455E01u
+#define CIRVANE_MATCHED_N 33u
+
+typedef struct {
+    uint32_t magic;
+    uint32_t count;
+    uint32_t done;
+    uint32_t ms[CIRVANE_MATCHED_N];
+} cirvane_matched_rec_t;
+
+__NOINIT_ATTR static volatile cirvane_matched_rec_t s_cirvane_matched;
+
+static uint32_t hil_service_phase(uint8_t idx)
+{
+    svc_info_t info;
+    if (!nucleus_manager_get_info(idx, &info)) {
+        return 0xffu;
+    }
+    return (uint32_t)info.phase;
+}
+
+static void hil_matched_class1(void)
+{
+    const uint8_t svc = 0;
+    uint32_t spins = 0;
+    uint32_t batch = 0;
+
+    if (s_cirvane_matched.magic != CIRVANE_MATCHED_MAGIC) {
+        memset((void *)&s_cirvane_matched, 0, sizeof(s_cirvane_matched));
+        s_cirvane_matched.magic = CIRVANE_MATCHED_MAGIC;
+    }
+    if (s_cirvane_matched.done || s_cirvane_matched.count >= CIRVANE_MATCHED_N) {
+        s_cirvane_matched.done = 1;
+        return;
+    }
+    while (hil_service_phase(svc) != SVC_PHASE_RUNNING && spins < 500u) {
+        vTaskDelay(pdMS_TO_TICKS(20));
+        spins++;
+    }
+    if (hil_service_phase(svc) != SVC_PHASE_RUNNING) {
+        return;
+    }
+    while (s_cirvane_matched.count < CIRVANE_MATCHED_N && batch < 3u) {
+        int64_t t0 = esp_timer_get_time();
+        int64_t deadline = t0 + 15000000;
+        bool left = false;
+        bool back = false;
+        nucleus_service_report_health(svc, NUCLEUS_HEALTH_FAILED);
+        nucleus_supervisor_kick();
+        while (esp_timer_get_time() < deadline) {
+            uint32_t phase = hil_service_phase(svc);
+            if (phase == SVC_PHASE_BACKOFF || phase == SVC_PHASE_FAILED) {
+                left = true;
+            }
+            if (left && phase == SVC_PHASE_RUNNING) {
+                back = true;
+                break;
+            }
+            vTaskDelay(pdMS_TO_TICKS(20));
+        }
+        if (!back) {
+            return;
+        }
+        s_cirvane_matched.ms[s_cirvane_matched.count] =
+            (uint32_t)((esp_timer_get_time() - t0) / 1000);
+        s_cirvane_matched.count++;
+        batch++;
+    }
+    if (s_cirvane_matched.count >= CIRVANE_MATCHED_N) {
+        s_cirvane_matched.done = 1;
+        return;
+    }
+    esp_restart();
+}
+#endif
+
 /* -------------------------------- shell ------------------------------- */
 
 static void shell_start(void)
 {
+#if !CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG
+    (void)cmd_info;
+    (void)cmd_ps;
+    (void)cmd_led;
+    (void)cmd_scan;
+    (void)cmd_svc;
+    (void)cmd_svcctl;
+    (void)cmd_bus;
+    (void)cmd_boot;
+    (void)cmd_res;
+    (void)cmd_power;
+    (void)cmd_ota_confirm;
+    (void)cmd_ota_status;
+    (void)cmd_config;
+    (void)cmd_selftest;
+#if CONFIG_NUCLEUS_HIL_DIAGNOSTICS
+    (void)cmd_svcfail;
+    (void)cmd_ota_stage_self;
+    (void)cmd_ota_reject_corrupt;
+    (void)cmd_config_corrupt_test;
+#endif
+    (void)s_repl;
+    return;
+#else
     esp_console_repl_config_t repl_cfg = ESP_CONSOLE_REPL_CONFIG_DEFAULT();
     repl_cfg.prompt = "nucleus> ";
     esp_console_dev_usb_serial_jtag_config_t dev_cfg =
@@ -657,6 +760,7 @@ static void shell_start(void)
     register_system_common();
 
     ESP_ERROR_CHECK(esp_console_start_repl(s_repl));
+#endif
 }
 
 void app_main(void)
@@ -701,7 +805,8 @@ void app_main(void)
     ESP_ERROR_CHECK(nucleus_bus_subscribe(s_led_service, NUCLEUS_MSG_LED_MODE));
     ESP_ERROR_CHECK(nucleus_bus_subscribe(s_wifi_service, NUCLEUS_MSG_SCAN_REQUEST));
     nucleus_manager_start();
-
-    ESP_LOGI(TAG, "nucleus v2 online; type 'help' at the prompt");
-    shell_start(); /* spawns its own REPL task */
+#if CONFIG_NUCLEUS_HIL_DIAGNOSTICS
+    hil_matched_class1();
+#endif
+    shell_start();
 }

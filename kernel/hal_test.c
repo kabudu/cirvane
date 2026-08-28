@@ -84,6 +84,10 @@ static void test_flash_timer_wdt_entropy(void)
                CIRVANE_HAL_OK,
            "read cfg");
     expect(buf[0] == 0x11 && buf[3] == 0x44, "cfg payload");
+    expect(cirvane_hal_timer_delta(2, 0xfffffffeu) == 4, "timer wrap");
+    expect(cirvane_hal_flash_erase(CIRVANE_OTA_FLASH_BASE, CIRVANE_FLASH_SECTOR) ==
+               CIRVANE_HAL_OK,
+           "erase otadata");
     expect(cirvane_hal_entropy(&e0) == CIRVANE_HAL_OK, "e0");
     expect(cirvane_hal_entropy(&e1) == CIRVANE_HAL_OK, "e1");
     expect(e0 != e1, "entropy changes");
