@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Collect reproducible Nucleus shell latency and warm-restart samples."""
+"""Collect reproducible Cirvane shell latency and warm-restart samples."""
 
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ from pathlib import Path
 import serial
 
 
-PROMPT = b"nucleus>"
+PROMPT = b"cirvane>"
 
 
 def open_port(path: str, deadline: float) -> serial.Serial:

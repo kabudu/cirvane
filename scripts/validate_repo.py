@@ -3,6 +3,7 @@
 
 from pathlib import Path
 import json
+import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -18,12 +19,27 @@ REQUIRED = [
     "docs/ENGINEERING_REVIEW.md", "docs/DECISIONS/0001-project-scope.md",
     "docs/DECISIONS/0002-clean-sheet-kernel-release.md",
     "docs/DECISIONS/0003-bounded-recovery-transaction.md",
+    "docs/DECISIONS/0005-first-cirvane-firmware-on-idf.md",
     "docs/KERNEL_SPIKE.md",
     "docs/KERNEL.md",
     "docs/DEPENDENCY_INVENTORY.md",
     "docs/MATCHED_EVALUATION.md",
     "docs/brand/ASSET_USAGE.md",
 ]
+CURRENT_PRODUCT_IDENTITY_FILES = [
+    "CMakeLists.txt",
+    "main/CMakeLists.txt",
+    "main/Kconfig.projbuild",
+    "main/cirvane.c",
+    "main/cirvane_os.c",
+    "main/cirvane_os.h",
+    "sdkconfig.defaults",
+    "sdkconfig.hil.defaults",
+    "sdkconfig.ci.defaults",
+    "scripts/ci-local.sh",
+    "benchmarks/tools/serial_benchmark.py",
+]
+NUCLEUS_TOKEN = re.compile(r"nucleus", re.IGNORECASE)
 
 
 def fail(message: str) -> None:
@@ -54,5 +70,24 @@ for path in ROOT.rglob("*"):
             json.loads(text)
         except (UnicodeDecodeError, json.JSONDecodeError):
             fail(f"invalid JSON: {relative}")
+
+for leftover in ("main/nucleus.c", "main/nucleus_os.c", "main/nucleus_os.h"):
+    if (ROOT / leftover).is_file():
+        fail(f"retired Nucleus source still present: {leftover}")
+for relative in CURRENT_PRODUCT_IDENTITY_FILES:
+    path = ROOT / relative
+    if not path.is_file():
+        fail(f"missing current-product identity file {relative}")
+    if NUCLEUS_TOKEN.search(path.read_text(encoding="utf-8")):
+        fail(f"current-product Nucleus identifier in {relative}")
+cmake = (ROOT / "CMakeLists.txt").read_text(encoding="utf-8")
+if "project(cirvane)" not in cmake:
+    fail("root CMakeLists.txt must declare project(cirvane)")
+ci_local = (ROOT / "scripts/ci-local.sh").read_text(encoding="utf-8")
+if "build/ci/cirvane.bin" not in ci_local:
+    fail("ci-local must inspect build/ci/cirvane.bin")
+main_src = (ROOT / "main/cirvane.c").read_text(encoding="utf-8")
+if 'repl_cfg.prompt = "cirvane> "' not in main_src:
+    fail("USB shell prompt must be cirvane>")
 
 print("repository metadata validation passed")

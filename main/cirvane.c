@@ -1,8 +1,12 @@
-/* Nucleus - a small operating system for the Seeed Studio XIAO ESP32-C5.
+/* Cirvane - bounded supervised firmware for the Seeed Studio XIAO ESP32-C5.
  *
- * Architecture (deliberately simple, per Lazarus-mode rigor):
- *   - Kernel: ESP-IDF's FreeRTOS (single-core RISC-V @ 240 MHz). Writing
- *     our own scheduler would add risk with no requirement behind it.
+ * This product image is powered by ESP-IDF and FreeRTOS (ADR 0005). Cirvane
+ * owns the service supervisor, bounded message bus, capabilities,
+ * configuration journal, shell and OTA policy. A clean-sheet kernel remains
+ * research and is not this firmware.
+ *
+ * Architecture:
+ *   - Scheduler: ESP-IDF's FreeRTOS (single-core RISC-V @ 240 MHz).
  *   - Shell: esp_console REPL on the built-in USB-Serial/JTAG port. The
  *     operator gets an interactive prompt with tab completion and history.
  *   - Supervisor: a heartbeat task proves liveness every 10 s, and the
@@ -42,9 +46,9 @@
 #include "esp_wifi.h"
 #include "esp_event.h"
 #include "cmd_system.h"
-#include "nucleus_os.h"
+#include "cirvane_os.h"
 
-static const char *TAG = "nucleus";
+static const char *TAG = "cirvane";
 
 #define LED_GPIO         GPIO_NUM_27
 #define MAX_AP_RECORDS   20
@@ -62,9 +66,9 @@ typedef enum {
 static volatile led_mode_t s_led_mode = LED_MODE_BLINK;
 static uint32_t s_boot_count;
 static esp_console_repl_t *s_repl;
-static uint8_t s_led_service = NUCLEUS_SERVICE_INVALID;
-static uint8_t s_wifi_service = NUCLEUS_SERVICE_INVALID;
-static nucleus_config_t s_os_config;
+static uint8_t s_led_service = CIRVANE_SERVICE_INVALID;
+static uint8_t s_wifi_service = CIRVANE_SERVICE_INVALID;
+static cirvane_config_t s_os_config;
 enum {
     WIFI_INIT_NONE,
     WIFI_INIT_NETIF,
@@ -173,20 +177,20 @@ static int cmd_led(int argc, char **argv)
         printf("usage: led on|off|blink\n");
         return 1;
     }
-    if (!nucleus_caps_check(NUCLEUS_SERVICE_INVALID, NUCLEUS_CAP_LED)) {
+    if (!cirvane_caps_check(CIRVANE_SERVICE_INVALID, CIRVANE_CAP_LED)) {
         printf("permission denied\n");
         return 1;
     }
-    nucleus_msg_t *msg = nucleus_bus_alloc();
+    cirvane_msg_t *msg = cirvane_bus_alloc();
     if (msg == NULL) {
         printf("message bus busy\n");
         return 1;
     }
-    msg->type = NUCLEUS_MSG_LED_MODE;
-    msg->sender = NUCLEUS_SENDER_SHELL;
+    msg->type = CIRVANE_MSG_LED_MODE;
+    msg->sender = CIRVANE_SENDER_SHELL;
     msg->payload_len = 1;
     msg->payload[0] = mode;
-    nucleus_bus_publish(msg);
+    cirvane_bus_publish(msg);
     return 0;
 }
 
@@ -197,25 +201,25 @@ static int cmd_scan(int argc, char **argv)
 {
     (void)argc;
     (void)argv;
-    if (!nucleus_caps_check(NUCLEUS_SERVICE_INVALID, NUCLEUS_CAP_WIFI)) {
+    if (!cirvane_caps_check(CIRVANE_SERVICE_INVALID, CIRVANE_CAP_WIFI)) {
         printf("permission denied\n");
         return 1;
     }
-    nucleus_msg_t *msg = nucleus_bus_alloc();
+    cirvane_msg_t *msg = cirvane_bus_alloc();
     if (msg == NULL) {
         printf("message bus busy\n");
         return 1;
     }
-    msg->type = NUCLEUS_MSG_SCAN_REQUEST;
-    msg->sender = NUCLEUS_SENDER_SHELL;
-    nucleus_bus_publish(msg);
+    msg->type = CIRVANE_MSG_SCAN_REQUEST;
+    msg->sender = CIRVANE_SENDER_SHELL;
+    cirvane_bus_publish(msg);
     printf("scan queued; results follow asynchronously\n");
     return 0;
 }
 
 static void run_wifi_scan(void)
 {
-    uint32_t scan_started_ms = nucleus_uptime_ms();
+    uint32_t scan_started_ms = cirvane_uptime_ms();
     uint16_t max_records = MAX_AP_RECORDS;
     wifi_ap_record_t ap_info[MAX_AP_RECORDS];
     uint16_t ap_count = 0;
@@ -243,7 +247,7 @@ static void run_wifi_scan(void)
         if (s_wifi_init_stage == WIFI_INIT_DRIVER && err == ESP_OK) err = esp_wifi_start();
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "Wi-Fi lazy init failed: %s", esp_err_to_name(err));
-            nucleus_service_report_health(s_wifi_service, NUCLEUS_HEALTH_DEGRADED);
+            cirvane_service_report_health(s_wifi_service, CIRVANE_HEALTH_DEGRADED);
             return;
         }
         s_wifi_init_stage = WIFI_INIT_READY;
@@ -253,16 +257,16 @@ static void run_wifi_scan(void)
     printf("scanning both bands...\n");
     esp_err_t err = esp_wifi_scan_start(NULL, true); /* blocking, all channels */
     if (err != ESP_OK) {
-        nucleus_res_record_radio(s_wifi_service,
-                                 nucleus_uptime_ms() - scan_started_ms);
+        cirvane_res_record_radio(s_wifi_service,
+                                 cirvane_uptime_ms() - scan_started_ms);
         ESP_LOGE(TAG, "scan failed: %s", esp_err_to_name(err));
-        nucleus_service_report_health(s_wifi_service, NUCLEUS_HEALTH_DEGRADED);
+        cirvane_service_report_health(s_wifi_service, CIRVANE_HEALTH_DEGRADED);
         return;
     }
     ESP_ERROR_CHECK(esp_wifi_scan_get_ap_num(&ap_count));
     ESP_ERROR_CHECK(esp_wifi_scan_get_ap_records(&max_records, ap_info));
-    nucleus_res_record_radio(s_wifi_service,
-                             nucleus_uptime_ms() - scan_started_ms);
+    cirvane_res_record_radio(s_wifi_service,
+                             cirvane_uptime_ms() - scan_started_ms);
 
     printf("%u APs visible (%u shown)\n", ap_count, max_records);
     for (int i = 0; i < max_records; i++) {
@@ -271,7 +275,7 @@ static void run_wifi_scan(void)
         printf("%2d. %-32s %-5s ch=%3d rssi=%4d\n",
                i + 1, (const char *)ap->ssid, band, ap->primary, ap->rssi);
     }
-    nucleus_service_report_health(s_wifi_service, NUCLEUS_HEALTH_OK);
+    cirvane_service_report_health(s_wifi_service, CIRVANE_HEALTH_OK);
 }
 
 static int cmd_svc(int argc, char **argv)
@@ -279,13 +283,13 @@ static int cmd_svc(int argc, char **argv)
     (void)argc;
     (void)argv;
     printf("system=%s services=%u\n",
-           nucleus_system_state() == NUCLEUS_SYS_NOMINAL ? "nominal" : "degraded",
-           nucleus_manager_count());
+           cirvane_system_state() == CIRVANE_SYS_NOMINAL ? "nominal" : "degraded",
+           cirvane_manager_count());
     printf("%-3s %-14s %-9s %-7s %-8s %s\n",
            "id", "name", "phase", "health", "restarts", "last/max ms");
-    for (uint8_t idx = 0; idx < nucleus_manager_count(); ++idx) {
+    for (uint8_t idx = 0; idx < cirvane_manager_count(); ++idx) {
         svc_info_t info;
-        if (nucleus_manager_get_info(idx, &info)) {
+        if (cirvane_manager_get_info(idx, &info)) {
             printf("%-3u %-14s %-9s %-7u %-8u %" PRIu32 "/%" PRIu32 "\n",
                    idx, info.name, phase_name(info.phase), info.last_health,
                    info.restarts, info.last_run_ms, info.max_run_ms);
@@ -296,17 +300,17 @@ static int cmd_svc(int argc, char **argv)
 
 static int cmd_svcctl(int argc, char **argv)
 {
-    if (argc != 3 || !nucleus_caps_check(NUCLEUS_SERVICE_INVALID, NUCLEUS_CAP_SVCCTL)) {
+    if (argc != 3 || !cirvane_caps_check(CIRVANE_SERVICE_INVALID, CIRVANE_CAP_SVCCTL)) {
         printf("usage: svcctl <id> <start|stop|restart>\n");
         return 1;
     }
     char *end = NULL;
     unsigned long idx = strtoul(argv[1], &end, 10);
-    if (end == argv[1] || *end != '\0' || idx >= nucleus_manager_count()) {
+    if (end == argv[1] || *end != '\0' || idx >= cirvane_manager_count()) {
         printf("invalid service id\n");
         return 1;
     }
-    esp_err_t err = nucleus_svc_control((uint8_t)idx, argv[2]);
+    esp_err_t err = cirvane_svc_control((uint8_t)idx, argv[2]);
     if (err != ESP_OK) {
         printf("svcctl failed: %s\n", esp_err_to_name(err));
         return 1;
@@ -314,22 +318,22 @@ static int cmd_svcctl(int argc, char **argv)
     return 0;
 }
 
-#if CONFIG_NUCLEUS_HIL_DIAGNOSTICS
+#if CONFIG_CIRVANE_HIL_DIAGNOSTICS
 static int cmd_svcfail(int argc, char **argv)
 {
     if (argc != 2 ||
-        !nucleus_caps_check(NUCLEUS_SERVICE_INVALID, NUCLEUS_CAP_SVCCTL)) {
+        !cirvane_caps_check(CIRVANE_SERVICE_INVALID, CIRVANE_CAP_SVCCTL)) {
         printf("usage: svcfail <id>\n");
         return 1;
     }
     char *end = NULL;
     unsigned long idx = strtoul(argv[1], &end, 10);
-    if (end == argv[1] || *end != '\0' || idx >= nucleus_manager_count()) {
+    if (end == argv[1] || *end != '\0' || idx >= cirvane_manager_count()) {
         printf("invalid service id\n");
         return 1;
     }
-    nucleus_service_report_health((uint8_t)idx, NUCLEUS_HEALTH_FAILED);
-    nucleus_supervisor_kick();
+    cirvane_service_report_health((uint8_t)idx, CIRVANE_HEALTH_FAILED);
+    cirvane_supervisor_kick();
     printf("failure injected into service %lu; inspect with svc\n", idx);
     return 0;
 }
@@ -339,10 +343,10 @@ static int cmd_bus(int argc, char **argv)
 {
     (void)argc;
     (void)argv;
-    nucleus_bus_stats_t stats;
-    nucleus_bus_get_stats(&stats);
+    cirvane_bus_stats_t stats;
+    cirvane_bus_get_stats(&stats);
     printf("pool free=%u/%u peak=%u drops=%u alloc_fails=%u\n",
-           stats.free_slots, NUCLEUS_MSG_POOL_SLOTS, stats.peak_used,
+           stats.free_slots, CIRVANE_MSG_POOL_SLOTS, stats.peak_used,
            stats.total_drops, stats.alloc_fails);
     return 0;
 }
@@ -351,7 +355,7 @@ static int cmd_boot(int argc, char **argv)
 {
     (void)argc;
     (void)argv;
-    const nucleus_boot_timing_t *timing = nucleus_boot_timing();
+    const cirvane_boot_timing_t *timing = cirvane_boot_timing();
     printf("nvs=%" PRIu32 " bus=%" PRIu32 " services=%" PRIu32
            " tasks=%" PRIu32 " first_tick=%" PRIu32 " ms\n",
            timing->nvs_done_ms, timing->bus_ready_ms, timing->services_inited_ms,
@@ -364,11 +368,11 @@ static int cmd_res(int argc, char **argv)
     (void)argc;
     (void)argv;
     printf("%-3s %-14s %-10s %-10s %-5s %s\n", "id", "name", "stack_min", "heap_delta", "cpu%", "radio_ms");
-    for (uint8_t idx = 0; idx < nucleus_manager_count(); ++idx) {
+    for (uint8_t idx = 0; idx < cirvane_manager_count(); ++idx) {
         svc_info_t info;
-        nucleus_res_usage_t usage;
-        if (nucleus_manager_get_info(idx, &info)) {
-            nucleus_res_get(idx, &usage);
+        cirvane_res_usage_t usage;
+        if (cirvane_manager_get_info(idx, &info)) {
+            cirvane_res_get(idx, &usage);
             printf("%-3u %-14s %-10u %-10" PRId32 " %-5u %" PRIu32 "\n",
                    idx, info.name, usage.stack_hwm, usage.heap_delta,
                    usage.cpu_percent, usage.radio_ms_window);
@@ -380,21 +384,21 @@ static int cmd_res(int argc, char **argv)
 static int cmd_power(int argc, char **argv)
 {
     if (argc == 1) {
-        printf("budget=%s\n", nucleus_budget_name(nucleus_power_current_budget()));
+        printf("budget=%s\n", cirvane_budget_name(cirvane_power_current_budget()));
         return 0;
     }
     if (argc < 2 || argc > 3) {
         printf("usage: power [active|watchdog|sentinel [wake_ms]]\n");
         return 1;
     }
-    if (!nucleus_caps_check(NUCLEUS_SERVICE_INVALID, NUCLEUS_CAP_POWER)) {
+    if (!cirvane_caps_check(CIRVANE_SERVICE_INVALID, CIRVANE_CAP_POWER)) {
         printf("permission denied\n");
         return 1;
     }
-    nucleus_budget_t budget;
-    if (strcmp(argv[1], "active") == 0) budget = NUCLEUS_BUDGET_ACTIVE;
-    else if (strcmp(argv[1], "watchdog") == 0) budget = NUCLEUS_BUDGET_WATCHDOG;
-    else if (strcmp(argv[1], "sentinel") == 0) budget = NUCLEUS_BUDGET_SENTINEL;
+    cirvane_budget_t budget;
+    if (strcmp(argv[1], "active") == 0) budget = CIRVANE_BUDGET_ACTIVE;
+    else if (strcmp(argv[1], "watchdog") == 0) budget = CIRVANE_BUDGET_WATCHDOG;
+    else if (strcmp(argv[1], "sentinel") == 0) budget = CIRVANE_BUDGET_SENTINEL;
     else {
         printf("usage: power [active|watchdog|sentinel [wake_ms]]\n");
         return 1;
@@ -402,13 +406,13 @@ static int cmd_power(int argc, char **argv)
     esp_err_t err;
     if (argc == 3) {
         uint32_t wake_ms;
-        if (!parse_u32_arg(argv[2], 100, NUCLEUS_MAX_SLEEP_MS, &wake_ms)) {
+        if (!parse_u32_arg(argv[2], 100, CIRVANE_MAX_SLEEP_MS, &wake_ms)) {
             printf("invalid wake_ms\n");
             return 1;
         }
-        err = nucleus_power_schedule(budget, wake_ms);
+        err = cirvane_power_schedule(budget, wake_ms);
     } else {
-        err = nucleus_power_set_budget(budget);
+        err = cirvane_power_set_budget(budget);
     }
     if (err != ESP_OK) {
         printf("power failed: %s\n", esp_err_to_name(err));
@@ -421,11 +425,11 @@ static int cmd_ota_confirm(int argc, char **argv)
 {
     (void)argc;
     (void)argv;
-    if (!nucleus_caps_check(NUCLEUS_SERVICE_INVALID, NUCLEUS_CAP_OTA)) {
+    if (!cirvane_caps_check(CIRVANE_SERVICE_INVALID, CIRVANE_CAP_OTA)) {
         printf("permission denied\n");
         return 1;
     }
-    esp_err_t err = nucleus_ota_confirm();
+    esp_err_t err = cirvane_ota_confirm();
     printf("ota confirm: %s\n", esp_err_to_name(err));
     return err == ESP_OK ? 0 : 1;
 }
@@ -443,20 +447,20 @@ static int cmd_ota_status(int argc, char **argv)
     printf("ota running=%s boot=%s state=%s query=%s\n",
            running == NULL ? "none" : running->label,
            boot == NULL ? "none" : boot->label,
-           nucleus_ota_state_name(state), esp_err_to_name(err));
+           cirvane_ota_state_name(state), esp_err_to_name(err));
     return err == ESP_OK ? 0 : 1;
 }
 
-#if CONFIG_NUCLEUS_HIL_DIAGNOSTICS
+#if CONFIG_CIRVANE_HIL_DIAGNOSTICS
 static int cmd_ota_stage_self(int argc, char **argv)
 {
     (void)argc;
     (void)argv;
-    if (!nucleus_caps_check(NUCLEUS_SERVICE_INVALID, NUCLEUS_CAP_OTA)) {
+    if (!cirvane_caps_check(CIRVANE_SERVICE_INVALID, CIRVANE_CAP_OTA)) {
         printf("permission denied\n");
         return 1;
     }
-    esp_err_t err = nucleus_ota_stage_self();
+    esp_err_t err = cirvane_ota_stage_self();
     printf("ota stage-self: %s\n", esp_err_to_name(err));
     return err == ESP_OK ? 0 : 1;
 }
@@ -465,7 +469,7 @@ static int cmd_ota_reject_corrupt(int argc, char **argv)
 {
     (void)argc;
     (void)argv;
-    esp_err_t err = nucleus_ota_reject_corrupt_test();
+    esp_err_t err = cirvane_ota_reject_corrupt_test();
     printf("ota corrupt rejection: %s\n", esp_err_to_name(err));
     return err == ESP_OK ? 0 : 1;
 }
@@ -474,7 +478,7 @@ static int cmd_config_corrupt_test(int argc, char **argv)
 {
     (void)argc;
     (void)argv;
-    esp_err_t err = nucleus_config_corruption_test();
+    esp_err_t err = cirvane_config_corruption_test();
     printf("config corrupt fallback: %s\n", esp_err_to_name(err));
     return err == ESP_OK ? 0 : 1;
 }
@@ -483,23 +487,23 @@ static int cmd_config_corrupt_test(int argc, char **argv)
 static int cmd_config(int argc, char **argv)
 {
     if (argc == 1) {
-        nucleus_config_get(&s_os_config);
+        cirvane_config_get(&s_os_config);
         printf("heartbeat_ms=%" PRIu32 " supervisor_ms=%" PRIu32 " led=%u\n",
                s_os_config.heartbeat_ms, s_os_config.supervisor_ms,
                s_os_config.default_led_mode);
         return 0;
     }
     if (argc != 3 || strcmp(argv[1], "heartbeat") != 0 ||
-        !nucleus_caps_check(NUCLEUS_SERVICE_INVALID, NUCLEUS_CAP_CONFIG)) {
+        !cirvane_caps_check(CIRVANE_SERVICE_INVALID, CIRVANE_CAP_CONFIG)) {
         printf("usage: config [heartbeat <1000..3600000>]\n");
         return 1;
     }
-    nucleus_config_get(&s_os_config);
+    cirvane_config_get(&s_os_config);
     if (!parse_u32_arg(argv[2], 1000, 3600000, &s_os_config.heartbeat_ms)) {
         printf("invalid heartbeat_ms\n");
         return 1;
     }
-    esp_err_t err = nucleus_config_commit(&s_os_config);
+    esp_err_t err = cirvane_config_commit(&s_os_config);
     if (err != ESP_OK) {
         printf("config commit failed: %s\n", esp_err_to_name(err));
         return 1;
@@ -512,15 +516,15 @@ static int cmd_selftest(int argc, char **argv)
 {
     (void)argc;
     (void)argv;
-    nucleus_bus_stats_t before;
-    nucleus_bus_get_stats(&before);
-    nucleus_msg_t *msg = nucleus_bus_alloc();
+    cirvane_bus_stats_t before;
+    cirvane_bus_get_stats(&before);
+    cirvane_msg_t *msg = cirvane_bus_alloc();
     bool bus_ok = msg != NULL;
-    nucleus_bus_free(msg);
-    nucleus_config_t cfg;
-    nucleus_config_get(&cfg);
+    cirvane_bus_free(msg);
+    cirvane_config_t cfg;
+    cirvane_config_get(&cfg);
     bool config_ok = cfg.schema_version == 1 && cfg.heartbeat_ms >= 1000;
-    bool service_ok = nucleus_manager_count() >= 2;
+    bool service_ok = cirvane_manager_count() >= 2;
     printf("selftest bus=%s config=%s services=%s result=%s\n",
            bus_ok ? "ok" : "fail", config_ok ? "ok" : "fail",
            service_ok ? "ok" : "fail",
@@ -538,15 +542,15 @@ static void led_service_tick(void *ctx)
 {
     (void)ctx;
     for (;;) {
-        nucleus_msg_t *msg = nucleus_bus_recv(s_led_service, 0);
+        cirvane_msg_t *msg = cirvane_bus_recv(s_led_service, 0);
         if (msg == NULL) break;
-        if (msg->type == NUCLEUS_MSG_LED_MODE && msg->payload_len == 1 &&
+        if (msg->type == CIRVANE_MSG_LED_MODE && msg->payload_len == 1 &&
             msg->payload[0] <= LED_MODE_BLINK) {
             s_led_mode = (led_mode_t)msg->payload[0];
         }
-        nucleus_bus_free(msg);
+        cirvane_bus_free(msg);
     }
-    if (nucleus_power_current_budget() != NUCLEUS_BUDGET_ACTIVE) {
+    if (cirvane_power_current_budget() != CIRVANE_BUDGET_ACTIVE) {
         gpio_set_level(LED_GPIO, 0);
         return;
     }
@@ -554,8 +558,8 @@ static void led_service_tick(void *ctx)
     gpio_set_level(LED_GPIO, s_led_mode == LED_MODE_ON ||
                              (s_led_mode == LED_MODE_BLINK && blink_state));
     static uint32_t last_heartbeat;
-    uint32_t now = nucleus_uptime_ms();
-    nucleus_config_get(&s_os_config);
+    uint32_t now = cirvane_uptime_ms();
+    cirvane_config_get(&s_os_config);
     if ((uint32_t)(now - last_heartbeat) >= s_os_config.heartbeat_ms) {
         last_heartbeat = now;
         /* Keep routine liveness telemetry below the default console level so
@@ -564,7 +568,7 @@ static void led_service_tick(void *ctx)
                  now / 1000, (unsigned)heap_caps_get_free_size(MALLOC_CAP_DEFAULT),
                  s_led_mode == LED_MODE_BLINK ? "blink" :
                  s_led_mode == LED_MODE_ON ? "on" : "off",
-                 nucleus_system_state() == NUCLEUS_SYS_NOMINAL ? "nominal" : "degraded");
+                 cirvane_system_state() == CIRVANE_SYS_NOMINAL ? "nominal" : "degraded");
     }
 }
 
@@ -576,11 +580,11 @@ static void wifi_service_init(void *ctx)
 static void wifi_service_tick(void *ctx)
 {
     (void)ctx;
-    if (nucleus_power_current_budget() != NUCLEUS_BUDGET_ACTIVE) return;
-    nucleus_msg_t *msg = nucleus_bus_recv(s_wifi_service, 0);
+    if (cirvane_power_current_budget() != CIRVANE_BUDGET_ACTIVE) return;
+    cirvane_msg_t *msg = cirvane_bus_recv(s_wifi_service, 0);
     if (msg != NULL) {
-        if (msg->type == NUCLEUS_MSG_SCAN_REQUEST) run_wifi_scan();
-        nucleus_bus_free(msg);
+        if (msg->type == CIRVANE_MSG_SCAN_REQUEST) run_wifi_scan();
+        cirvane_bus_free(msg);
     }
 }
 
@@ -589,7 +593,7 @@ static void wifi_service_tick(void *ctx)
 static void shell_start(void)
 {
     esp_console_repl_config_t repl_cfg = ESP_CONSOLE_REPL_CONFIG_DEFAULT();
-    repl_cfg.prompt = "nucleus> ";
+    repl_cfg.prompt = "cirvane> ";
     esp_console_dev_usb_serial_jtag_config_t dev_cfg =
         ESP_CONSOLE_DEV_USB_SERIAL_JTAG_CONFIG_DEFAULT();
 
@@ -608,11 +612,11 @@ static void shell_start(void)
         .command = "scan", .help = "Wi-Fi scan both bands, sorted by RSSI",
         .func = &cmd_scan }));
     ESP_ERROR_CHECK(esp_console_cmd_register(&(esp_console_cmd_t){
-        .command = "svc", .help = "Nucleus supervised service table", .func = &cmd_svc }));
+        .command = "svc", .help = "Cirvane supervised service table", .func = &cmd_svc }));
     ESP_ERROR_CHECK(esp_console_cmd_register(&(esp_console_cmd_t){
         .command = "svcctl", .hint = "<id> <start|stop|restart>",
         .help = "Control a supervised service", .func = &cmd_svcctl }));
-#if CONFIG_NUCLEUS_HIL_DIAGNOSTICS
+#if CONFIG_CIRVANE_HIL_DIAGNOSTICS
     ESP_ERROR_CHECK(esp_console_cmd_register(&(esp_console_cmd_t){
         .command = "svcfail", .hint = "<id>",
         .help = "Inject a service failure to test supervision",
@@ -634,7 +638,7 @@ static void shell_start(void)
     ESP_ERROR_CHECK(esp_console_cmd_register(&(esp_console_cmd_t){
         .command = "ota-status", .help = "Show running and selected OTA state",
         .func = &cmd_ota_status }));
-#if CONFIG_NUCLEUS_HIL_DIAGNOSTICS
+#if CONFIG_CIRVANE_HIL_DIAGNOSTICS
     ESP_ERROR_CHECK(esp_console_cmd_register(&(esp_console_cmd_t){
         .command = "ota-stage-self",
         .help = "HIL only: copy the signed running image into the inactive OTA slot",
@@ -668,15 +672,15 @@ void app_main(void)
         ret = nvs_flash_init();
     }
     ESP_ERROR_CHECK(ret);
-    ESP_ERROR_CHECK(nucleus_config_load(&s_os_config));
-    nucleus_boot_mark_nvs_ready();
+    ESP_ERROR_CHECK(cirvane_config_load(&s_os_config));
+    cirvane_boot_mark_nvs_ready();
 
     ESP_ERROR_CHECK(gpio_reset_pin(LED_GPIO));
     ESP_ERROR_CHECK(gpio_set_direction(LED_GPIO, GPIO_MODE_OUTPUT));
 
     /* Boot counter survives reboots via NVS. */
     nvs_handle_t nvs;
-    if (nvs_open("nucleus", NVS_READWRITE, &nvs) == ESP_OK) {
+    if (nvs_open("cirvane", NVS_READWRITE, &nvs) == ESP_OK) {
         uint32_t boots = 0;
         nvs_get_u32(nvs, "boots", &boots);
         s_boot_count = boots + 1;
@@ -685,23 +689,23 @@ void app_main(void)
         nvs_close(nvs);
     }
 
-    nucleus_bus_init();
-    ESP_ERROR_CHECK(nucleus_manager_register(&(nucleus_service_t){
+    cirvane_bus_init();
+    ESP_ERROR_CHECK(cirvane_manager_register(&(cirvane_service_t){
         .name = "led-heartbeat", .desc = "LED control and liveness heartbeat",
         .init = led_service_init, .tick = led_service_tick, .period_ms = 100,
-        .stack_size = 4096, .priority = 5, .policy = NUCLEUS_RESTART_AUTO,
-        .capabilities = NUCLEUS_CAP_LED, .required = true,
+        .stack_size = 4096, .priority = 5, .policy = CIRVANE_RESTART_AUTO,
+        .capabilities = CIRVANE_CAP_LED, .required = true,
     }, &s_led_service));
-    ESP_ERROR_CHECK(nucleus_manager_register(&(nucleus_service_t){
+    ESP_ERROR_CHECK(cirvane_manager_register(&(cirvane_service_t){
         .name = "wifi-scan", .desc = "Asynchronous dual-band Wi-Fi scans",
         .init = wifi_service_init, .tick = wifi_service_tick, .period_ms = 50,
-        .stack_size = 4096, .priority = 4, .policy = NUCLEUS_RESTART_AUTO,
-        .capabilities = NUCLEUS_CAP_WIFI, .required = false,
+        .stack_size = 4096, .priority = 4, .policy = CIRVANE_RESTART_AUTO,
+        .capabilities = CIRVANE_CAP_WIFI, .required = false,
     }, &s_wifi_service));
-    ESP_ERROR_CHECK(nucleus_bus_subscribe(s_led_service, NUCLEUS_MSG_LED_MODE));
-    ESP_ERROR_CHECK(nucleus_bus_subscribe(s_wifi_service, NUCLEUS_MSG_SCAN_REQUEST));
-    nucleus_manager_start();
+    ESP_ERROR_CHECK(cirvane_bus_subscribe(s_led_service, CIRVANE_MSG_LED_MODE));
+    ESP_ERROR_CHECK(cirvane_bus_subscribe(s_wifi_service, CIRVANE_MSG_SCAN_REQUEST));
+    cirvane_manager_start();
 
-    ESP_LOGI(TAG, "nucleus v2 online; type 'help' at the prompt");
+    ESP_LOGI(TAG, "cirvane online; powered by ESP-IDF/FreeRTOS; type 'help' at the prompt");
     shell_start(); /* spawns its own REPL task */
 }

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Exercise Nucleus signed OTA rollback and confirmation on real hardware."""
+"""Exercise Cirvane signed OTA rollback and confirmation on real hardware."""
 
 from __future__ import annotations
 
