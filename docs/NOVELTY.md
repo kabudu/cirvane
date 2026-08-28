@@ -1,11 +1,6 @@
 # Novelty and claim boundary
 
-Cirvane currently claims no implemented or proven novel kernel. Its implemented
-baseline combines established ESP-IDF/FreeRTOS facilities with a bounded
-service supervisor, static message bus, cooperative capability checks,
-transactional configuration and signed rollback policy. That baseline is
-preserved for migration and matched evaluation, not planned as the kernel of
-the first Cirvane release.
+Cirvane currently claims no implemented or proven novel kernel. The current labelled firmware is powered by ESP-IDF and FreeRTOS and combines those facilities with a bounded service supervisor, static message bus, cooperative capability checks, transactional configuration and signed rollback policy (ADR 0005). That image must not be described as a clean-sheet kernel. It remains the matched-evaluation baseline for kernel research.
 
 The candidate contribution is a bounded recovery transaction as a first-class
 kernel primitive: one atomic transition coupling a service epoch, stale-work

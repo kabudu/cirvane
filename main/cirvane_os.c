@@ -1,11 +1,12 @@
 /*
- * Nucleus v2 bounded runtime for the Seeed Studio XIAO ESP32-C5.
+ * Cirvane bounded runtime for the Seeed Studio XIAO ESP32-C5.
+ * Powered by ESP-IDF and FreeRTOS.
  *
  * All long-lived kernel objects are statically allocated. NVS configuration
  * uses two CRC-protected slots. Supervision is periodic and bounded by the
  * fixed service count; failures cannot create unbounded restart loops.
  */
-#include "nucleus_os.h"
+#include "cirvane_os.h"
 
 #include <inttypes.h>
 #include <string.h>
@@ -24,63 +25,63 @@
 #include "esp_wifi.h"
 #include "nvs.h"
 
-#define NUCLEUS_MAILBOX_DEPTH 4
-#define NUCLEUS_TASK_STACK_BYTES 4096
-#define NUCLEUS_SUPERVISOR_STACK_BYTES 6144
-#define NUCLEUS_SUPERVISOR_PERIOD_MS 1000
-#define NUCLEUS_RESTART_LIMIT 3
-#define NUCLEUS_RESTART_BASE_MS 1000
-#define NUCLEUS_CONFIG_SCHEMA 1
-#define NUCLEUS_LED_GPIO GPIO_NUM_27
+#define CIRVANE_MAILBOX_DEPTH 4
+#define CIRVANE_TASK_STACK_BYTES 4096
+#define CIRVANE_SUPERVISOR_STACK_BYTES 6144
+#define CIRVANE_SUPERVISOR_PERIOD_MS 1000
+#define CIRVANE_RESTART_LIMIT 3
+#define CIRVANE_RESTART_BASE_MS 1000
+#define CIRVANE_CONFIG_SCHEMA 1
+#define CIRVANE_LED_GPIO GPIO_NUM_27
 
-static const char *TAG = "nucleus_os";
+static const char *TAG = "cirvane_os";
 
 typedef struct {
-    nucleus_service_t desc;
+    cirvane_service_t desc;
     svc_info_t info;
     TaskHandle_t task;
     StaticTask_t task_tcb;
-    StackType_t task_stack[NUCLEUS_TASK_STACK_BYTES / sizeof(StackType_t)];
+    StackType_t task_stack[CIRVANE_TASK_STACK_BYTES / sizeof(StackType_t)];
     StaticQueue_t mailbox_cb;
-    uint8_t mailbox_storage[NUCLEUS_MAILBOX_DEPTH * sizeof(nucleus_msg_t *)];
+    uint8_t mailbox_storage[CIRVANE_MAILBOX_DEPTH * sizeof(cirvane_msg_t *)];
     QueueHandle_t mailbox;
     uint32_t capabilities;
     uint32_t heap_baseline;
     uint32_t runtime_baseline;
     uint32_t radio_ms;
     uint32_t restart_at_ms;
-    nucleus_health_t reported_health;
+    cirvane_health_t reported_health;
     bool registered;
 } service_slot_t;
 
 typedef struct {
     uint32_t generation;
-    nucleus_config_t config;
+    cirvane_config_t config;
     uint32_t crc;
 } config_record_t;
 
-static service_slot_t s_services[NUCLEUS_MAX_SERVICES];
-static uint8_t s_service_indices[NUCLEUS_MAX_SERVICES];
+static service_slot_t s_services[CIRVANE_MAX_SERVICES];
+static uint8_t s_service_indices[CIRVANE_MAX_SERVICES];
 static uint8_t s_service_count;
-static uint16_t s_subscribers[NUCLEUS_MSG_TYPE_MAX];
+static uint16_t s_subscribers[CIRVANE_MSG_TYPE_MAX];
 
-static nucleus_msg_t s_msg_pool[NUCLEUS_MSG_POOL_SLOTS];
+static cirvane_msg_t s_msg_pool[CIRVANE_MSG_POOL_SLOTS];
 static uint32_t s_msg_free_mask;
 static portMUX_TYPE s_bus_lock = portMUX_INITIALIZER_UNLOCKED;
-static nucleus_bus_stats_t s_bus_stats;
+static cirvane_bus_stats_t s_bus_stats;
 
 static StaticTask_t s_supervisor_tcb;
-static StackType_t s_supervisor_stack[NUCLEUS_SUPERVISOR_STACK_BYTES /
+static StackType_t s_supervisor_stack[CIRVANE_SUPERVISOR_STACK_BYTES /
                                      sizeof(StackType_t)];
 static TaskHandle_t s_supervisor_task;
-static nucleus_boot_timing_t s_boot;
-static nucleus_sys_state_t s_system_state = NUCLEUS_SYS_NOMINAL;
-static nucleus_config_t s_config;
+static cirvane_boot_timing_t s_boot;
+static cirvane_sys_state_t s_system_state = CIRVANE_SYS_NOMINAL;
+static cirvane_config_t s_config;
 static uint32_t s_config_generation;
-static nucleus_budget_t s_budget = NUCLEUS_BUDGET_ACTIVE;
+static cirvane_budget_t s_budget = CIRVANE_BUDGET_ACTIVE;
 static uint32_t s_sleep_after_ms;
 static bool s_started;
-#if CONFIG_NUCLEUS_HIL_DIAGNOSTICS
+#if CONFIG_CIRVANE_HIL_DIAGNOSTICS
 static uint8_t s_ota_copy_block[1024];
 #endif
 
@@ -92,7 +93,7 @@ static uint32_t record_crc(const config_record_t *record)
 
 static bool config_valid(const config_record_t *record)
 {
-    return record->config.schema_version == NUCLEUS_CONFIG_SCHEMA &&
+    return record->config.schema_version == CIRVANE_CONFIG_SCHEMA &&
            record->config.heartbeat_ms >= 1000 &&
            record->config.heartbeat_ms <= 3600000 &&
            record->config.supervisor_ms >= 100 &&
@@ -101,22 +102,22 @@ static bool config_valid(const config_record_t *record)
            record->crc == record_crc(record);
 }
 
-static nucleus_config_t config_defaults(void)
+static cirvane_config_t config_defaults(void)
 {
-    return (nucleus_config_t){
-        .schema_version = NUCLEUS_CONFIG_SCHEMA,
+    return (cirvane_config_t){
+        .schema_version = CIRVANE_CONFIG_SCHEMA,
         .heartbeat_ms = 10000,
-        .supervisor_ms = NUCLEUS_SUPERVISOR_PERIOD_MS,
+        .supervisor_ms = CIRVANE_SUPERVISOR_PERIOD_MS,
         .default_led_mode = 2,
     };
 }
 
-uint32_t nucleus_uptime_ms(void)
+uint32_t cirvane_uptime_ms(void)
 {
     return (uint32_t)(esp_timer_get_time() / 1000ULL);
 }
 
-void nucleus_bus_init(void)
+void cirvane_bus_init(void)
 {
     taskENTER_CRITICAL(&s_bus_lock);
     s_msg_free_mask = UINT32_MAX;
@@ -125,10 +126,10 @@ void nucleus_bus_init(void)
     taskEXIT_CRITICAL(&s_bus_lock);
 }
 
-int nucleus_bus_subscribe(uint8_t service_idx, uint8_t type)
+int cirvane_bus_subscribe(uint8_t service_idx, uint8_t type)
 {
-    if (service_idx >= s_service_count || type == NUCLEUS_MSG_NONE ||
-        type >= NUCLEUS_MSG_TYPE_COUNT) {
+    if (service_idx >= s_service_count || type == CIRVANE_MSG_NONE ||
+        type >= CIRVANE_MSG_TYPE_COUNT) {
         return ESP_ERR_INVALID_ARG;
     }
     taskENTER_CRITICAL(&s_bus_lock);
@@ -137,14 +138,14 @@ int nucleus_bus_subscribe(uint8_t service_idx, uint8_t type)
     return ESP_OK;
 }
 
-nucleus_msg_t *nucleus_bus_alloc(void)
+cirvane_msg_t *cirvane_bus_alloc(void)
 {
-    nucleus_msg_t *result = NULL;
+    cirvane_msg_t *result = NULL;
     taskENTER_CRITICAL(&s_bus_lock);
     if (s_msg_free_mask != 0) {
         unsigned idx = (unsigned)__builtin_ctz(s_msg_free_mask);
         s_msg_free_mask &= ~(1u << idx);
-        unsigned used = NUCLEUS_MSG_POOL_SLOTS - (unsigned)__builtin_popcount(s_msg_free_mask);
+        unsigned used = CIRVANE_MSG_POOL_SLOTS - (unsigned)__builtin_popcount(s_msg_free_mask);
         if (used > s_bus_stats.peak_used) {
             s_bus_stats.peak_used = (uint16_t)used;
         }
@@ -157,9 +158,9 @@ nucleus_msg_t *nucleus_bus_alloc(void)
     return result;
 }
 
-void nucleus_bus_free(nucleus_msg_t *msg)
+void cirvane_bus_free(cirvane_msg_t *msg)
 {
-    if (msg == NULL || msg < s_msg_pool || msg >= s_msg_pool + NUCLEUS_MSG_POOL_SLOTS) {
+    if (msg == NULL || msg < s_msg_pool || msg >= s_msg_pool + CIRVANE_MSG_POOL_SLOTS) {
         return;
     }
     unsigned idx = (unsigned)(msg - s_msg_pool);
@@ -168,12 +169,12 @@ void nucleus_bus_free(nucleus_msg_t *msg)
     taskEXIT_CRITICAL(&s_bus_lock);
 }
 
-void nucleus_bus_publish(nucleus_msg_t *msg)
+void cirvane_bus_publish(cirvane_msg_t *msg)
 {
-    if (msg == NULL || msg->type == NUCLEUS_MSG_NONE ||
-        msg->type >= NUCLEUS_MSG_TYPE_COUNT ||
-        msg->payload_len > NUCLEUS_MSG_PAYLOAD_MAX) {
-        nucleus_bus_free(msg);
+    if (msg == NULL || msg->type == CIRVANE_MSG_NONE ||
+        msg->type >= CIRVANE_MSG_TYPE_COUNT ||
+        msg->payload_len > CIRVANE_MSG_PAYLOAD_MAX) {
+        cirvane_bus_free(msg);
         return;
     }
 
@@ -186,7 +187,7 @@ void nucleus_bus_publish(nucleus_msg_t *msg)
         if ((subscribers & (1u << idx)) == 0) {
             continue;
         }
-        nucleus_msg_t *copy = nucleus_bus_alloc();
+        cirvane_msg_t *copy = cirvane_bus_alloc();
         if (copy == NULL) {
             continue;
         }
@@ -195,23 +196,23 @@ void nucleus_bus_publish(nucleus_msg_t *msg)
             taskENTER_CRITICAL(&s_bus_lock);
             s_bus_stats.total_drops++;
             taskEXIT_CRITICAL(&s_bus_lock);
-            nucleus_bus_free(copy);
+            cirvane_bus_free(copy);
         }
     }
-    nucleus_bus_free(msg);
+    cirvane_bus_free(msg);
 }
 
-nucleus_msg_t *nucleus_bus_recv(uint8_t service_idx, uint32_t wait_ms)
+cirvane_msg_t *cirvane_bus_recv(uint8_t service_idx, uint32_t wait_ms)
 {
     if (service_idx >= s_service_count || s_services[service_idx].mailbox == NULL) {
         return NULL;
     }
-    nucleus_msg_t *msg = NULL;
+    cirvane_msg_t *msg = NULL;
     return xQueueReceive(s_services[service_idx].mailbox, (void *)&msg,
                          pdMS_TO_TICKS(wait_ms)) == pdTRUE ? msg : NULL;
 }
 
-void nucleus_bus_get_stats(nucleus_bus_stats_t *out)
+void cirvane_bus_get_stats(cirvane_bus_stats_t *out)
 {
     if (out == NULL) {
         return;
@@ -222,33 +223,33 @@ void nucleus_bus_get_stats(nucleus_bus_stats_t *out)
     taskEXIT_CRITICAL(&s_bus_lock);
 }
 
-bool nucleus_caps_check(uint8_t service_idx, uint32_t needed_cap)
+bool cirvane_caps_check(uint8_t service_idx, uint32_t needed_cap)
 {
-    uint32_t held = service_idx == NUCLEUS_SERVICE_INVALID
-                        ? NUCLEUS_CAP_OPERATOR_ALL
-                        : nucleus_service_caps(service_idx);
+    uint32_t held = service_idx == CIRVANE_SERVICE_INVALID
+                        ? CIRVANE_CAP_OPERATOR_ALL
+                        : cirvane_service_caps(service_idx);
     return (held & needed_cap) == needed_cap;
 }
 
-uint32_t nucleus_service_caps(uint8_t service_idx)
+uint32_t cirvane_service_caps(uint8_t service_idx)
 {
     return service_idx < s_service_count ? s_services[service_idx].capabilities : 0;
 }
 
-void nucleus_service_report_health(uint8_t service_idx, nucleus_health_t health)
+void cirvane_service_report_health(uint8_t service_idx, cirvane_health_t health)
 {
-    if (service_idx < s_service_count && health <= NUCLEUS_HEALTH_FAILED) {
+    if (service_idx < s_service_count && health <= CIRVANE_HEALTH_FAILED) {
         s_services[service_idx].reported_health = health;
     }
 }
 
-int nucleus_config_load(nucleus_config_t *out)
+int cirvane_config_load(cirvane_config_t *out)
 {
     ESP_RETURN_ON_FALSE(out != NULL, ESP_ERR_INVALID_ARG, TAG, "null config output");
     config_record_t records[2] = {0};
     bool valid[2] = {false, false};
     nvs_handle_t nvs;
-    esp_err_t err = nvs_open("nucleus_v2", NVS_READONLY, &nvs);
+    esp_err_t err = nvs_open("cirvane_v2", NVS_READONLY, &nvs);
     if (err == ESP_OK) {
         for (unsigned i = 0; i < 2; ++i) {
             char key[8];
@@ -278,7 +279,7 @@ int nucleus_config_load(nucleus_config_t *out)
     return ESP_OK;
 }
 
-int nucleus_config_commit(const nucleus_config_t *config)
+int cirvane_config_commit(const cirvane_config_t *config)
 {
     ESP_RETURN_ON_FALSE(config != NULL, ESP_ERR_INVALID_ARG, TAG, "null config");
     config_record_t record = {
@@ -289,7 +290,7 @@ int nucleus_config_commit(const nucleus_config_t *config)
     ESP_RETURN_ON_FALSE(config_valid(&record), ESP_ERR_INVALID_ARG, TAG, "invalid config");
 
     nvs_handle_t nvs;
-    ESP_RETURN_ON_ERROR(nvs_open("nucleus_v2", NVS_READWRITE, &nvs), TAG, "open config NVS");
+    ESP_RETURN_ON_ERROR(nvs_open("cirvane_v2", NVS_READWRITE, &nvs), TAG, "open config NVS");
     char key[8];
     snprintf(key, sizeof(key), "cfg%u", (unsigned)(record.generation & 1u));
     esp_err_t err = nvs_set_blob(nvs, key, &record, sizeof(record));
@@ -313,10 +314,10 @@ int nucleus_config_commit(const nucleus_config_t *config)
     return err;
 }
 
-#if CONFIG_NUCLEUS_HIL_DIAGNOSTICS
-int nucleus_config_corruption_test(void)
+#if CONFIG_CIRVANE_HIL_DIAGNOSTICS
+int cirvane_config_corruption_test(void)
 {
-    nucleus_config_t original = s_config;
+    cirvane_config_t original = s_config;
     uint32_t original_generation = s_config_generation;
     config_record_t corrupt = {
         .generation = original_generation + 1,
@@ -325,7 +326,7 @@ int nucleus_config_corruption_test(void)
     corrupt.crc = record_crc(&corrupt) ^ 1u;
 
     nvs_handle_t nvs;
-    ESP_RETURN_ON_ERROR(nvs_open("nucleus_v2", NVS_READWRITE, &nvs), TAG,
+    ESP_RETURN_ON_ERROR(nvs_open("cirvane_v2", NVS_READWRITE, &nvs), TAG,
                         "open config NVS for corruption test");
     char key[8];
     snprintf(key, sizeof(key), "cfg%u", (unsigned)(corrupt.generation & 1u));
@@ -334,58 +335,58 @@ int nucleus_config_corruption_test(void)
     nvs_close(nvs);
     if (err != ESP_OK) return err;
 
-    nucleus_config_t loaded;
-    err = nucleus_config_load(&loaded);
+    cirvane_config_t loaded;
+    err = cirvane_config_load(&loaded);
     if (err != ESP_OK || s_config_generation != original_generation ||
         memcmp(&loaded, &original, sizeof(original)) != 0) {
         return ESP_ERR_INVALID_CRC;
     }
-    return nucleus_config_commit(&original);
+    return cirvane_config_commit(&original);
 }
 #endif
 
-void nucleus_config_get(nucleus_config_t *out)
+void cirvane_config_get(cirvane_config_t *out)
 {
     if (out != NULL) {
         *out = s_config;
     }
 }
 
-const char *nucleus_budget_name(nucleus_budget_t budget)
+const char *cirvane_budget_name(cirvane_budget_t budget)
 {
     switch (budget) {
-    case NUCLEUS_BUDGET_ACTIVE: return "active";
-    case NUCLEUS_BUDGET_WATCHDOG: return "watchdog";
-    case NUCLEUS_BUDGET_SENTINEL: return "sentinel";
+    case CIRVANE_BUDGET_ACTIVE: return "active";
+    case CIRVANE_BUDGET_WATCHDOG: return "watchdog";
+    case CIRVANE_BUDGET_SENTINEL: return "sentinel";
     default: return "invalid";
     }
 }
 
-nucleus_budget_t nucleus_power_current_budget(void)
+cirvane_budget_t cirvane_power_current_budget(void)
 {
     return s_budget;
 }
 
-int nucleus_power_set_budget(nucleus_budget_t budget)
+int cirvane_power_set_budget(cirvane_budget_t budget)
 {
-    if (budget > NUCLEUS_BUDGET_SENTINEL) {
+    if (budget > CIRVANE_BUDGET_SENTINEL) {
         return ESP_ERR_INVALID_ARG;
     }
     s_budget = budget;
-    if (budget == NUCLEUS_BUDGET_ACTIVE) {
+    if (budget == CIRVANE_BUDGET_ACTIVE) {
         s_sleep_after_ms = 0;
         esp_wifi_start();
     } else {
         esp_wifi_stop();
-        gpio_set_level(NUCLEUS_LED_GPIO, 0);
+        gpio_set_level(CIRVANE_LED_GPIO, 0);
     }
     return ESP_OK;
 }
 
-int nucleus_power_schedule(nucleus_budget_t budget, uint32_t wake_after_ms)
+int cirvane_power_schedule(cirvane_budget_t budget, uint32_t wake_after_ms)
 {
-    if (budget == NUCLEUS_BUDGET_ACTIVE || budget > NUCLEUS_BUDGET_SENTINEL ||
-        wake_after_ms < 100 || wake_after_ms > NUCLEUS_MAX_SLEEP_MS) {
+    if (budget == CIRVANE_BUDGET_ACTIVE || budget > CIRVANE_BUDGET_SENTINEL ||
+        wake_after_ms < 100 || wake_after_ms > CIRVANE_MAX_SLEEP_MS) {
         return ESP_ERR_INVALID_ARG;
     }
 #if CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG
@@ -393,16 +394,16 @@ int nucleus_power_schedule(nucleus_budget_t budget, uint32_t wake_after_ms)
      * sleep. A manual light-sleep call wakes the CPU but permanently loses
      * this board's only operator console until reset, so refuse that unsafe
      * combination instead of silently stranding the shell. */
-    if (budget == NUCLEUS_BUDGET_WATCHDOG) {
+    if (budget == CIRVANE_BUDGET_WATCHDOG) {
         return ESP_ERR_NOT_SUPPORTED;
     }
 #endif
-    ESP_RETURN_ON_ERROR(nucleus_power_set_budget(budget), TAG, "set budget");
+    ESP_RETURN_ON_ERROR(cirvane_power_set_budget(budget), TAG, "set budget");
     s_sleep_after_ms = wake_after_ms;
     return ESP_OK;
 }
 
-int nucleus_ota_confirm(void)
+int cirvane_ota_confirm(void)
 {
     const esp_partition_t *running = esp_ota_get_running_partition();
     esp_ota_img_states_t state;
@@ -416,7 +417,7 @@ int nucleus_ota_confirm(void)
     return state == ESP_OTA_IMG_VALID ? ESP_OK : ESP_ERR_INVALID_STATE;
 }
 
-const char *nucleus_ota_state_name(int state)
+const char *cirvane_ota_state_name(int state)
 {
     switch ((esp_ota_img_states_t)state) {
     case ESP_OTA_IMG_NEW: return "new";
@@ -429,7 +430,7 @@ const char *nucleus_ota_state_name(int state)
     }
 }
 
-#if CONFIG_NUCLEUS_HIL_DIAGNOSTICS
+#if CONFIG_CIRVANE_HIL_DIAGNOSTICS
 static int ota_copy_running(bool corrupt_for_test)
 {
     const esp_partition_t *running = esp_ota_get_running_partition();
@@ -487,12 +488,12 @@ static int ota_copy_running(bool corrupt_for_test)
     return err;
 }
 
-int nucleus_ota_stage_self(void)
+int cirvane_ota_stage_self(void)
 {
     return ota_copy_running(false);
 }
 
-int nucleus_ota_reject_corrupt_test(void)
+int cirvane_ota_reject_corrupt_test(void)
 {
     return ota_copy_running(true);
 }
@@ -504,10 +505,10 @@ static void service_task(void *arg)
     service_slot_t *slot = &s_services[idx];
     slot->desc.init(slot->desc.ctx);
     slot->info.phase = SVC_PHASE_RUNNING;
-    slot->reported_health = NUCLEUS_HEALTH_OK;
+    slot->reported_health = CIRVANE_HEALTH_OK;
 
     taskENTER_CRITICAL(&s_bus_lock);
-    uint32_t first_tick = nucleus_uptime_ms();
+    uint32_t first_tick = cirvane_uptime_ms();
     if (s_boot.first_tick_ms == 0 || first_tick < s_boot.first_tick_ms) {
         s_boot.first_tick_ms = first_tick;
     }
@@ -524,7 +525,7 @@ static void service_task(void *arg)
             slot->info.max_run_ms = slot->info.last_run_ms;
         }
         slot->info.last_health = slot->reported_health;
-        slot->info.next_tick_ms = nucleus_uptime_ms() + slot->desc.period_ms;
+        slot->info.next_tick_ms = cirvane_uptime_ms() + slot->desc.period_ms;
         vTaskDelayUntil(&wake, pdMS_TO_TICKS(slot->desc.period_ms));
     }
 }
@@ -533,7 +534,7 @@ static void start_service(uint8_t idx)
 {
     service_slot_t *slot = &s_services[idx];
     s_service_indices[idx] = idx;
-    slot->reported_health = NUCLEUS_HEALTH_OK;
+    slot->reported_health = CIRVANE_HEALTH_OK;
     uint32_t stack_words = slot->desc.stack_size / sizeof(StackType_t);
     slot->task = xTaskCreateStatic(service_task, slot->desc.name,
                                    stack_words,
@@ -541,7 +542,7 @@ static void start_service(uint8_t idx)
                                    slot->task_stack, &slot->task_tcb);
     if (slot->task == NULL) {
         slot->info.phase = SVC_PHASE_FAILED;
-        slot->info.last_health = NUCLEUS_HEALTH_FAILED;
+        slot->info.last_health = CIRVANE_HEALTH_FAILED;
     }
 }
 
@@ -549,24 +550,24 @@ static void supervisor_task(void *arg)
 {
     (void)arg;
     for (;;) {
-        s_system_state = NUCLEUS_SYS_NOMINAL;
-        uint32_t now = nucleus_uptime_ms();
+        s_system_state = CIRVANE_SYS_NOMINAL;
+        uint32_t now = cirvane_uptime_ms();
         for (uint8_t idx = 0; idx < s_service_count; ++idx) {
             service_slot_t *slot = &s_services[idx];
-            bool failed = slot->reported_health == NUCLEUS_HEALTH_FAILED;
+            bool failed = slot->reported_health == CIRVANE_HEALTH_FAILED;
             if (failed && slot->info.phase == SVC_PHASE_RUNNING) {
-                slot->info.last_health = NUCLEUS_HEALTH_FAILED;
+                slot->info.last_health = CIRVANE_HEALTH_FAILED;
                 vTaskDelete(slot->task);
                 slot->task = NULL;
-                if (slot->desc.policy == NUCLEUS_RESTART_AUTO &&
-                    slot->info.restarts < NUCLEUS_RESTART_LIMIT) {
-                    uint32_t delay = NUCLEUS_RESTART_BASE_MS << slot->info.restarts;
+                if (slot->desc.policy == CIRVANE_RESTART_AUTO &&
+                    slot->info.restarts < CIRVANE_RESTART_LIMIT) {
+                    uint32_t delay = CIRVANE_RESTART_BASE_MS << slot->info.restarts;
                     slot->restart_at_ms = now + delay;
                     slot->info.restarts++;
                     slot->info.phase = SVC_PHASE_BACKOFF;
-                } else if (slot->desc.policy == NUCLEUS_RESTART_ONETIME &&
+                } else if (slot->desc.policy == CIRVANE_RESTART_ONETIME &&
                            slot->info.restarts == 0) {
-                    slot->restart_at_ms = now + NUCLEUS_RESTART_BASE_MS;
+                    slot->restart_at_ms = now + CIRVANE_RESTART_BASE_MS;
                     slot->info.restarts = 1;
                     slot->info.phase = SVC_PHASE_BACKOFF;
                 } else {
@@ -579,8 +580,8 @@ static void supervisor_task(void *arg)
             }
             if (slot->desc.required &&
                 (slot->info.phase != SVC_PHASE_RUNNING ||
-                 slot->reported_health != NUCLEUS_HEALTH_OK)) {
-                s_system_state = NUCLEUS_SYS_DEGRADED;
+                 slot->reported_health != CIRVANE_HEALTH_OK)) {
+                s_system_state = CIRVANE_SYS_DEGRADED;
             }
         }
 
@@ -588,25 +589,25 @@ static void supervisor_task(void *arg)
             uint32_t duration = s_sleep_after_ms;
             s_sleep_after_ms = 0;
             esp_sleep_enable_timer_wakeup((uint64_t)duration * 1000ULL);
-            if (s_budget == NUCLEUS_BUDGET_SENTINEL) {
+            if (s_budget == CIRVANE_BUDGET_SENTINEL) {
                 ESP_LOGI(TAG, "entering sentinel deep sleep for %" PRIu32 " ms", duration);
                 esp_deep_sleep_start();
             } else {
                 ESP_LOGI(TAG, "entering watchdog light sleep for %" PRIu32 " ms", duration);
                 esp_light_sleep_start();
-                nucleus_power_set_budget(NUCLEUS_BUDGET_ACTIVE);
+                cirvane_power_set_budget(CIRVANE_BUDGET_ACTIVE);
             }
         }
         ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(s_config.supervisor_ms));
     }
 }
 
-int nucleus_manager_register(const nucleus_service_t *service, uint8_t *out_idx)
+int cirvane_manager_register(const cirvane_service_t *service, uint8_t *out_idx)
 {
     if (service == NULL || service->name == NULL || service->init == NULL ||
         service->period_ms == 0 || service->stack_size < 1024 ||
         service->stack_size > sizeof(s_services[0].task_stack) ||
-        s_started || s_service_count >= NUCLEUS_MAX_SERVICES) {
+        s_started || s_service_count >= CIRVANE_MAX_SERVICES) {
         return ESP_ERR_INVALID_ARG;
     }
     uint8_t idx = s_service_count++;
@@ -614,18 +615,18 @@ int nucleus_manager_register(const nucleus_service_t *service, uint8_t *out_idx)
     memset(slot, 0, sizeof(*slot));
     slot->desc = *service;
     slot->capabilities = service->capabilities;
-    slot->reported_health = NUCLEUS_HEALTH_OK;
+    slot->reported_health = CIRVANE_HEALTH_OK;
     slot->registered = true;
     slot->heap_baseline = heap_caps_get_free_size(MALLOC_CAP_DEFAULT);
     slot->info = (svc_info_t){
         .name = service->name,
         .desc = service->desc,
         .phase = SVC_PHASE_INIT,
-        .last_health = NUCLEUS_HEALTH_OK,
+        .last_health = CIRVANE_HEALTH_OK,
         .policy = service->policy,
     };
-    slot->mailbox = xQueueCreateStatic(NUCLEUS_MAILBOX_DEPTH,
-                                       sizeof(nucleus_msg_t *),
+    slot->mailbox = xQueueCreateStatic(CIRVANE_MAILBOX_DEPTH,
+                                       sizeof(cirvane_msg_t *),
                                        slot->mailbox_storage,
                                        &slot->mailbox_cb);
     if (out_idx != NULL) {
@@ -634,34 +635,34 @@ int nucleus_manager_register(const nucleus_service_t *service, uint8_t *out_idx)
     return slot->mailbox != NULL ? ESP_OK : ESP_ERR_NO_MEM;
 }
 
-void nucleus_manager_register_builtins(void)
+void cirvane_manager_register_builtins(void)
 {
     /* Built-ins are registered by app_main, which owns their board context. */
 }
 
-void nucleus_manager_start(void)
+void cirvane_manager_start(void)
 {
     s_started = true;
-    s_boot.bus_ready_ms = nucleus_uptime_ms();
+    s_boot.bus_ready_ms = cirvane_uptime_ms();
     for (uint8_t idx = 0; idx < s_service_count; ++idx) {
         start_service(idx);
     }
-    s_boot.services_inited_ms = nucleus_uptime_ms();
-    s_supervisor_task = xTaskCreateStatic(supervisor_task, "nucleus_mgr",
-                                          NUCLEUS_SUPERVISOR_STACK_BYTES /
+    s_boot.services_inited_ms = cirvane_uptime_ms();
+    s_supervisor_task = xTaskCreateStatic(supervisor_task, "cirvane_mgr",
+                                          CIRVANE_SUPERVISOR_STACK_BYTES /
                                               sizeof(StackType_t),
                                           NULL, 10,
                                           s_supervisor_stack, &s_supervisor_tcb);
     ESP_ERROR_CHECK(s_supervisor_task != NULL ? ESP_OK : ESP_ERR_NO_MEM);
-    s_boot.tasks_spawned_ms = nucleus_uptime_ms();
+    s_boot.tasks_spawned_ms = cirvane_uptime_ms();
 }
 
-uint8_t nucleus_manager_count(void)
+uint8_t cirvane_manager_count(void)
 {
     return s_service_count;
 }
 
-bool nucleus_manager_get_info(uint8_t idx, svc_info_t *out)
+bool cirvane_manager_get_info(uint8_t idx, svc_info_t *out)
 {
     if (idx >= s_service_count || out == NULL) {
         return false;
@@ -670,7 +671,7 @@ bool nucleus_manager_get_info(uint8_t idx, svc_info_t *out)
     return true;
 }
 
-int nucleus_svc_control(uint8_t idx, const char *action)
+int cirvane_svc_control(uint8_t idx, const char *action)
 {
     if (idx >= s_service_count || action == NULL) {
         return ESP_ERR_INVALID_ARG;
@@ -703,31 +704,31 @@ int nucleus_svc_control(uint8_t idx, const char *action)
     return ESP_ERR_INVALID_ARG;
 }
 
-void nucleus_supervisor_kick(void)
+void cirvane_supervisor_kick(void)
 {
     if (s_supervisor_task != NULL) {
         xTaskNotifyGive(s_supervisor_task);
     }
 }
 
-nucleus_sys_state_t nucleus_system_state(void)
+cirvane_sys_state_t cirvane_system_state(void)
 {
     return s_system_state;
 }
 
-const nucleus_boot_timing_t *nucleus_boot_timing(void)
+const cirvane_boot_timing_t *cirvane_boot_timing(void)
 {
     return &s_boot;
 }
 
-void nucleus_boot_mark_nvs_ready(void)
+void cirvane_boot_mark_nvs_ready(void)
 {
     if (s_boot.nvs_done_ms == 0) {
-        s_boot.nvs_done_ms = nucleus_uptime_ms();
+        s_boot.nvs_done_ms = cirvane_uptime_ms();
     }
 }
 
-void nucleus_res_window_begin(void)
+void cirvane_res_window_begin(void)
 {
     for (uint8_t idx = 0; idx < s_service_count; ++idx) {
         s_services[idx].runtime_baseline = 0;
@@ -735,12 +736,12 @@ void nucleus_res_window_begin(void)
     }
 }
 
-void nucleus_res_window_end(void)
+void cirvane_res_window_end(void)
 {
-    /* uxTaskGetSystemState snapshots are taken lazily by nucleus_res_get(). */
+    /* uxTaskGetSystemState snapshots are taken lazily by cirvane_res_get(). */
 }
 
-void nucleus_res_record_radio(uint8_t service_idx, uint32_t elapsed_ms)
+void cirvane_res_record_radio(uint8_t service_idx, uint32_t elapsed_ms)
 {
     if (service_idx < s_service_count) {
         taskENTER_CRITICAL(&s_bus_lock);
@@ -751,7 +752,7 @@ void nucleus_res_record_radio(uint8_t service_idx, uint32_t elapsed_ms)
     }
 }
 
-void nucleus_res_get(uint8_t service_idx, nucleus_res_usage_t *out)
+void cirvane_res_get(uint8_t service_idx, cirvane_res_usage_t *out)
 {
     if (out == NULL || service_idx >= s_service_count) {
         return;

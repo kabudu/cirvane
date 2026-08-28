@@ -33,7 +33,7 @@ def main() -> None:
         run("espsecure", "verify-signature", "--version", "2", "--keyfile",
             str(args.key), str(args.firmware), expect_success=True)
     ]
-    with tempfile.TemporaryDirectory(prefix="nucleus-security-") as directory:
+    with tempfile.TemporaryDirectory(prefix="cirvane-security-") as directory:
         temporary = Path(directory)
         corrupt = temporary / "corrupt.bin"
         image = bytearray(args.firmware.read_bytes())

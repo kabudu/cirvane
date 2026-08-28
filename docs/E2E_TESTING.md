@@ -4,8 +4,8 @@ Tests exercise public device workflows through USB shell, build artefacts and OT
 
 ## Required scenarios
 
-- Clean production build, flash, boot, `info`, `selftest`, service/resource inspection and quiet prompt.
-- Link-map and runtime inspection proving the production scheduler and recovery path contain no FreeRTOS runtime dependency. The Stage 1 spike source must also be FreeRTOS-free.
+- Clean production build, flash, boot, `info`, `selftest`, service/resource inspection and quiet `cirvane>` prompt.
+- For kernel spike and later kernel-labelled images: link-map and runtime inspection proving the production scheduler and recovery path contain no FreeRTOS runtime dependency. The current Cirvane firmware is powered by FreeRTOS and is expected to contain it.
 - Host models for recovery transactions, malformed syscalls, invalid capability, stale epoch, exhausted message pool, restart-budget refusal, panic sticky-refuse, corrupt-config fallback and unsigned/truncated OTA refusal.
 - Trap, timer, malformed syscall, invalid capability, stale epoch, exhausted message pool and restart-budget refusal paths on the real board.
 - Recovery transaction success and fault paths proving stale work cannot execute after an epoch advance.

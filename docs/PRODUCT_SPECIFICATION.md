@@ -19,7 +19,7 @@ Cirvane boots into a privileged local shell, starts a fixed set of statically al
 
 ## Supported workflow
 
-1. Build a signed production image with the pinned Cirvane kernel toolchain and the enumerated Espressif boot, ROM, HAL and driver dependencies.
+1. Build a signed production image with the pinned ESP-IDF toolchain. This firmware is powered by ESP-IDF and FreeRTOS.
 2. Flash through USB Serial/JTAG.
 3. Operate and inspect the device through the Cirvane shell.
 4. Diagnose services, resources, configuration and OTA state through explicit commands.
@@ -35,4 +35,4 @@ Cirvane boots into a privileged local shell, starts a fixed set of statically al
 
 ## Initial release success
 
-The initial developer release requires a qualified clean-sheet Cirvane kernel on the ESP32-C5, consistent Cirvane identity, passing local CI, a signed production build, real-board functional and rollback evidence, matched FreeRTOS baseline evidence, authenticated OTA transport with adversarial tests, complete release documentation and explicit deferral notices for energy, hardware provisioning, formal verification, independent reproduction and independent penetration testing.
+The initial labelled firmware may ship on ESP-IDF/FreeRTOS with consistent Cirvane identity (ADR 0005). A labelled developer release still requires passing local CI, a signed production build, real-board functional and rollback evidence, authenticated OTA transport with adversarial tests, complete release documentation and explicit deferral notices for energy, hardware provisioning, formal verification, independent reproduction and independent penetration testing. A clean-sheet kernel remains a later kernel-release gate (ADR 0002).
