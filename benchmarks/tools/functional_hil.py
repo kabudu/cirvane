@@ -45,7 +45,7 @@ def main() -> None:
         require(command("self-test", "selftest"), "result=PASS")
         require(command("resources", "res"), "led-heartbeat", "wifi-scan")
         require(command("lazy-dual-band-scan", "scan"), "scan queued")
-        scan_results = await_fragment(port, b"APs visible", 30)
+        scan_results = await_fragment(port, b"networks visible", 30)
         records.append({"step": "scan-results", "command": "", "output": scan_results})
         require(command("service-after-scan", "svc"), "wifi-scan", "running")
         require(command("inject-wifi-failure", "svcfail 1"), "failure injected")

@@ -16,5 +16,6 @@
 | HAL-01 | Bounded UART, GPIO, timer, flash-read/erase/write, watchdog and entropy without radio | Kernel HAL | Host refuse tests plus spike HIL | kernel-spike.json | Verified on spike; erase/write limited to config and otadata windows; radio excluded (ADR 0004) |
 | REL-05 | Kernel HIL diagnostics compile-gated out of production profile | Spike build | Dual-profile ci-local strings/nm | HIL kernel-spike.json; production strings check | Compile profiles implemented; eval profile is the matched kernel image |
 | UX-02 | Stable crash/evidence lines and quiet kernel shell | Kernel obs | Host refuse tests plus production HIL | kernel-shell.json | Implemented on production spike; unauthenticated USB |
+| NET-01 | Secure, bounded and usable Wi-Fi station connectivity | Product Wi-Fi service | Host policy tests plus connect/disconnect/reboot HIL | `cirvane-wifi-hil.json` | Verified on ESP32-C5: bounded scan selection and direct WPA3-SAE connection obtain DHCP; disconnect and reboot clear RAM-only credentials; evidence is redacted |
 
 States are implemented, verified, candidate, planned or deferred. Documentation alone cannot advance a behavioural requirement to implemented or verified.

@@ -21,7 +21,7 @@ Cirvane boots into a privileged local shell, starts a fixed set of statically al
 
 1. Build a signed production image with the pinned ESP-IDF toolchain. This firmware is powered by ESP-IDF and FreeRTOS.
 2. Flash through USB Serial/JTAG.
-3. Operate and inspect the device through the Cirvane shell.
+3. Operate and inspect the device through the Cirvane shell, including a masked, session-only Wi-Fi connection workflow.
 4. Diagnose services, resources, configuration and OTA state through explicit commands.
 5. Stage authenticated updates, boot pending, confirm health or roll back.
 
