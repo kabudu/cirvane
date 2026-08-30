@@ -2,7 +2,7 @@
 
 ## Established evidence
 
-The imported benchmark corpus records controlled v1 and optimized v2 restart and command-latency measurements, signed OTA rollback/confirmation, functional HIL and adversarial security checks. The current strongest supported claims are limited to the tested XIAO ESP32-C5, pinned toolchain and recorded protocol.
+The imported benchmark corpus records controlled v1 and optimized v2 restart and command-latency measurements, signed OTA rollback/confirmation, functional HIL and adversarial security checks. Current Cirvane Stage 3 records recapture functional, security, signed rollback and performance behaviour against one firmware digest. The 20-sample restart median is 1152.317 ms with 0.374 ms population deviation; the 30-sample `info` median is 2.122 ms. The current strongest supported claims are limited to the tested XIAO ESP32-C5, pinned toolchain and recorded protocol.
 
 ## Research questions
 

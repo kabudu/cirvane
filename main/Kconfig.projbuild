@@ -9,4 +9,13 @@ config CIRVANE_HIL_DIAGNOSTICS
         Enable only on development boards; production builds must leave this
         disabled.
 
+config CIRVANE_MATCHED_EVAL
+    bool "Run the rebooting matched recovery evaluation at boot"
+    depends on CIRVANE_HIL_DIAGNOSTICS
+    default n
+    help
+        Runs the fixed 33-sample class-1 recovery campaign across repeated
+        software resets before the shell starts. Enable only in the dedicated
+        matched-evaluation profile; generic HIL builds must leave this off.
+
 endmenu

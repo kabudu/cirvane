@@ -1,0 +1,115 @@
+{
+  "schema": 1,
+  "captured_at": "2026-08-30T01:04:05.066194+00:00",
+  "port": "/dev/cu.usbmodem3101",
+  "firmware": "build/hil/cirvane.bin",
+  "firmware_sha256": "da66a98e201b9e04b73fbefa348843ddf7c554d2a52ce29ecfde577e7a9f05c8",
+  "result": "pass",
+  "records": [
+    {
+      "step": "config-before",
+      "command": "config",
+      "output": "config\r\nheartbeat_ms=10000 supervisor_ms=1000 led=2\r\ncirvane>  "
+    },
+    {
+      "step": "negative-config",
+      "command": "config heartbeat -1",
+      "output": "config heartbeat -1\r\ninvalid heartbeat_ms\r\nCommand returned non-zero error code: 0x1 (ERROR)\r\ncirvane>  "
+    },
+    {
+      "step": "signed-config",
+      "command": "config heartbeat +1000",
+      "output": "config heartbeat +1000\r\ninvalid heartbeat_ms\r\nCommand returned non-zero error code: 0x1 (ERROR)\r\ncirvane>  "
+    },
+    {
+      "step": "trailing-config",
+      "command": "config heartbeat 1000junk",
+      "output": "config heartbeat 1000junk\r\ninvalid heartbeat_ms\r\nCommand returned non-zero error code: 0x1 (ERROR)\r\ncirvane>  "
+    },
+    {
+      "step": "overflow-config",
+      "command": "config heartbeat 4294967296",
+      "output": "config heartbeat 4294967296\r\ninvalid heartbeat_ms\r\nCommand returned non-zero error code: 0x1 (ERROR)\r\ncirvane>  "
+    },
+    {
+      "step": "config-after",
+      "command": "config",
+      "output": "config\r\nheartbeat_ms=10000 supervisor_ms=1000 led=2\r\ncirvane>  "
+    },
+    {
+      "step": "power-before",
+      "command": "power",
+      "output": "power\r\nbudget=active\r\ncirvane>  "
+    },
+    {
+      "step": "negative-sleep",
+      "command": "power sentinel -1",
+      "output": "power sentinel -1\r\ninvalid wake_ms\r\nCommand returned non-zero error code: 0x1 (ERROR)\r\ncirvane>  "
+    },
+    {
+      "step": "short-sleep",
+      "command": "power sentinel 99",
+      "output": "power sentinel 99\r\ninvalid wake_ms\r\nCommand returned non-zero error code: 0x1 (ERROR)\r\ncirvane>  "
+    },
+    {
+      "step": "oversized-sleep",
+      "command": "power sentinel 86400001",
+      "output": "power sentinel 86400001\r\ninvalid wake_ms\r\nCommand returned non-zero error code: 0x1 (ERROR)\r\ncirvane>  "
+    },
+    {
+      "step": "extra-power-args",
+      "command": "power sentinel 1000 extra",
+      "output": "power sentinel 1000 extra\r\nusage: power [active|watchdog|sentinel [wake_ms]]\r\nCommand returned non-zero error code: 0x1 (ERROR)\r\ncirvane>  "
+    },
+    {
+      "step": "power-after",
+      "command": "power",
+      "output": "power\r\nbudget=active\r\ncirvane>  "
+    },
+    {
+      "step": "negative-service",
+      "command": "svcctl -1 restart",
+      "output": "svcctl -1 restart\r\ninvalid service id\r\nCommand returned non-zero error code: 0x1 (ERROR)\r\ncirvane>  "
+    },
+    {
+      "step": "trailing-service",
+      "command": "svcfail 1junk",
+      "output": "svcfail 1junk\r\ninvalid service id\r\nCommand returned non-zero error code: 0x1 (ERROR)\r\ncirvane>  "
+    },
+    {
+      "step": "unknown-command",
+      "command": "../../../../bin/sh",
+      "output": "../../../../bin/sh\r\nUnrecognized command\r\ncirvane>  "
+    },
+    {
+      "step": "oversized-line",
+      "command": "<1024 bytes>",
+      "output": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\r\nUnrecognized command\r\ncirvane>  \r\ncirvane>  "
+    },
+    {
+      "step": "ota-before",
+      "command": "ota-status",
+      "output": "ota-status\r\nota running=ota_0 boot=ota_0 state=valid query=ESP_OK\r\ncirvane>  "
+    },
+    {
+      "step": "corrupt-ota",
+      "command": "ota-reject-corrupt",
+      "output": "ota-reject-corrupt\r\nI (44218) esp_image: segment 0: paddr=00020020 vaddr=420c0020 size=22d4ch (142668) map\r\nI (44238) esp_image: segment 1: paddr=00042d74 vaddr=40800000 size=0d2a4h ( 53924) \r\nI (44238) esp_image: segment 2: paddr=00050020 vaddr=42000020 size=b45e8h (738792) map\r\nI (44328) esp_image: segment 3: paddr=00104610 vaddr=4080d2a4 size=0fda8h ( 64936) \r\nI (44328) esp_image: segment 4: paddr=001143c0 vaddr=50000000 size=000a8h (   168) \r\nI (44338) esp_image: segment 5: paddr=00114470 vaddr=00000000 size=0bb60h ( 47968) \r\nI (44338) esp_image: Verifying image signature...\r\nI (44338) secure_boot_v2: Take trusted digest key(s) from running app\r\nI (44338) secure_boot_v2: #0 app key digest == #0 trusted key digest\r\nI (44338) secure_boot_v2: Verifying with ECDSA...\r\nI (50698) esp_image: segment 0: paddr=001d0020 vaddr=420c0020 size=22d4ch (142668) map\r\nI (50708) esp_image: segment 1: paddr=001f2d74 vaddr=40800000 size=0d2a4h ( 53924) \r\nI (50718) esp_image: segment 2: paddr=00200020 vaddr=42000020 size=b45e8h (738792) map\r\nI (50798) esp_image: segment 3: paddr=002b4610 vaddr=4080d2a4 size=0fda8h ( 64936) \r\nI (50808) esp_image: segment 4: paddr=002c43c0 vaddr=50000000 size=000a8h (   168) \r\nI (50808) esp_image: segment 5: paddr=002c4470 vaddr=00000000 size=0bb60h ( 47968) \r\nE (50818) esp_image: Checksum failed. Calculated 0x43 read 0x42\r\nE (50818) esp_ota_ops: New image failed verification\r\nota corrupt rejection: ESP_OK\r\ncirvane>  "
+    },
+    {
+      "step": "ota-after",
+      "command": "ota-status",
+      "output": "ota-status\r\nota running=ota_0 boot=ota_0 state=valid query=ESP_OK\r\ncirvane>  "
+    },
+    {
+      "step": "corrupt-config-slot",
+      "command": "config-corrupt-test",
+      "output": "config-corrupt-test\r\nconfig corrupt fallback: ESP_OK\r\ncirvane>  "
+    },
+    {
+      "step": "post-adversarial-selftest",
+      "command": "selftest",
+      "output": "selftest\r\nselftest bus=ok config=ok services=ok result=PASS\r\ncirvane>  "
+    }
+  ]
+}

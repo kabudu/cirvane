@@ -148,8 +148,8 @@ Make Cirvane the consistent current product identity across firmware, source, op
 - [x] Add a repository identity scan that rejects unintended current-product Nucleus references while allowing declared historical paths and quotations.
 - [x] Build the signed production profile and confirm HIL-only destructive commands remain absent.
 - [x] Flash the renamed image to the supported Seeed Studio XIAO ESP32-C5 and capture identity, functional and quiet-shell evidence with prompt `cirvane>` (`benchmarks/results/cirvane-identity-hil.json`).
-- [ ] Recapture rollback and security HIL with the renamed image. Historical Nucleus transcripts remain the recorded rollback/security evidence; the project signing key was not present for a signed HIL overlay.
-- [ ] Re-run the performance checks required to show that the rename did not regress the established runtime envelope.
+- [x] Recapture rollback and security HIL with the renamed image. Evidence: `cirvane-security-host.json`, `cirvane-security-hil.json` and `cirvane-ota-rollback-hil.json`, tied to the tested firmware digest.
+- [x] Re-run the performance checks required to show that the rename did not regress the established runtime envelope. Evidence: `cirvane-stage3-performance.json` with raw command and restart samples.
 
 ### Required evidence
 
@@ -284,7 +284,7 @@ Do not release while any of the following is present:
 |---|---|---|
 | 1. Kernel novelty and feasibility | Verified | Prior-art matrix, ADR 0003, pre-registered evaluation, host model and Stage 1 spike HIL |
 | 2. Clean-sheet kernel | Verified | kernel-spike.json HIL pass; matched-eval.json class-1 pair; warm n=11 and cold n=5 boot samples. Research image, not the labelled firmware |
-| 3. Cirvane identity on ESP-IDF/FreeRTOS | In progress | Source, prompt, binary and identity scan renamed; `cirvane-identity-hil.json` captures `cirvane>` boot; rollback/security recapture and performance rerun pending |
+| 3. Cirvane identity on ESP-IDF/FreeRTOS | Verified | Current identity scan and signed build; digest-bound Cirvane functional, security, rollback and performance HIL evidence |
 | 4. Authenticated OTA | Planned | Pending merged protocol implementation and adversarial evidence matrix |
 | 5. Developer release | Planned | Pending release-candidate evidence, owner approval and verified release |
 

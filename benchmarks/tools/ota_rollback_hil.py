@@ -9,7 +9,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-from serial_benchmark import await_prompt, reconnect_and_await, sync
+from serial_benchmark import await_prompt, reconnect_and_await, sha256, sync
 
 
 def run_command(port, command: str, timeout: float = 10) -> str:
@@ -44,6 +44,7 @@ def require(output: str, *fragments: str) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--port", default="/dev/cu.usbmodem3101")
+    parser.add_argument("--firmware", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
 
@@ -96,6 +97,8 @@ def main() -> None:
         "schema": 1,
         "captured_at": datetime.now(timezone.utc).isoformat(),
         "port": args.port,
+        "firmware": str(args.firmware),
+        "firmware_sha256": sha256(args.firmware),
         "result": "pass",
         "records": records,
     }
