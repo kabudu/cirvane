@@ -1,0 +1,48 @@
+name: Bug report
+description: Report a reproducible Cirvane defect without sensitive data.
+title: "bug: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: "Do not report vulnerabilities or include credentials here. Follow SECURITY.md for private reporting."
+  - type: input
+    id: commit
+    attributes:
+      label: Tested commit
+      placeholder: Full Git commit SHA
+    validations:
+      required: true
+  - type: input
+    id: hardware
+    attributes:
+      label: Hardware and build profile
+      placeholder: XIAO ESP32-C5 revision and production or HIL profile
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Include bounded steps and a redacted transcript.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed result
+    validations:
+      required: true
+  - type: checkboxes
+    id: hygiene
+    attributes:
+      label: Data hygiene
+      options:
+        - label: I removed credentials, signing material, network names and personal device identifiers.
+          required: true

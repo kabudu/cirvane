@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "captured_at": "2026-08-27T21:26:26.071775+00:00",
-  "port": "/dev/cu.usbmodem3101",
+  "port": "<serial-port>",
   "offset": "0x20000",
   "elf": "build/kernel-spike-prod/cirvane-spike.elf",
   "image": "build/kernel-spike-prod/cirvane-spike.bin",

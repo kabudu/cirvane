@@ -1,5 +1,11 @@
 # Engineering review
 
+## Public source-opening review (2026-08-30)
+
+The public-readiness review corrected a root-licence mismatch in README and three project SPDX identifiers, documented the vendored Espressif console example, and added contribution, DCO, conduct, governance, support, private security disclosure, citation, issue and pull-request policies. Gitleaks 8.30.1 scanned all 34 commits through `e49e4b2` with zero findings. No build tree, signing key, SDK state or `.DS_Store` is tracked.
+
+Source visibility is deliberately separated from a versioned developer release. Authenticated OTA, hardware security provisioning, energy qualification, independent penetration testing, formal verification and the clean-sheet kernel remain incomplete and retain their existing claim limits. Remaining visibility decisions are professional or explicit owner acceptance of name, mark and AI-assisted asset rights risk; approval of the exact public commit; review of the GitHub About use of unqualified `Secure`; and immediate enablement of private vulnerability reporting after the repository becomes public. Hosted CI remains disabled until separately approved.
+
 ## Scope and current finding
 
 The imported firmware has established hardware evidence for bounded service operation, configuration recovery, signed rollback, malformed input rejection and quiet production-shell behaviour. The Stage 3 forensic review found and corrected four material baseline defects: generic HIL builds ran the rebooting matched-evaluation campaign, the configuration journal used the undocumented `cirvane_v2` namespace instead of the accepted `cirvane` namespace, generation selection was not wrap-safe, and power/OTA failure paths could report success or dereference an unavailable partition. Material residual findings are authenticated OTA absence, software-only update trust without hardware provisioning, privileged unauthenticated USB shell, single-device reproducibility and remaining productisation gates.

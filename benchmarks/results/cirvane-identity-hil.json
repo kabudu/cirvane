@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "captured_at": "2026-08-28T13:53:11.562761+00:00",
-  "port": "/dev/cu.usbmodem3101",
+  "port": "<serial-port>",
   "image": "build/ci/cirvane.bin",
   "project": "cirvane",
   "substrate": "ESP-IDF/FreeRTOS",

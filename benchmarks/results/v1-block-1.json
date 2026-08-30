@@ -3,7 +3,7 @@
   "label": "v1",
   "block": "1",
   "captured_at": "2026-08-23T20:50:23.479539+00:00",
-  "port": "/dev/cu.usbmodem3101",
+  "port": "<serial-port>",
   "baud": 115200,
   "firmware": "benchmarks/nucleus-v1/build/nucleus.bin",
   "firmware_sha256": "fb0d37c190ad35bd2e1c05c2b76b61df4ca22874ee5faf4c512b30012f9c626e",

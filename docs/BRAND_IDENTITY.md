@@ -12,7 +12,7 @@ The owner approved Cirvane as the enduring product identity on 2026-08-24. The i
 - **Canonical category:** bounded embedded operating system
 - **Tagline:** Recover visibly.
 
-The point-in-time name audit checked exact and case-folded general-web use, GitHub names and users, npm, PyPI, crates.io, the ESP component surface and RDAP. No material same-market exact collision was found. This is not trademark clearance; UK, EU and US legal review remains mandatory before public opening.
+The point-in-time name audit was refreshed on 2026-08-30 across exact and case-folded general-web use, GitHub names and users, npm, PyPI, crates.io availability where accessible, the ESP component surface and RDAP. It found unrelated exact-name uses for lighting and an appliance, personal-name uses and an unrelated trading company, but no same-market embedded-software result. Registry HTTP checks found no npm or PyPI package; crates.io automation returned an inconclusive access response. This is not trademark clearance. Professional UK, EU and US review, plus review of AI-assisted asset rights, remains an owner gate before changing visibility.
 
 ## Brand platform
 

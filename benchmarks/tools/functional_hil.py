@@ -12,6 +12,7 @@ from pathlib import Path
 
 from ota_rollback_hil import require, run_command
 from serial_benchmark import reconnect_and_await, sha256
+from evidence_redaction import redact_evidence
 
 
 def await_fragment(port, fragment: bytes, timeout: float) -> str:
@@ -67,7 +68,7 @@ def main() -> None:
         "records": records,
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+    args.output.write_text(json.dumps(redact_evidence(result), indent=2) + "\n", encoding="utf-8")
     print(json.dumps({"output": str(args.output), "result": "pass"}))
 
 

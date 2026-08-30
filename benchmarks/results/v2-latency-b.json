@@ -3,7 +3,7 @@
   "label": "v2",
   "block": "latency-b",
   "captured_at": "2026-08-23T21:03:40.615133+00:00",
-  "port": "/dev/cu.usbmodem3101",
+  "port": "<serial-port>",
   "baud": 115200,
   "firmware": "nucleus/build/nucleus.bin",
   "firmware_sha256": "2aea03efb0849855026ec5b4f45acbf802e40c055fb0c63ad4fcc5c4c88ec3c4",

@@ -10,6 +10,7 @@ import subprocess
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
+from evidence_redaction import redact_evidence
 
 
 def run(*args: str, expect_success: bool) -> dict[str, object]:
@@ -72,7 +73,7 @@ def main() -> None:
         "records": records,
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+    args.output.write_text(json.dumps(redact_evidence(result), indent=2) + "\n", encoding="utf-8")
     print(json.dumps({"output": str(args.output), "result": "pass"}))
 
 

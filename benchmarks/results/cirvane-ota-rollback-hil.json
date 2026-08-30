@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "captured_at": "2026-08-30T01:04:23.446239+00:00",
-  "port": "/dev/cu.usbmodem3101",
+  "port": "<serial-port>",
   "firmware": "build/hil/cirvane.bin",
   "firmware_sha256": "da66a98e201b9e04b73fbefa348843ddf7c554d2a52ce29ecfde577e7a9f05c8",
   "result": "pass",

@@ -3,7 +3,7 @@
   "label": "cirvane-hil",
   "block": "stage3-forensic",
   "captured_at": "2026-08-30T01:04:55.991730+00:00",
-  "port": "/dev/cu.usbmodem3101",
+  "port": "<serial-port>",
   "baud": 115200,
   "firmware": "build/hil/cirvane.bin",
   "firmware_sha256": "da66a98e201b9e04b73fbefa348843ddf7c554d2a52ce29ecfde577e7a9f05c8",
