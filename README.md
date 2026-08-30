@@ -1,6 +1,6 @@
 # Cirvane
 
-![Cirvane Recovery Scar identity](assets/brand/source/cirvane-horizontal.svg)
+![Cirvane Recovery Scar identity](assets/brand/exports/cirvane-horizontal-680.png)
 
 Cirvane is a bounded, supervised embedded operating-system project for constrained connected devices. Its first supported vertical is the Seeed Studio XIAO ESP32-C5.
 
