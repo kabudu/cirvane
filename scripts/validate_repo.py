@@ -8,7 +8,10 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 REQUIRED = [
-    "README.md", "AGENTS.md", "LICENSE", "docs/PRODUCT_SPECIFICATION.md",
+    "README.md", "AGENTS.md", "LICENSE", "CHANGELOG.md", "CITATION.cff",
+    "CODE_OF_CONDUCT.md", "CONTRIBUTING.md", "GOVERNANCE.md",
+    "SECURITY.md", "SUPPORT.md", "THIRD_PARTY_NOTICES.md",
+    "docs/PRODUCT_SPECIFICATION.md",
     "docs/ARCHITECTURE.md", "docs/ADOPTION_AND_INTEGRATION.md",
     "docs/BRAND_IDENTITY.md", "docs/IMPLEMENTATION_PLAN.md",
     "docs/PRODUCTISATION_COMPLETION_PLAN.md",
@@ -25,6 +28,7 @@ REQUIRED = [
     "docs/KERNEL.md",
     "docs/DEPENDENCY_INVENTORY.md",
     "docs/MATCHED_EVALUATION.md",
+    "docs/OPEN_SOURCE_READINESS.md",
     "docs/brand/ASSET_USAGE.md",
 ]
 CURRENT_PRODUCT_IDENTITY_FILES = [

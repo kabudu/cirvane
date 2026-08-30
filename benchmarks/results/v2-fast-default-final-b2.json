@@ -3,7 +3,7 @@
   "label": "v2-fast-default-final",
   "block": "2",
   "captured_at": "2026-08-23T21:41:58.017021+00:00",
-  "port": "/dev/cu.usbmodem3101",
+  "port": "<serial-port>",
   "baud": 115200,
   "firmware": "/tmp/nucleus-default.02jBmG/nucleus.bin",
   "firmware_sha256": "15559605c865e5f6bf6dc866eac6751712b8c31508569fabb0dbc536851a84b6",

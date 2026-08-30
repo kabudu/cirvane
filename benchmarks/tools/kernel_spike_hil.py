@@ -11,6 +11,7 @@ import subprocess
 import time
 from datetime import datetime, timezone
 from pathlib import Path
+from evidence_redaction import redact_evidence
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "build" / "kernel-spike"
@@ -304,7 +305,7 @@ def boot_samples(count: int, timeout_s: float) -> list[float]:
 
 def write_record(record: dict) -> None:
     EVIDENCE.parent.mkdir(parents=True, exist_ok=True)
-    EVIDENCE.write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
+    EVIDENCE.write_text(json.dumps(redact_evidence(record), indent=2) + "\n", encoding="utf-8")
 
 
 def main() -> None:

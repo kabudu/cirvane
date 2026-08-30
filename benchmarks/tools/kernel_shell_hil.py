@@ -11,6 +11,10 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
+import serial
+
+from evidence_redaction import redact_evidence
+
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "build" / "kernel-spike-prod"
 EVIDENCE = ROOT / "benchmarks" / "results" / "kernel-shell.json"
@@ -67,7 +71,6 @@ def classify(log: str) -> str:
 
 def capture(timeout_s: float) -> str:
     import glob
-    import serial
 
     deadline = time.monotonic() + timeout_s
     received = bytearray()
@@ -138,10 +141,10 @@ def main() -> None:
         record["result"] = "blocked"
         record["reason"] = str(error)
         EVIDENCE.parent.mkdir(parents=True, exist_ok=True)
-        EVIDENCE.write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
+        EVIDENCE.write_text(json.dumps(redact_evidence(record), indent=2) + "\n", encoding="utf-8")
         raise
     EVIDENCE.parent.mkdir(parents=True, exist_ok=True)
-    EVIDENCE.write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
+    EVIDENCE.write_text(json.dumps(redact_evidence(record), indent=2) + "\n", encoding="utf-8")
     print(record["result"])
     print(record.get("log", ""))
     if record["result"] != "pass":
