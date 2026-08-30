@@ -6,4 +6,4 @@ authors:
   - family-names: "Abudu"
     given-names: "Kamba"
 repository-code: "https://github.com/kabudu/cirvane"
-license: MIT
+license: Apache-2.0

@@ -1,6 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2026 kabudu
- * SPDX-License-Identifier: MIT
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Kernel-owned two-slot configuration journal. Highest valid CRC generation
  * wins. A failed verify-after-write does not publish. No NVS, no allocator.

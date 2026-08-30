@@ -3,13 +3,13 @@
     {
       "allowedUse": "licence and provenance",
       "colourSpace": null,
-      "creator": "OpenAI Codex under owner direction",
+      "creator": "Figtree Project Authors",
       "dimensions": null,
       "exportCommand": null,
-      "licence": "MIT",
+      "licence": "OFL-1.1",
       "mediaType": "text/markdown",
       "path": "assets/brand/LICENSES/Figtree-OFL.txt",
-      "provenance": "manually authored deterministic source",
+      "provenance": "upstream Figtree SIL Open Font License 1.1 text",
       "sha256": "bb272dfcd8801eb31fb98fe51828f76f0e41ac82f89256101df8021aa3d30ce2",
       "sourcePath": null,
       "sourceSha256": null
@@ -20,11 +20,11 @@
       "creator": "OpenAI Codex under owner direction",
       "dimensions": null,
       "exportCommand": null,
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "text/markdown",
       "path": "assets/brand/LICENSES/README.md",
       "provenance": "manually authored deterministic source",
-      "sha256": "780363d03635073b625992bb1d95f47407ca2504c9820623d66970be0fc1c30a",
+      "sha256": "f6a055a3f29eaaa69ac5644558ee7d648403485d00806aaf6a30321311163123",
       "sourcePath": null,
       "sourceSha256": null
     },
@@ -37,7 +37,7 @@
         640
       ],
       "exportCommand": "scripts/export-brand-assets.sh",
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "image/png",
       "path": "assets/brand/exports/cirvane-chart-palette-1280.png",
       "provenance": "deterministic librsvg export",
@@ -54,7 +54,7 @@
         480
       ],
       "exportCommand": "scripts/export-brand-assets.sh",
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "image/png",
       "path": "assets/brand/exports/cirvane-diagram-key-1280.png",
       "provenance": "deterministic librsvg export",
@@ -71,7 +71,7 @@
         192
       ],
       "exportCommand": "scripts/export-brand-assets.sh",
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "image/png",
       "path": "assets/brand/exports/cirvane-horizontal-680.png",
       "provenance": "deterministic librsvg export",
@@ -88,7 +88,7 @@
         192
       ],
       "exportCommand": "scripts/export-brand-assets.sh",
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "image/png",
       "path": "assets/brand/exports/cirvane-horizontal-reversed-680.png",
       "provenance": "deterministic librsvg export",
@@ -105,7 +105,7 @@
         256
       ],
       "exportCommand": "scripts/export-brand-assets.sh",
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "image/png",
       "path": "assets/brand/exports/cirvane-icons-1024.png",
       "provenance": "deterministic librsvg export",
@@ -122,7 +122,7 @@
         630
       ],
       "exportCommand": "scripts/export-brand-assets.sh",
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "image/png",
       "path": "assets/brand/exports/cirvane-release-card-1200.png",
       "provenance": "deterministic librsvg export",
@@ -139,7 +139,7 @@
         416
       ],
       "exportCommand": "scripts/export-brand-assets.sh",
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "image/png",
       "path": "assets/brand/exports/cirvane-stacked-432.png",
       "provenance": "deterministic librsvg export",
@@ -156,7 +156,7 @@
         128
       ],
       "exportCommand": "scripts/export-brand-assets.sh",
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "image/png",
       "path": "assets/brand/exports/cirvane-symbol-128.png",
       "provenance": "deterministic librsvg export",
@@ -173,7 +173,7 @@
         16
       ],
       "exportCommand": "scripts/export-brand-assets.sh",
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "image/png",
       "path": "assets/brand/exports/cirvane-symbol-16.png",
       "provenance": "deterministic librsvg export",
@@ -190,7 +190,7 @@
         32
       ],
       "exportCommand": "scripts/export-brand-assets.sh",
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "image/png",
       "path": "assets/brand/exports/cirvane-symbol-32.png",
       "provenance": "deterministic librsvg export",
@@ -207,7 +207,7 @@
         512
       ],
       "exportCommand": "scripts/export-brand-assets.sh",
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "image/png",
       "path": "assets/brand/exports/cirvane-symbol-512.png",
       "provenance": "deterministic librsvg export",
@@ -224,7 +224,7 @@
         64
       ],
       "exportCommand": "scripts/export-brand-assets.sh",
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "image/png",
       "path": "assets/brand/exports/cirvane-symbol-64.png",
       "provenance": "deterministic librsvg export",
@@ -241,7 +241,7 @@
         512
       ],
       "exportCommand": "scripts/export-brand-assets.sh",
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "image/png",
       "path": "assets/brand/exports/cirvane-symbol-mono-512.png",
       "provenance": "deterministic librsvg export",
@@ -258,7 +258,7 @@
         512
       ],
       "exportCommand": "scripts/export-brand-assets.sh",
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "image/png",
       "path": "assets/brand/exports/cirvane-symbol-reversed-512.png",
       "provenance": "deterministic librsvg export",
@@ -275,7 +275,7 @@
         128
       ],
       "exportCommand": "scripts/export-brand-assets.sh",
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "image/png",
       "path": "assets/brand/exports/cirvane-wordmark-432.png",
       "provenance": "deterministic librsvg export",
@@ -292,7 +292,7 @@
         96
       ],
       "exportCommand": null,
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "image/svg+xml",
       "path": "assets/brand/source/cirvane-horizontal-reversed.svg",
       "provenance": "manually authored deterministic source",
@@ -309,7 +309,7 @@
         96
       ],
       "exportCommand": null,
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "image/svg+xml",
       "path": "assets/brand/source/cirvane-horizontal.svg",
       "provenance": "manually authored deterministic source",
@@ -326,7 +326,7 @@
         64
       ],
       "exportCommand": null,
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "image/svg+xml",
       "path": "assets/brand/source/cirvane-icons.svg",
       "provenance": "manually authored deterministic source",
@@ -343,7 +343,7 @@
         208
       ],
       "exportCommand": null,
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "image/svg+xml",
       "path": "assets/brand/source/cirvane-stacked.svg",
       "provenance": "manually authored deterministic source",
@@ -360,7 +360,7 @@
         1254
       ],
       "exportCommand": null,
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "image/png",
       "path": "assets/brand/source/cirvane-symbol-dimensional.png",
       "provenance": "owner-approved AI-assisted raster master and deterministic derivative",
@@ -377,7 +377,7 @@
         1254
       ],
       "exportCommand": "scripts/generate-brand-derivatives.sh",
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "image/png",
       "path": "assets/brand/source/cirvane-symbol-mono-dimensional.png",
       "provenance": "owner-approved AI-assisted raster master and deterministic derivative",
@@ -394,7 +394,7 @@
         128
       ],
       "exportCommand": null,
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "image/svg+xml",
       "path": "assets/brand/source/cirvane-symbol-mono.svg",
       "provenance": "manually authored deterministic source",
@@ -411,7 +411,7 @@
         128
       ],
       "exportCommand": null,
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "image/svg+xml",
       "path": "assets/brand/source/cirvane-symbol-reversed.svg",
       "provenance": "manually authored deterministic source",
@@ -428,7 +428,7 @@
         32
       ],
       "exportCommand": null,
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "image/svg+xml",
       "path": "assets/brand/source/cirvane-symbol-small.svg",
       "provenance": "manually authored deterministic source",
@@ -445,7 +445,7 @@
         128
       ],
       "exportCommand": null,
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "image/svg+xml",
       "path": "assets/brand/source/cirvane-symbol.svg",
       "provenance": "manually authored deterministic source",
@@ -462,7 +462,7 @@
         64
       ],
       "exportCommand": null,
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "image/svg+xml",
       "path": "assets/brand/source/cirvane-wordmark-reversed.svg",
       "provenance": "Figtree weight 450 outlines under the SIL Open Font License 1.1",
@@ -479,7 +479,7 @@
         64
       ],
       "exportCommand": null,
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "image/svg+xml",
       "path": "assets/brand/source/cirvane-wordmark.svg",
       "provenance": "Figtree weight 450 outlines under the SIL Open Font License 1.1",
@@ -496,7 +496,7 @@
         320
       ],
       "exportCommand": null,
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "image/svg+xml",
       "path": "assets/brand/templates/chart-palette.svg",
       "provenance": "manually authored deterministic source",
@@ -513,7 +513,7 @@
         240
       ],
       "exportCommand": null,
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "image/svg+xml",
       "path": "assets/brand/templates/diagram-key.svg",
       "provenance": "manually authored deterministic source",
@@ -530,7 +530,7 @@
         630
       ],
       "exportCommand": null,
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "image/svg+xml",
       "path": "assets/brand/templates/overlays/release-social-card.svg",
       "provenance": "manually authored deterministic source",
@@ -544,7 +544,7 @@
       "creator": "OpenAI Codex under owner direction",
       "dimensions": null,
       "exportCommand": null,
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "text/css",
       "path": "assets/brand/tokens/cirvane.css",
       "provenance": "manually authored deterministic source",
@@ -558,7 +558,7 @@
       "creator": "OpenAI Codex under owner direction",
       "dimensions": null,
       "exportCommand": null,
-      "licence": "MIT",
+      "licence": "Apache-2.0",
       "mediaType": "application/json",
       "path": "assets/brand/tokens/cirvane.tokens.json",
       "provenance": "manually authored deterministic source",

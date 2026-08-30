@@ -1,6 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2026 kabudu
- * SPDX-License-Identifier: MIT
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Stage 2 Cirvane kernel core. Host-testable. No FreeRTOS, no allocator.
  * C5 reset, trap entry, timer and USB remain in kernel/spike.

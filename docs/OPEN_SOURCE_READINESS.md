@@ -8,7 +8,7 @@ This gate prepares the source repository for public visibility. It does not crea
 
 | Gate | Evidence | State |
 |---|---|---|
-| Licence consistency | Root MIT licence, MIT project SPDX identifiers, `THIRD_PARTY_NOTICES.md`, brand manifest and Figtree OFL | Ready |
+| Licence consistency | Root Apache-2.0 licence, Apache-2.0 project SPDX identifiers, `THIRD_PARTY_NOTICES.md`, brand manifest and Figtree OFL | Ready |
 | Contribution governance | `CONTRIBUTING.md`, DCO sign-off, `CODE_OF_CONDUCT.md`, `GOVERNANCE.md`, templates and CODEOWNERS | Ready |
 | Security disclosure | `SECURITY.md` and private-reporting link | Prepared; GitHub private vulnerability reporting must be enabled immediately after the repository becomes public |
 | Support boundary | `SUPPORT.md`, README status and named ESP32-C5 support | Ready |

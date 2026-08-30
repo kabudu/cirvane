@@ -1,6 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2026 kabudu
- * SPDX-License-Identifier: MIT
+ * SPDX-License-Identifier: Apache-2.0
  *
  * ESP32-C5 HAL: USB Serial/JTAG UART, GPIO 27 LED, SYSTIMER, ROM SPI flash
  * read/erase/write in the config window, TIMG/LP watchdog mute, LPPERI RNG.

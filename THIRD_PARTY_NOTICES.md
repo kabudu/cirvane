@@ -1,6 +1,6 @@
 # Third-party notices
 
-Cirvane project-owned source and brand assets are distributed under MIT unless an asset manifest entry says otherwise.
+Cirvane project-owned source and brand assets are distributed under Apache-2.0 unless an asset manifest entry says otherwise.
 
 ## Vendored source
 
