@@ -2,40 +2,79 @@
 
 ![Cirvane Recovery Scar identity](assets/brand/exports/cirvane-horizontal-680.png)
 
-Cirvane is a bounded, supervised embedded operating-system project for constrained connected devices. Its first supported vertical is the Seeed Studio XIAO ESP32-C5.
+Cirvane is a small, resilient device runtime for connected embedded systems. It keeps services, messages, configuration and firmware recovery predictable when software fails or input is malformed.
 
-The current Cirvane firmware is powered by ESP-IDF and FreeRTOS. Cirvane owns the static service supervisor, bounded message bus, capability checks, transactional configuration, operational telemetry and signed dual-slot rollback. A clean-sheet Cirvane kernel remains research and is not this firmware. Novelty remains a hypothesis until the repository's internal research and matched-evidence gates pass.
+The first supported device is the Seeed Studio XIAO ESP32-C5. The current firmware runs on ESP-IDF and FreeRTOS.
 
-## Status
+## What Cirvane provides
 
-Cirvane is private and under productisation. The enduring Recovery Scar identity is complete and source-controlled. The current firmware, USB prompt and application binary use the Cirvane name on ESP-IDF/FreeRTOS. Historical hardware evidence captured under the former Nucleus development identity is retained with that provenance. The renamed firmware has current functional, security, signed rollback and performance evidence on the supported board. Kernel novelty research has a systematic prior-art matrix, a frozen recovery-transaction hypothesis, a portable kernel core with host tests, a two-slot configuration journal persisted in a reserved flash window, a fail-closed dual-slot rollback policy, a fail-closed UART/GPIO/timer/flash-read/erase/write/watchdog/entropy HAL, HIL and production spike compile profiles, a quiet production kernel `cirvane>` shell, live `otadata` HIL evidence and matched class-1 evaluation. Radio on the kernel path, authenticated OTA transport and the initial developer release remain separately gated.
+- **Supervised services:** fixed service identities, health checks and bounded restart behaviour.
+- **Bounded messaging:** typed messages use a fixed pool, so queues cannot grow without limit.
+- **Recoverable configuration:** two CRC-protected records preserve the last valid settings after an interrupted or corrupt write.
+- **Safe firmware rollback:** signed dual-slot images must boot successfully and be confirmed, or the device returns to the previous image.
+- **Clear diagnostics:** a local USB shell reports device identity, service health, resource use, message drops and update state.
+- **Production separation:** destructive hardware-test commands are compile-gated and excluded from production images.
 
-Cirvane is not currently claimed to have an implemented or proven novel kernel, to be production-ready, physically secure, independently penetration-tested, energy-qualified, formally verified or suitable for safety-critical deployment.
+## How it works
 
-## Evidence already established
+Cirvane starts a fixed set of services and monitors their health. Services communicate through bounded message slots instead of allocating unbounded work. If a service fails, Cirvane applies a limited recovery policy and reports the outcome.
 
-- Real ESP32-C5 boot, shell, service supervision, Wi-Fi scan and rollback tests pass.
-- Controlled measurements show a 39.05% lower restart median than the preserved v1 baseline and substantially lower restart variance.
-- Adversarial input, corrupted configuration and corrupted OTA-image tests pass on hardware.
-- The production profile excludes destructive HIL commands and keeps periodic telemetry clear of the interactive prompt.
+Configuration changes are written to an alternate record and verified before becoming current. Firmware updates use two application slots, leaving a known-good image available when a new image fails its first-boot health check.
 
-Raw evidence and reproducible harnesses live under `benchmarks/`. The authoritative private-repository gate is `./scripts/ci-local.sh`; hosted CI is disabled by policy until the owner explicitly approves it at the public-opening gate.
+## Try it on supported hardware
 
-## Documentation
+You need a XIAO ESP32-C5, USB connection and the pinned ESP-IDF v6.0.2 toolchain.
+
+Run the authoritative local checks:
+
+```sh
+source /path/to/esp-idf/export.sh
+./scripts/ci-local.sh
+```
+
+After flashing a development image, connect to the USB serial port at 115200 baud. Useful shell commands include:
+
+```text
+info
+selftest
+svc
+res
+bus
+scan
+ota-status
+```
+
+See [Operations](docs/OPERATIONS.md) for the device lifecycle and recovery workflow, and [Adoption and integration](docs/ADOPTION_AND_INTEGRATION.md) for a staged evaluation path.
+
+## Current status
+
+Cirvane is private pre-release software under active productisation.
+
+Validated on a real XIAO ESP32-C5:
+
+- boot, shell, service supervision and Wi-Fi scanning;
+- malformed-input and configuration-corruption handling;
+- signed update staging, confirmation and automatic rollback;
+- production removal of destructive test commands;
+- repeatable build, host-test and hardware-test evidence.
+
+Authenticated remote OTA transport is not implemented yet. The USB shell is a privileged local interface and does not provide user authentication. Hardware Secure Boot, flash encryption, energy qualification, independent penetration testing and safety certification are also outside the current release claim.
+
+Evidence and reproducible test harnesses are stored in [`benchmarks/`](benchmarks/). While the repository remains private, `./scripts/ci-local.sh` is the authoritative validation gate and hosted CI is intentionally disabled.
+
+## Project documentation
 
 - [Product specification](docs/PRODUCT_SPECIFICATION.md)
 - [Architecture](docs/ARCHITECTURE.md)
-- [Implementation plan](docs/IMPLEMENTATION_PLAN.md)
-- [Productisation completion plan](docs/PRODUCTISATION_COMPLETION_PLAN.md)
+- [Operations](docs/OPERATIONS.md)
 - [Threat model](docs/THREAT_MODEL.md)
-- [Brand identity](docs/BRAND_IDENTITY.md)
-- [Brand asset usage](docs/brand/ASSET_USAGE.md)
 - [Validation](docs/VALIDATION.md)
 - [Release policy](docs/RELEASE.md)
-- [Prior art and claim boundary](docs/NOVELTY.md)
-- [Kernel spike and invariants](docs/KERNEL_SPIKE.md)
-- [Matched evaluation protocol](docs/MATCHED_EVALUATION.md)
+- [Implementation plan](docs/IMPLEMENTATION_PLAN.md)
+- [Brand identity](docs/BRAND_IDENTITY.md)
 
-## Name audit
+Cirvane also contains a clean-sheet kernel research track. It is separate from the current ESP-IDF/FreeRTOS product firmware and is documented in [Kernel spike and invariants](docs/KERNEL_SPIKE.md).
 
-`Cirvane` was selected on 2026-08-24 after exact-name checks across general web search, GitHub, npm, PyPI, crates.io, ESP component search and RDAP. No material same-market collision was found. This point-in-time audit is not trademark clearance or a permanent reservation; formal UK, EU and US legal review remains a public-release gate.
+## Licence
+
+Cirvane is licensed under the [Apache License 2.0](LICENSE).
