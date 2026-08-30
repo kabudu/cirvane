@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "captured_at": "2026-08-30T01:03:25.493153+00:00",
+  "firmware": "build/hil/cirvane.bin",
+  "firmware_sha256": "da66a98e201b9e04b73fbefa348843ddf7c554d2a52ce29ecfde577e7a9f05c8",
+  "result": "pass",
+  "records": [
+    {
+      "command": [
+        "espsecure",
+        "verify-signature",
+        "--version",
+        "2",
+        "--keyfile",
+        "build/ci/signing-key.pem",
+        "build/hil/cirvane.bin"
+      ],
+      "exit_code": 0,
+      "passed": true
+    },
+    {
+      "command": [
+        "espsecure",
+        "verify-signature",
+        "--version",
+        "2",
+        "--keyfile",
+        "build/ci/signing-key.pem",
+        "/var/folders/0p/ql8wrj9j575gv90ft9tl8_sw0000gn/T/cirvane-security-utcumzc7/corrupt.bin"
+      ],
+      "exit_code": 2,
+      "passed": true
+    },
+    {
+      "command": [
+        "espsecure",
+        "generate-signing-key",
+        "--version",
+        "2",
+        "--scheme",
+        "ecdsa256",
+        "/var/folders/0p/ql8wrj9j575gv90ft9tl8_sw0000gn/T/cirvane-security-utcumzc7/wrong.pem"
+      ],
+      "exit_code": 0,
+      "passed": true
+    },
+    {
+      "command": [
+        "espsecure",
+        "verify-signature",
+        "--version",
+        "2",
+        "--keyfile",
+        "/var/folders/0p/ql8wrj9j575gv90ft9tl8_sw0000gn/T/cirvane-security-utcumzc7/wrong.pem",
+        "build/hil/cirvane.bin"
+      ],
+      "exit_code": 2,
+      "passed": true
+    }
+  ]
+}

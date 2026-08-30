@@ -52,3 +52,19 @@ from 11.694 ms to 0.365 ms (96.88%). Median `info` latency was transport-floor
 parity at 2.2138 ms for v1 and 2.2146 ms for v2. The aggregate contains 40
 restart samples per version, 180 v1 latency samples, and 240 v2 latency
 samples. Signed OTA rollback/confirmation and the functional HIL suite passed.
+
+## 2026-08-30 Cirvane Stage 3 result
+
+The renamed Cirvane ESP-IDF/FreeRTOS image was rebuilt from implementation
+commit `c3605ca` and measured on the supported XIAO ESP32-C5. All current
+functional, host-security, hardware-security and signed rollback records bind
+to firmware SHA-256
+`da66a98e201b9e04b73fbefa348843ddf7c554d2a52ce29ecfde577e7a9f05c8`.
+
+Across 20 warm restarts, median restart-to-prompt time was 1152.317 ms, p95 was
+1152.814 ms and population standard deviation was 0.374 ms. Across 30 `info`
+commands, median latency was 2.122 ms and p95 was 2.182 ms. Compared with the
+optimised Nucleus v2 medians above, restart time increased by 1.17% and command
+latency decreased by 4.19%. The small restart shift and stable distribution do
+not constitute a material runtime regression for the identity-only change.
+Energy remains unmeasured.

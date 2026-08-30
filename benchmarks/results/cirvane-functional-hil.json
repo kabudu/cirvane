@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "captured_at": "2026-08-30T01:03:38.893433+00:00",
+  "port": "/dev/cu.usbmodem3101",
+  "firmware": "build/hil/cirvane.bin",
+  "firmware_sha256": "da66a98e201b9e04b73fbefa348843ddf7c554d2a52ce29ecfde577e7a9f05c8",
+  "result": "pass",
+  "records": [
+    {
+      "step": "identity",
+      "command": "info",
+      "output": "info\r\nproject    cirvane\r\nversion    c3605ca\r\nidf        v6.0.2\r\nchip       ESP32-C5 rev 1.0, 1 core(s) @ 240 MHz\r\nflash      8 MB\r\nheap free  195364 B, largest block 172032 B\r\nuptime     11099 ms\r\nboots      31\r\ncirvane>  "
+    },
+    {
+      "step": "self-test",
+      "command": "selftest",
+      "output": "selftest\r\nselftest bus=ok config=ok services=ok result=PASS\r\ncirvane>  "
+    },
+    {
+      "step": "resources",
+      "command": "res",
+      "output": "res\r\nid  name           stack_min  heap_delta cpu%  radio_ms\r\n0   led-heartbeat  3832       -4052      0     0\r\n1   wifi-scan      3836       -4052      0     0\r\ncirvane>  "
+    },
+    {
+      "step": "lazy-dual-band-scan",
+      "command": "scan",
+      "output": "scan\r\nscan queued; results follow asynchronously\r\ncirvane>  "
+    },
+    {
+      "step": "scan-results",
+      "command": "",
+      "output": "I (11348) pp: pp rom version: 78a72e9d5\r\nI (11348) net80211: net80211 rom version: 78a72e9d5\r\nI (11358) wifi:wifi driver task: 40835140, prio:23, stack:6656, core=0\r\nI (11358) wifi:wifi firmware version: 00ad238\r\nI (11358) wifi:wifi certification version: v7.0\r\nI (11358) wifi:config NVS flash: enabled\r\nI (11358) wifi:config nano formatting: disabled\r\nI (11358) wifi:mac_version:HAL_MAC_ESP32AX_752MP_ECO2,ut_version:N, band mode:0x3\r\nI (11358) wifi:Init data frame dynamic rx buffer num: 32\r\nI (11368) wifi:Init static rx mgmt buffer num: 5\r\nI (11368) wifi:Init management short buffer num: 32\r\nI (11368) wifi:Init dynamic tx buffer num: 32\r\nI (11368) wifi:Init static tx FG buffer num: 2\r\nI (11368) wifi:Init static rx buffer size: 1700 (rxctrl:64, csi:512)\r\nI (11368) wifi:Init static rx buffer num: 10\r\nI (11368) wifi:Init dynamic rx buffer num: 32\r\nI (11368) wifi_init: rx ba win: 6\r\nI (11368) wifi_init: accept mbox: 6\r\nI (11368) wifi_init: tcpip mbox: 32\r\nI (11368) wifi_init: udp mbox: 6\r\nI (11368) wifi_init: tcp mbox: 6\r\nI (11368) wifi_init: tcp tx win: 5760\r\nI (11368) wifi_init: tcp rx win: 5760\r\nI (11368) wifi_init: tcp mss: 1440\r\nI (11368) wifi_init: WiFi IRAM OP enabled\r\nI (11368) wifi_init: WiFi RX IRAM OP enabled\r\nI (11368) wifi_init: WiFi SLP IRAM OP enabled\r\nI (11368) phy_init: phy_version 109,edb400d6,Mar 10 2026,10:22:11\r\nI (11938) wifi:11ax coex: WDEVAX_PTI0(0x55777555), WDEVAX_PTI1(0x00003377).\r\n\r\nI (11938) wifi:mode : sta (d0:cf:13:e2:15:b0)\r\nI (11938) wifi:enable tsf\r\nscanning both bands...\r\n18 APs visible (18 shown)\r\n 1. BRSK-AC5207                      2.4GHz ch=  1 rssi= -60\r\n 2. BRSK-AC5207                      5GHz  ch= 52 rssi= -60\r\n 3. BRSK-AC5207_legacy "
+    },
+    {
+      "step": "service-after-scan",
+      "command": "svc",
+      "output": "svc\r\nsystem=nominal services=2\r\nid  name           phase     health  restarts last/max ms\r\n0   led-heartbeat  running   0       0        0/0\r\n1   wifi-scan      running   0       0        0/10308\r\ncirvane>  "
+    },
+    {
+      "step": "inject-wifi-failure",
+      "command": "svcfail 1",
+      "output": "svcfail 1\r\nfailure injected into service 1; inspect with svc\r\ncirvane>  "
+    },
+    {
+      "step": "supervised-recovery",
+      "command": "svc",
+      "output": "svc\r\nsystem=nominal services=2\r\nid  name           phase     health  restarts last/max ms\r\n0   led-heartbeat  running   0       0        0/0\r\n1   wifi-scan      running   0       1        0/10308\r\ncirvane>  "
+    }
+  ]
+}
