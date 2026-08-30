@@ -18,6 +18,7 @@
  *   ps            all tasks: stack high-water mark + CPU time %
  *   led on|off|blink    USER LED (GPIO 27) control
  *   scan          one-shot Wi-Fi scan of both bands, sorted by RSSI
+ *   wifi          scan-select or direct station connection with hidden input
  * plus vendored IDF built-ins: version, free, heap, tasks, restart, help.
  *
  * API usage follows examples/system/console/basic (REPL) and
@@ -30,7 +31,11 @@
 #include <inttypes.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <unistd.h>
+#include <sys/select.h>
 #include "freertos/FreeRTOS.h"
+#include "freertos/event_groups.h"
+#include "freertos/semphr.h"
 #include "freertos/task.h"
 #include "driver/gpio.h"
 #include "esp_log.h"
@@ -47,13 +52,20 @@
 #include "nvs.h"
 #include "esp_wifi.h"
 #include "esp_event.h"
+#include "esp_netif.h"
 #include "cmd_system.h"
 #include "cirvane_os.h"
+#include "cirvane_wifi_policy.h"
 
 static const char *TAG = "cirvane";
 
 #define LED_GPIO         GPIO_NUM_27
 #define MAX_AP_RECORDS   20
+#define WIFI_CONNECT_TIMEOUT_MS 15000u
+#define WIFI_SECRET_TIMEOUT_MS  60000u
+#define WIFI_CONNECTED_BIT BIT0
+#define WIFI_FAILED_BIT    BIT1
+#define WIFI_DISCONNECTED_BIT BIT2
 
 /* ------------------------------- state -------------------------------- */
 
@@ -75,10 +87,31 @@ enum {
     WIFI_INIT_NONE,
     WIFI_INIT_NETIF,
     WIFI_INIT_EVENT_LOOP,
+    WIFI_INIT_STA_NETIF,
     WIFI_INIT_DRIVER,
+    WIFI_INIT_WIFI_HANDLER,
+    WIFI_INIT_IP_HANDLER,
     WIFI_INIT_READY,
 };
 static uint8_t s_wifi_init_stage;
+static esp_netif_t *s_wifi_netif;
+static EventGroupHandle_t s_wifi_events;
+static SemaphoreHandle_t s_wifi_lock;
+static StaticEventGroup_t s_wifi_events_storage;
+static StaticSemaphore_t s_wifi_lock_storage;
+static volatile bool s_wifi_connecting;
+static volatile bool s_wifi_connected;
+static volatile bool s_wifi_ignore_disconnect;
+static volatile uint8_t s_wifi_disconnect_reason;
+static char s_wifi_ssid[sizeof(((wifi_config_t *)0)->sta.ssid) + 1];
+static esp_ip4_addr_t s_wifi_ip;
+static wifi_ap_record_t s_wifi_scan_records[MAX_AP_RECORDS];
+
+static void secure_zero(void *buffer, size_t length)
+{
+    volatile uint8_t *bytes = buffer;
+    while (length-- > 0) *bytes++ = 0;
+}
 
 static bool parse_u32_arg(const char *text, uint32_t minimum, uint32_t maximum,
                           uint32_t *out)
@@ -219,65 +252,378 @@ static int cmd_scan(int argc, char **argv)
     return 0;
 }
 
+static void wifi_event_handler(void *arg, esp_event_base_t base,
+                               int32_t id, void *data)
+{
+    (void)arg;
+    if (base == IP_EVENT && id == IP_EVENT_STA_GOT_IP) {
+        const ip_event_got_ip_t *event = data;
+        s_wifi_ip = event->ip_info.ip;
+        s_wifi_connected = true;
+        s_wifi_connecting = false;
+        xEventGroupSetBits(s_wifi_events, WIFI_CONNECTED_BIT);
+    } else if (base == WIFI_EVENT && id == WIFI_EVENT_STA_DISCONNECTED) {
+        const wifi_event_sta_disconnected_t *event = data;
+        s_wifi_connected = false;
+        if (!s_wifi_ignore_disconnect) s_wifi_disconnect_reason = event->reason;
+        if (s_wifi_connecting && !s_wifi_ignore_disconnect) {
+            s_wifi_connecting = false;
+            xEventGroupSetBits(s_wifi_events, WIFI_FAILED_BIT);
+        }
+        xEventGroupSetBits(s_wifi_events, WIFI_DISCONNECTED_BIT);
+    }
+}
+
+static esp_err_t wifi_ensure_ready(void)
+{
+    if (s_wifi_init_stage == WIFI_INIT_READY) return ESP_OK;
+
+    esp_err_t err = ESP_OK;
+    if (s_wifi_init_stage == WIFI_INIT_NONE) {
+        err = esp_netif_init();
+        if (err == ESP_OK || err == ESP_ERR_INVALID_STATE) {
+            s_wifi_init_stage = WIFI_INIT_NETIF;
+        }
+    }
+    if (s_wifi_init_stage == WIFI_INIT_NETIF) {
+        err = esp_event_loop_create_default();
+        if (err == ESP_OK || err == ESP_ERR_INVALID_STATE) {
+            s_wifi_init_stage = WIFI_INIT_EVENT_LOOP;
+        }
+    }
+    if (s_wifi_init_stage == WIFI_INIT_EVENT_LOOP) {
+        s_wifi_netif = esp_netif_create_default_wifi_sta();
+        if (s_wifi_netif == NULL) return ESP_ERR_NO_MEM;
+        s_wifi_init_stage = WIFI_INIT_STA_NETIF;
+    }
+    if (s_wifi_init_stage == WIFI_INIT_STA_NETIF) {
+        wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
+        err = esp_wifi_init(&cfg);
+        if (err == ESP_OK) s_wifi_init_stage = WIFI_INIT_DRIVER;
+    }
+    if (s_wifi_init_stage == WIFI_INIT_DRIVER) {
+        err = esp_wifi_set_storage(WIFI_STORAGE_RAM);
+        if (err == ESP_OK) err = esp_wifi_set_mode(WIFI_MODE_STA);
+        if (err == ESP_OK) {
+            err = esp_event_handler_register(WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED,
+                                             wifi_event_handler, NULL);
+            if (err == ESP_OK) s_wifi_init_stage = WIFI_INIT_WIFI_HANDLER;
+        }
+    }
+    if (s_wifi_init_stage == WIFI_INIT_WIFI_HANDLER) {
+        err = esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP,
+                                         wifi_event_handler, NULL);
+        if (err == ESP_OK) s_wifi_init_stage = WIFI_INIT_IP_HANDLER;
+    }
+    if (s_wifi_init_stage == WIFI_INIT_IP_HANDLER) {
+        err = esp_wifi_start();
+        if (err == ESP_OK) s_wifi_init_stage = WIFI_INIT_READY;
+    }
+    return err;
+}
+
+static bool read_console_line(const char *prompt, char *out, size_t capacity,
+                              bool masked, uint32_t timeout_ms)
+{
+    if (out == NULL || capacity < 2) return false;
+    secure_zero(out, capacity);
+    size_t used = 0;
+    size_t entered = 0;
+    int64_t deadline = esp_timer_get_time() + timeout_ms * 1000LL;
+    printf("%s", prompt);
+    fflush(stdout);
+
+    while (esp_timer_get_time() < deadline) {
+        int64_t remaining_us = deadline - esp_timer_get_time();
+        if (remaining_us <= 0) break;
+        struct timeval timeout = {
+            .tv_sec = remaining_us / 1000000,
+            .tv_usec = remaining_us % 1000000,
+        };
+        fd_set input;
+        FD_ZERO(&input);
+        FD_SET(STDIN_FILENO, &input);
+        int ready = select(STDIN_FILENO + 1, &input, NULL, NULL, &timeout);
+        if (ready < 0) break;
+        if (ready == 0) {
+            printf("\ninput timed out\n");
+            secure_zero(out, capacity);
+            return false;
+        }
+        unsigned char ch;
+        if (read(STDIN_FILENO, &ch, 1) != 1) continue;
+        if (ch == '\r' || ch == '\n') {
+            printf("\n");
+            if (entered >= capacity) {
+                printf("input is too long\n");
+                secure_zero(out, capacity);
+                return false;
+            }
+            out[used] = '\0';
+            return true;
+        }
+        if (ch == 3 || ch == 4) {
+            printf("\ninput cancelled\n");
+            secure_zero(out, capacity);
+            return false;
+        }
+        if (ch == 8 || ch == 127) {
+            if (entered > 0) {
+                entered--;
+                if (used > entered) {
+                    used = entered;
+                    out[used] = '\0';
+                }
+                printf("\b \b");
+                fflush(stdout);
+            }
+            continue;
+        }
+        if (ch < 32 || ch > 126) continue;
+        entered++;
+        if (entered < capacity) {
+            out[used++] = (char)ch;
+            if (!masked) {
+                printf("%c", ch);
+                fflush(stdout);
+            }
+        }
+    }
+    printf("\ninput failed\n");
+    secure_zero(out, capacity);
+    return false;
+}
+
+static bool read_secret(char *out, size_t capacity)
+{
+    return read_console_line("Password (input hidden; blank for open network): ", out,
+                             capacity, true, WIFI_SECRET_TIMEOUT_MS);
+}
+
+static esp_err_t wifi_collect_scan(wifi_ap_record_t *records, uint16_t capacity,
+                                   uint16_t *visible, uint16_t *shown)
+{
+    if (records == NULL || visible == NULL || shown == NULL || capacity == 0) {
+        return ESP_ERR_INVALID_ARG;
+    }
+    esp_err_t err = wifi_ensure_ready();
+    if (err != ESP_OK) return err;
+    memset(records, 0, sizeof(*records) * capacity);
+    err = esp_wifi_scan_start(NULL, true);
+    if (err == ESP_OK) err = esp_wifi_scan_get_ap_num(visible);
+    *shown = capacity;
+    if (err == ESP_OK) err = esp_wifi_scan_get_ap_records(shown, records);
+    return err;
+}
+
+static void print_wifi_scan(const wifi_ap_record_t *records, uint16_t visible,
+                            uint16_t shown)
+{
+    printf("%u networks visible (%u shown)\n", visible, shown);
+    for (uint16_t i = 0; i < shown; ++i) {
+        const wifi_ap_record_t *ap = &records[i];
+        const char *band = ap->primary > 14 ? "5GHz" : "2.4GHz";
+        printf("%2u. %-32s %-5s ch=%3u rssi=%4d security=%s\n",
+               i + 1, (const char *)ap->ssid, band, ap->primary, ap->rssi,
+               ap->authmode == WIFI_AUTH_OPEN ? "open" : "secured");
+    }
+}
+
+static int wifi_disconnect_and_clear(void)
+{
+    s_wifi_connecting = false;
+    s_wifi_ignore_disconnect = true;
+    xEventGroupClearBits(s_wifi_events, WIFI_DISCONNECTED_BIT);
+    esp_err_t disconnect_err = esp_wifi_disconnect();
+    if (disconnect_err == ESP_OK) {
+        (void)xEventGroupWaitBits(s_wifi_events, WIFI_DISCONNECTED_BIT,
+                                  pdTRUE, pdFALSE, pdMS_TO_TICKS(1000));
+    }
+    wifi_config_t cleared = {0};
+    esp_err_t clear_err = esp_wifi_set_config(WIFI_IF_STA, &cleared);
+    secure_zero(&cleared, sizeof(cleared));
+    s_wifi_connected = false;
+    s_wifi_disconnect_reason = 0;
+    s_wifi_ip.addr = 0;
+    secure_zero(s_wifi_ssid, sizeof(s_wifi_ssid));
+    s_wifi_ignore_disconnect = false;
+    if (clear_err != ESP_OK) return clear_err;
+    return disconnect_err == ESP_OK || disconnect_err == ESP_ERR_WIFI_NOT_CONNECT
+               ? ESP_OK : disconnect_err;
+}
+
+static int cmd_wifi(int argc, char **argv)
+{
+    if (!cirvane_caps_check(CIRVANE_SERVICE_INVALID, CIRVANE_CAP_WIFI)) {
+        printf("permission denied\n");
+        return 1;
+    }
+    if (argc == 2 && strcmp(argv[1], "status") == 0) {
+        if (s_wifi_connected) {
+            printf("wifi connected ssid=\"%s\" ip=" IPSTR "\n",
+                   s_wifi_ssid, IP2STR(&s_wifi_ip));
+        } else if (s_wifi_connecting) {
+            printf("wifi connecting ssid=\"%s\"\n", s_wifi_ssid);
+        } else {
+            printf("wifi disconnected reason=%u\n", s_wifi_disconnect_reason);
+        }
+        return 0;
+    }
+    if (argc == 2 && strcmp(argv[1], "disconnect") == 0) {
+        if (xSemaphoreTake(s_wifi_lock, pdMS_TO_TICKS(1000)) != pdTRUE) {
+            printf("wifi busy\n");
+            return 1;
+        }
+        esp_err_t err = wifi_ensure_ready();
+        if (err == ESP_OK) err = wifi_disconnect_and_clear();
+        xSemaphoreGive(s_wifi_lock);
+        if (err == ESP_OK) printf("wifi disconnected; credentials cleared\n");
+        else printf("wifi disconnect failed: %s\n", esp_err_to_name(err));
+        return err == ESP_OK ? 0 : 1;
+    }
+    if ((argc != 2 && argc != 3) || strcmp(argv[1], "connect") != 0) {
+        printf("usage: wifi connect <ssid> | wifi status | wifi disconnect\n");
+        return 1;
+    }
+    char selected_ssid[sizeof(((wifi_config_t *)0)->sta.ssid) + 1] = {0};
+    const char *ssid = argc == 3 ? argv[2] : selected_ssid;
+    if (argc == 2) {
+        uint16_t visible = 0;
+        uint16_t shown = 0;
+        if (xSemaphoreTake(s_wifi_lock, pdMS_TO_TICKS(1000)) != pdTRUE) {
+            printf("wifi busy; try again\n");
+            return 1;
+        }
+        printf("scanning for networks...\n");
+        esp_err_t scan_err = wifi_collect_scan(s_wifi_scan_records, MAX_AP_RECORDS,
+                                               &visible, &shown);
+        xSemaphoreGive(s_wifi_lock);
+        if (scan_err != ESP_OK) {
+            printf("wifi scan failed: %s\n", esp_err_to_name(scan_err));
+            return 1;
+        }
+        if (shown == 0) {
+            printf("no networks found; use wifi connect <ssid> for a hidden network\n");
+            return 1;
+        }
+        print_wifi_scan(s_wifi_scan_records, visible, shown);
+        char selection[4];
+        if (!read_console_line("Select network number: ", selection,
+                               sizeof(selection), false,
+                               WIFI_SECRET_TIMEOUT_MS)) {
+            secure_zero(s_wifi_scan_records, sizeof(s_wifi_scan_records));
+            return 1;
+        }
+        uint32_t selected = 0;
+        if (!parse_u32_arg(selection, 1, shown, &selected)) {
+            printf("selection must be a number from 1 to %u\n", shown);
+            secure_zero(selection, sizeof(selection));
+            secure_zero(s_wifi_scan_records, sizeof(s_wifi_scan_records));
+            return 1;
+        }
+        secure_zero(selection, sizeof(selection));
+        size_t selected_len = strnlen(
+            (const char *)s_wifi_scan_records[selected - 1].ssid,
+            sizeof(s_wifi_scan_records[selected - 1].ssid));
+        memcpy(selected_ssid, s_wifi_scan_records[selected - 1].ssid,
+               selected_len);
+        selected_ssid[selected_len] = '\0';
+        secure_zero(s_wifi_scan_records, sizeof(s_wifi_scan_records));
+        printf("selected network: %s\n", selected_ssid);
+    }
+    size_t ssid_len = strlen(ssid);
+    if (!cirvane_wifi_ssid_valid(ssid, ssid_len)) {
+        printf("ssid must contain 1 to 32 bytes\n");
+        return 1;
+    }
+    char password[sizeof(((wifi_config_t *)0)->sta.password)] = {0};
+    if (!read_secret(password, sizeof(password))) return 1;
+    size_t password_len = strlen(password);
+    if (!cirvane_wifi_password_valid(password, password_len)) {
+        printf("password must be blank or contain 8 to 63 characters\n");
+        secure_zero(password, sizeof(password));
+        return 1;
+    }
+    if (xSemaphoreTake(s_wifi_lock, pdMS_TO_TICKS(1000)) != pdTRUE) {
+        printf("wifi busy\n");
+        secure_zero(password, sizeof(password));
+        return 1;
+    }
+
+    wifi_config_t config = {0};
+    memcpy(config.sta.ssid, ssid, ssid_len);
+    memcpy(config.sta.password, password, password_len);
+    config.sta.threshold.authmode = password_len == 0 ? WIFI_AUTH_OPEN : WIFI_AUTH_WPA2_PSK;
+    config.sta.pmf_cfg.capable = true;
+    config.sta.pmf_cfg.required = false;
+    secure_zero(password, sizeof(password));
+
+    esp_err_t err = wifi_ensure_ready();
+    if (err == ESP_OK) err = wifi_disconnect_and_clear();
+    if (err == ESP_OK) err = esp_wifi_set_config(WIFI_IF_STA, &config);
+    secure_zero(&config, sizeof(config));
+    if (err == ESP_OK) {
+        memcpy(s_wifi_ssid, ssid, ssid_len);
+        s_wifi_ssid[ssid_len] = '\0';
+        xEventGroupClearBits(s_wifi_events, WIFI_CONNECTED_BIT | WIFI_FAILED_BIT);
+        s_wifi_connecting = true;
+        err = esp_wifi_connect();
+    }
+    if (err == ESP_OK) {
+        EventBits_t bits = xEventGroupWaitBits(
+            s_wifi_events, WIFI_CONNECTED_BIT | WIFI_FAILED_BIT, pdTRUE, pdFALSE,
+            pdMS_TO_TICKS(WIFI_CONNECT_TIMEOUT_MS));
+        if ((bits & WIFI_CONNECTED_BIT) != 0) {
+            printf("wifi connected ssid=\"%s\" ip=" IPSTR "\n",
+                   s_wifi_ssid, IP2STR(&s_wifi_ip));
+        } else {
+            err = (bits & WIFI_FAILED_BIT) != 0 ? ESP_ERR_WIFI_CONN : ESP_ERR_TIMEOUT;
+            uint8_t reason = s_wifi_disconnect_reason;
+            (void)wifi_disconnect_and_clear();
+            s_wifi_disconnect_reason = reason;
+        }
+    }
+    if (err != ESP_OK && s_wifi_ssid[0] != '\0') {
+        uint8_t reason = s_wifi_disconnect_reason;
+        (void)wifi_disconnect_and_clear();
+        s_wifi_disconnect_reason = reason;
+    }
+    s_wifi_connecting = false;
+    xSemaphoreGive(s_wifi_lock);
+    if (err != ESP_OK) {
+        printf("wifi connection failed: %s reason=%u\n",
+               esp_err_to_name(err), s_wifi_disconnect_reason);
+    }
+    return err == ESP_OK ? 0 : 1;
+}
+
 static void run_wifi_scan(void)
 {
     uint32_t scan_started_ms = cirvane_uptime_ms();
     uint16_t max_records = MAX_AP_RECORDS;
-    wifi_ap_record_t ap_info[MAX_AP_RECORDS];
     uint16_t ap_count = 0;
 
-    if (s_wifi_init_stage != WIFI_INIT_READY) {
-        esp_err_t err = ESP_OK;
-        if (s_wifi_init_stage == WIFI_INIT_NONE) {
-            err = esp_netif_init();
-            if (err == ESP_OK || err == ESP_ERR_INVALID_STATE) {
-                s_wifi_init_stage = WIFI_INIT_NETIF;
-            }
-        }
-        if (s_wifi_init_stage == WIFI_INIT_NETIF) {
-            err = esp_event_loop_create_default();
-            if (err == ESP_OK || err == ESP_ERR_INVALID_STATE) {
-                s_wifi_init_stage = WIFI_INIT_EVENT_LOOP;
-            }
-        }
-        if (s_wifi_init_stage == WIFI_INIT_EVENT_LOOP) {
-            wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
-            err = esp_wifi_init(&cfg);
-            if (err == ESP_OK) s_wifi_init_stage = WIFI_INIT_DRIVER;
-        }
-        if (s_wifi_init_stage == WIFI_INIT_DRIVER) err = esp_wifi_set_mode(WIFI_MODE_STA);
-        if (s_wifi_init_stage == WIFI_INIT_DRIVER && err == ESP_OK) err = esp_wifi_start();
-        if (err != ESP_OK) {
-            ESP_LOGE(TAG, "Wi-Fi lazy init failed: %s", esp_err_to_name(err));
-            cirvane_service_report_health(s_wifi_service, CIRVANE_HEALTH_DEGRADED);
-            return;
-        }
-        s_wifi_init_stage = WIFI_INIT_READY;
+    if (xSemaphoreTake(s_wifi_lock, pdMS_TO_TICKS(1000)) != pdTRUE) {
+        printf("scan refused: wifi busy\n");
+        return;
     }
-
-    memset(ap_info, 0, sizeof(ap_info));
     printf("scanning both bands...\n");
-    esp_err_t err = esp_wifi_scan_start(NULL, true); /* blocking, all channels */
+    esp_err_t err = wifi_collect_scan(s_wifi_scan_records, MAX_AP_RECORDS,
+                                      &ap_count, &max_records);
     if (err != ESP_OK) {
         cirvane_res_record_radio(s_wifi_service,
                                  cirvane_uptime_ms() - scan_started_ms);
         ESP_LOGE(TAG, "scan failed: %s", esp_err_to_name(err));
         cirvane_service_report_health(s_wifi_service, CIRVANE_HEALTH_DEGRADED);
+        xSemaphoreGive(s_wifi_lock);
         return;
     }
-    ESP_ERROR_CHECK(esp_wifi_scan_get_ap_num(&ap_count));
-    ESP_ERROR_CHECK(esp_wifi_scan_get_ap_records(&max_records, ap_info));
     cirvane_res_record_radio(s_wifi_service,
                              cirvane_uptime_ms() - scan_started_ms);
-
-    printf("%u APs visible (%u shown)\n", ap_count, max_records);
-    for (int i = 0; i < max_records; i++) {
-        const wifi_ap_record_t *ap = &ap_info[i];
-        const char *band = (ap->primary > 14) ? "5GHz" : "2.4GHz";
-        printf("%2d. %-32s %-5s ch=%3d rssi=%4d\n",
-               i + 1, (const char *)ap->ssid, band, ap->primary, ap->rssi);
-    }
+    print_wifi_scan(s_wifi_scan_records, ap_count, max_records);
+    secure_zero(s_wifi_scan_records, sizeof(s_wifi_scan_records));
     cirvane_service_report_health(s_wifi_service, CIRVANE_HEALTH_OK);
+    xSemaphoreGive(s_wifi_lock);
 }
 
 static int cmd_svc(int argc, char **argv)
@@ -676,6 +1022,7 @@ static void shell_start(void)
     (void)cmd_ps;
     (void)cmd_led;
     (void)cmd_scan;
+    (void)cmd_wifi;
     (void)cmd_svc;
     (void)cmd_svcctl;
     (void)cmd_bus;
@@ -714,6 +1061,10 @@ static void shell_start(void)
     ESP_ERROR_CHECK(esp_console_cmd_register(&(esp_console_cmd_t){
         .command = "scan", .help = "Wi-Fi scan both bands, sorted by RSSI",
         .func = &cmd_scan }));
+    ESP_ERROR_CHECK(esp_console_cmd_register(&(esp_console_cmd_t){
+        .command = "wifi", .hint = "connect <ssid> | status | disconnect",
+        .help = "Connect without logging or persisting the password",
+        .func = &cmd_wifi }));
     ESP_ERROR_CHECK(esp_console_cmd_register(&(esp_console_cmd_t){
         .command = "svc", .help = "Cirvane supervised service table", .func = &cmd_svc }));
     ESP_ERROR_CHECK(esp_console_cmd_register(&(esp_console_cmd_t){
@@ -794,6 +1145,10 @@ void app_main(void)
     }
 
     cirvane_bus_init();
+    s_wifi_events = xEventGroupCreateStatic(&s_wifi_events_storage);
+    s_wifi_lock = xSemaphoreCreateMutexStatic(&s_wifi_lock_storage);
+    ESP_ERROR_CHECK(s_wifi_events != NULL && s_wifi_lock != NULL
+                        ? ESP_OK : ESP_ERR_NO_MEM);
     ESP_ERROR_CHECK(cirvane_manager_register(&(cirvane_service_t){
         .name = "led-heartbeat", .desc = "LED control and liveness heartbeat",
         .init = led_service_init, .tick = led_service_tick, .period_ms = 100,
@@ -801,7 +1156,7 @@ void app_main(void)
         .capabilities = CIRVANE_CAP_LED, .required = true,
     }, &s_led_service));
     ESP_ERROR_CHECK(cirvane_manager_register(&(cirvane_service_t){
-        .name = "wifi-scan", .desc = "Asynchronous dual-band Wi-Fi scans",
+        .name = "wifi-scan", .desc = "Bounded station connectivity and scans",
         .init = wifi_service_init, .tick = wifi_service_tick, .period_ms = 50,
         .stack_size = 4096, .priority = 4, .policy = CIRVANE_RESTART_AUTO,
         .capabilities = CIRVANE_CAP_WIFI, .required = false,

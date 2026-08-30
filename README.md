@@ -41,8 +41,13 @@ svc
 res
 bus
 scan
+wifi connect
+wifi status
+wifi disconnect
 ota-status
 ```
+
+`wifi connect` scans for nearby networks and asks you to choose one. Password entry is masked. Use `wifi connect "<ssid>"` to connect directly to a known or hidden network. Credentials stay in driver RAM for the active session and are cleared on disconnect or reboot.
 
 See [Operations](docs/OPERATIONS.md) for the device lifecycle and recovery workflow, and [Adoption and integration](docs/ADOPTION_AND_INTEGRATION.md) for a staged evaluation path.
 

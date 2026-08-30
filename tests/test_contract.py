@@ -90,9 +90,26 @@ class CirvaneContract(unittest.TestCase):
 
     def test_wifi_initialisation_is_lazy_and_retryable(self):
         main = (ROOT / "main" / "cirvane.c").read_text()
-        self.assertLess(main.index("static void run_wifi_scan"), main.index("esp_wifi_init(&cfg)"))
-        for stage in ("WIFI_INIT_NETIF", "WIFI_INIT_EVENT_LOOP", "WIFI_INIT_DRIVER"):
+        app_main = main[main.index("void app_main(void)") :]
+        self.assertNotIn("esp_wifi_init(&cfg)", app_main)
+        self.assertIn("wifi_ensure_ready()", main)
+        for stage in ("WIFI_INIT_NETIF", "WIFI_INIT_EVENT_LOOP", "WIFI_INIT_STA_NETIF",
+                      "WIFI_INIT_DRIVER", "WIFI_INIT_WIFI_HANDLER", "WIFI_INIT_IP_HANDLER"):
             self.assertIn(stage, main)
+
+    def test_wifi_connectivity_is_bounded_and_secret_safe(self):
+        main = (ROOT / "main" / "cirvane.c").read_text()
+        self.assertIn('command = "wifi"', main)
+        self.assertIn('strcmp(argv[1], "connect")', main)
+        self.assertIn('strcmp(argv[1], "status")', main)
+        self.assertIn('strcmp(argv[1], "disconnect")', main)
+        self.assertIn("WIFI_CONNECT_TIMEOUT_MS 15000u", main)
+        self.assertIn("WIFI_STORAGE_RAM", main)
+        self.assertIn("read_secret(password", main)
+        self.assertIn("secure_zero(password", main)
+        self.assertNotIn("nvs_set_str", main)
+        self.assertNotIn("wifi connect <ssid> <password>", main)
+        self.assertIn("Select network number:", main)
 
     def test_shell_numbers_are_strict_and_bounded(self):
         main = (ROOT / "main" / "cirvane.c").read_text()

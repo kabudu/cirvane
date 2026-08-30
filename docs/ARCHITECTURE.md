@@ -15,6 +15,7 @@ The kernel architecture is a clean-sheet Cirvane kernel that owns reset-to-runti
 | Configuration journal | Cirvane over NVS | Highest valid CRC generation wins | Fall back to other slot or defaults | 2 records |
 | OTA policy | Cirvane over ESP-IDF | No boot selection before complete verification | Abort staging and keep current boot target | 2 app slots, 1 KiB copy block |
 | Shell | Cirvane and ESP console | Bounded parsing and explicit errors | Reject malformed or unsupported input | ESP console line bound |
+| Wi-Fi station | Cirvane over ESP-IDF | Credentials remain session-only and connection waits are bounded | Clear driver configuration after failure, disconnect or reboot | 20 scan results, 32-byte SSID, 63-byte password, 15-second connect wait |
 | Vendor substrate | ESP-IDF/FreeRTOS | Hardware and scheduler services match pinned SDK | Build or runtime error, never silently accepted | Pinned v6.0.2 baseline |
 
 ## Stage 2 kernel policy
