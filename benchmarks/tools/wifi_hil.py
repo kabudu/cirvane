@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import os
 import re
@@ -15,6 +14,7 @@ from pathlib import Path
 
 from ota_rollback_hil import require, restart, run_command
 from serial_benchmark import await_prompt, reconnect_and_await, sha256, sync
+from evidence_redaction import redact_evidence
 
 
 def read_credentials(path: Path) -> tuple[str, str]:
@@ -168,13 +168,13 @@ def main() -> None:
         "port": args.port,
         "firmware": str(args.firmware),
         "firmware_sha256": sha256(args.firmware),
-        "ssid_sha256": hashlib.sha256(ssid.encode("utf-8")).hexdigest(),
+        "network_identity": "redacted",
         "credential_storage": "ram-only",
         "result": "pass",
         "records": records,
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+    args.output.write_text(json.dumps(redact_evidence(result), indent=2) + "\n", encoding="utf-8")
     print(json.dumps({"output": str(args.output), "result": "pass"}))
 
 

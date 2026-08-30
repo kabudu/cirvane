@@ -4,6 +4,22 @@
 
 `./scripts/ci-local.sh` is authoritative while this repository is private. Hosted CI is disabled and must not be added or described as passing. Hosted CI may be considered only at the public-opening gate after explicit user approval.
 
+## Public source-opening gate
+
+Public source access is separate from a versioned developer release. It may expose the pre-release source, documentation and evidence without publishing binaries or strengthening deployment claims.
+
+Before changing visibility:
+
+- Make the root licence, project SPDX identifiers, README and third-party notices consistent.
+- Publish contribution, conduct, governance, support, security-disclosure, issue and pull-request guidance.
+- Run `./scripts/ci-local.sh`, `scripts/validate_public_readiness.py` and a full-history Gitleaks scan at the exact reviewed commit.
+- Confirm no key, credential, local SDK state, generated build tree, private prompt or sensitive device/network identifier is tracked or present in history.
+- Review public claims, name or mark results, dependency provenance and AI-assisted brand rights. Record professional review or explicit owner risk acceptance where independent legal review is unavailable.
+- Obtain explicit owner approval for the exact commit and visibility change.
+- Keep hosted CI disabled unless the owner separately authorizes it. Public visibility is not implicit hosted-CI approval.
+
+Immediately after a public visibility change, enable and verify GitHub private vulnerability reporting, then inspect the repository while signed out. Do not create a tag, GitHub Release or binary merely because the source becomes public.
+
 ## Initial developer-release gates
 
 - Consistent Cirvane firmware, shell, documentation and asset identity.

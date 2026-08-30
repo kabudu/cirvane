@@ -13,6 +13,7 @@ import subprocess
 import time
 from datetime import datetime, timezone
 from pathlib import Path
+from evidence_redaction import redact_evidence
 
 ROOT = Path(__file__).resolve().parents[2]
 EVAL_OUT = ROOT / "build" / "kernel-spike-eval"
@@ -475,7 +476,7 @@ def main() -> None:
             }
         record["cirvane_stale_total"] = stale_total
     EVIDENCE.parent.mkdir(parents=True, exist_ok=True)
-    EVIDENCE.write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
+    EVIDENCE.write_text(json.dumps(redact_evidence(record), indent=2) + "\n", encoding="utf-8")
     if args.skip_nucleus:
         record["nucleus"] = {"status": "skipped"}
     elif args.jtag_class1:
@@ -529,7 +530,7 @@ def main() -> None:
     )
     if not args.skip_nucleus and nucleus.get("stats_ms", {}).get("n", 0) < N:
         record["result"] = "fail"
-    EVIDENCE.write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
+    EVIDENCE.write_text(json.dumps(redact_evidence(record), indent=2) + "\n", encoding="utf-8")
     print(record["result"])
     try:
         run(
@@ -543,10 +544,10 @@ def main() -> None:
         flash_bin(ROOT / "build" / "kernel-spike" / "cirvane-spike.bin")
     except SystemExit:
         record["hil_restored"] = False
-        EVIDENCE.write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
+        EVIDENCE.write_text(json.dumps(redact_evidence(record), indent=2) + "\n", encoding="utf-8")
         raise
     record["hil_restored"] = True
-    EVIDENCE.write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
+    EVIDENCE.write_text(json.dumps(redact_evidence(record), indent=2) + "\n", encoding="utf-8")
     if record["result"] != "pass":
         raise SystemExit(1)
 

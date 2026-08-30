@@ -53,7 +53,7 @@ See [Operations](docs/OPERATIONS.md) for the device lifecycle and recovery workf
 
 ## Current status
 
-Cirvane is private pre-release software under active productisation.
+Cirvane is pre-release software under active productisation. Source access does not imply production readiness, safety certification or support for unattended deployment.
 
 Validated on a real XIAO ESP32-C5:
 
@@ -65,7 +65,7 @@ Validated on a real XIAO ESP32-C5:
 
 Authenticated remote OTA transport is not implemented yet. The USB shell is a privileged local interface and does not provide user authentication. Hardware Secure Boot, flash encryption, energy qualification, independent penetration testing and safety certification are also outside the current release claim.
 
-Evidence and reproducible test harnesses are stored in [`benchmarks/`](benchmarks/). While the repository remains private, `./scripts/ci-local.sh` is the authoritative validation gate and hosted CI is intentionally disabled.
+Evidence and reproducible test harnesses are stored in [`benchmarks/`](benchmarks/). `./scripts/ci-local.sh` is the authoritative validation gate. Hosted CI is not configured.
 
 ## Project documentation
 
@@ -77,9 +77,12 @@ Evidence and reproducible test harnesses are stored in [`benchmarks/`](benchmark
 - [Release policy](docs/RELEASE.md)
 - [Implementation plan](docs/IMPLEMENTATION_PLAN.md)
 - [Brand identity](docs/BRAND_IDENTITY.md)
+- [Contributing](CONTRIBUTING.md)
+- [Security policy](SECURITY.md)
+- [Open-source readiness](docs/OPEN_SOURCE_READINESS.md)
 
 Cirvane also contains a clean-sheet kernel research track. It is separate from the current ESP-IDF/FreeRTOS product firmware and is documented in [Kernel spike and invariants](docs/KERNEL_SPIKE.md).
 
 ## Licence
 
-Cirvane is licensed under the [Apache License 2.0](LICENSE).
+Cirvane is licensed under the [MIT License](LICENSE). Third-party material is listed in [Third-party notices](THIRD_PARTY_NOTICES.md).

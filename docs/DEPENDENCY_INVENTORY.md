@@ -1,5 +1,7 @@
 # Dependency inventory
 
+Project-owned source is distributed under MIT. The vendored Espressif console example is `Unlicense OR CC0-1.0`; external ESP-IDF and toolchain dependencies retain their upstream licences. See `THIRD_PARTY_NOTICES.md` for the distribution-facing inventory.
+
 Enumerated vendor and Cirvane dependencies for the Stage 1 kernel spike and the
 planned production kernel. Absence of a row means the component is not approved
 for a clean-sheet image.

@@ -10,6 +10,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from serial_benchmark import await_prompt, reconnect_and_await, sha256, sync
+from evidence_redaction import redact_evidence
 
 
 def run_command(port, command: str, timeout: float = 10) -> str:
@@ -103,7 +104,7 @@ def main() -> None:
         "records": records,
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+    args.output.write_text(json.dumps(redact_evidence(result), indent=2) + "\n", encoding="utf-8")
     print(json.dumps({"output": str(args.output), "result": "pass"}))
 
 

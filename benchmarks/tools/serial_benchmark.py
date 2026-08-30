@@ -13,6 +13,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import serial
+from evidence_redaction import redact_evidence
 
 
 PROMPT = b"cirvane>"
@@ -151,7 +152,7 @@ def main() -> None:
         "boot": {"method": "shell restart to prompt", "samples_ms": boot, **describe(boot)},
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+    args.output.write_text(json.dumps(redact_evidence(result), indent=2) + "\n", encoding="utf-8")
     print(json.dumps({"output": str(args.output), "latency": describe(latency), "boot": describe(boot)}))
 
 

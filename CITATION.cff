@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use Cirvane in research, cite this repository and the exact commit you evaluated."
+title: "Cirvane"
+type: software
+authors:
+  - family-names: "Abudu"
+    given-names: "Kamba"
+repository-code: "https://github.com/kabudu/cirvane"
+license: MIT
