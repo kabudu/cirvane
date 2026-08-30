@@ -515,6 +515,8 @@ static int cmd_wifi(int argc, char **argv)
         return 1;
     }
     char selected_ssid[sizeof(((wifi_config_t *)0)->sta.ssid) + 1] = {0};
+    uint8_t selected_bssid[6] = {0};
+    uint8_t selected_channel = 0;
     const char *ssid = argc == 3 ? argv[2] : selected_ssid;
     if (argc == 2) {
         uint16_t visible = 0;
@@ -557,6 +559,9 @@ static int cmd_wifi(int argc, char **argv)
         memcpy(selected_ssid, s_wifi_scan_records[selected - 1].ssid,
                selected_len);
         selected_ssid[selected_len] = '\0';
+        memcpy(selected_bssid, s_wifi_scan_records[selected - 1].bssid,
+               sizeof(selected_bssid));
+        selected_channel = s_wifi_scan_records[selected - 1].primary;
         secure_zero(s_wifi_scan_records, sizeof(s_wifi_scan_records));
         printf("selected network: %s\n", selected_ssid);
     }
@@ -582,6 +587,11 @@ static int cmd_wifi(int argc, char **argv)
     wifi_config_t config = {0};
     memcpy(config.sta.ssid, ssid, ssid_len);
     memcpy(config.sta.password, password, password_len);
+    if (argc == 2) {
+        memcpy(config.sta.bssid, selected_bssid, sizeof(selected_bssid));
+        config.sta.bssid_set = true;
+        config.sta.channel = selected_channel;
+    }
     config.sta.threshold.authmode = password_len == 0 ? WIFI_AUTH_OPEN : WIFI_AUTH_WPA2_PSK;
     config.sta.pmf_cfg.capable = true;
     config.sta.pmf_cfg.required = false;

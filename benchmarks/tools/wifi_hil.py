@@ -8,12 +8,33 @@ import hashlib
 import json
 import os
 import re
+import stat
 import time
 from datetime import datetime, timezone
 from pathlib import Path
 
 from ota_rollback_hil import require, restart, run_command
 from serial_benchmark import await_prompt, reconnect_and_await, sha256, sync
+
+
+def read_credentials(path: Path) -> tuple[str, str]:
+    mode = stat.S_IMODE(path.stat().st_mode)
+    if mode != 0o600 or path.stat().st_uid != os.getuid():
+        raise RuntimeError("credential file must be owned by the current user with mode 0600")
+    values: dict[str, str] = {}
+    allowed = {"CIRVANE_WIFI_SSID", "CIRVANE_WIFI_PASSWORD"}
+    for raw_line in path.read_text(encoding="utf-8").splitlines():
+        if not raw_line or raw_line.lstrip().startswith("#"):
+            continue
+        key, separator, value = raw_line.partition("=")
+        if separator == "" or key not in allowed or key in values:
+            raise RuntimeError("credential file must contain each permitted field exactly once")
+        if len(value) >= 2 and value[0] == value[-1] and value[0] in "'\"":
+            value = value[1:-1]
+        values[key] = value
+    if set(values) != allowed:
+        raise RuntimeError("credential file is missing a required field")
+    return values["CIRVANE_WIFI_SSID"], values["CIRVANE_WIFI_PASSWORD"]
 
 
 def await_fragment(port, fragment: bytes, timeout: float) -> str:
@@ -35,6 +56,13 @@ def redact(text: str, ssid: str, password: str) -> str:
     return redacted
 
 
+def require_redacted(output: str, ssid: str, password: str, *fragments: str) -> None:
+    missing = [fragment for fragment in fragments if fragment not in output]
+    if missing:
+        safe = redact(output, ssid, password)
+        raise RuntimeError(f"missing {missing!r} in redacted device output: {safe!r}")
+
+
 def interactive_connect(port, ssid: str, password: str) -> tuple[str, float]:
     sync(port)
     port.reset_input_buffer()
@@ -42,9 +70,13 @@ def interactive_connect(port, ssid: str, password: str) -> tuple[str, float]:
     port.write(b"wifi connect\n")
     port.flush()
     scan = await_fragment(port, b"Select network number: ", 30)
-    matches = re.findall(r"^\s*(\d+)\.\s+(.{1,32}?)\s+(?:2\.4GHz|5GHz)\s", scan,
+    matches = re.findall(r"^\s*(\d+)\.\s+(.{1,32}?)\s+(2\.4GHz|5GHz)\s", scan,
                          flags=re.MULTILINE)
-    selected = next((number for number, name in matches if name.rstrip() == ssid), None)
+    selected = next((number for number, name, band in matches
+                     if name.rstrip() == ssid and band == "2.4GHz"), None)
+    if selected is None:
+        selected = next((number for number, name, _ in matches
+                         if name.rstrip() == ssid), None)
     if selected is None:
         raise RuntimeError("configured network was not present in bounded scan results")
     port.write(selected.encode("ascii") + b"\n")
@@ -54,7 +86,7 @@ def interactive_connect(port, ssid: str, password: str) -> tuple[str, float]:
     port.flush()
     completed = await_prompt(port, time.monotonic() + 20).decode("utf-8", "replace")
     output = scan + selected_output + completed
-    require(output, "wifi connected", " ip=")
+    require_redacted(output, ssid, password, "wifi connected", " ip=")
     return output, (time.monotonic() - started) * 1000
 
 
@@ -69,7 +101,7 @@ def direct_connect(port, ssid: str, password: str) -> tuple[str, float]:
     port.flush()
     completed = await_prompt(port, time.monotonic() + 20).decode("utf-8", "replace")
     output = prefix + completed
-    require(output, "wifi connected", " ip=")
+    require_redacted(output, ssid, password, "wifi connected", " ip=")
     return output, (time.monotonic() - started) * 1000
 
 
@@ -78,10 +110,14 @@ def main() -> None:
     parser.add_argument("--port", default="/dev/cu.usbmodem3101")
     parser.add_argument("--firmware", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--credentials-file", type=Path)
     args = parser.parse_args()
 
-    ssid = os.environ.get("CIRVANE_WIFI_SSID", "")
-    password = os.environ.get("CIRVANE_WIFI_PASSWORD", "")
+    if args.credentials_file:
+        ssid, password = read_credentials(args.credentials_file)
+    else:
+        ssid = os.environ.get("CIRVANE_WIFI_SSID", "")
+        password = os.environ.get("CIRVANE_WIFI_PASSWORD", "")
     if not ssid:
         raise RuntimeError("CIRVANE_WIFI_SSID must name the test network")
     if "\n" in ssid or "\r" in ssid or '"' in ssid:
