@@ -2,7 +2,7 @@
 
 ## Scope and current finding
 
-The imported firmware has established hardware evidence for bounded service operation, configuration recovery, signed rollback, malformed input rejection and quiet production-shell behaviour. Material residual findings are authenticated OTA absence, software-only update trust without hardware provisioning, privileged unauthenticated USB shell, single-device reproducibility, rollback/security recapture under the Cirvane prompt, and remaining productisation gates.
+The imported firmware has established hardware evidence for bounded service operation, configuration recovery, signed rollback, malformed input rejection and quiet production-shell behaviour. The Stage 3 forensic review found and corrected four material baseline defects: generic HIL builds ran the rebooting matched-evaluation campaign, the configuration journal used the undocumented `cirvane_v2` namespace instead of the accepted `cirvane` namespace, generation selection was not wrap-safe, and power/OTA failure paths could report success or dereference an unavailable partition. Material residual findings are authenticated OTA absence, software-only update trust without hardware provisioning, privileged unauthenticated USB shell, single-device reproducibility and remaining productisation gates.
 
 ## Simplicity decisions
 
@@ -26,7 +26,10 @@ real-board `benchmarks/results/kernel-spike.json` evidence are in. Live
 kernel by ADR 0004. Adversarial HIL markers pass. Cirvane eval samples are in
 `matched-eval.json` (`result=pass`, Nucleus class-1 n=30, Cirvane `stale_total=0`).
 Matched evaluation still lists incomparable classes, units and Wi-Fi.
-Authenticated OTA and developer release remain incomplete. Stage 1 novelty
+Renamed Cirvane functional, security, signed rollback and performance evidence
+is recorded under `benchmarks/results/cirvane-*`. Each new hardware record is
+tied to the tested firmware digest. Generic HIL and matched-evaluation boot
+profiles are now separate. Authenticated OTA and developer release remain incomplete. Stage 1 novelty
 remains a provisional hypothesis.
 Energy, irreversible hardware provisioning, independent novelty challenge,
 clean-room reproduction, formal verification and independent penetration testing

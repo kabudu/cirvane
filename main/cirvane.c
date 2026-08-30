@@ -590,7 +590,7 @@ static void wifi_service_tick(void *ctx)
     }
 }
 
-#if CONFIG_CIRVANE_HIL_DIAGNOSTICS
+#if CONFIG_CIRVANE_MATCHED_EVAL
 #define CIRVANE_MATCHED_MAGIC 0xC1455E01u
 #define CIRVANE_MATCHED_N 33u
 
@@ -809,7 +809,7 @@ void app_main(void)
     ESP_ERROR_CHECK(cirvane_bus_subscribe(s_led_service, CIRVANE_MSG_LED_MODE));
     ESP_ERROR_CHECK(cirvane_bus_subscribe(s_wifi_service, CIRVANE_MSG_SCAN_REQUEST));
     cirvane_manager_start();
-#if CONFIG_CIRVANE_HIL_DIAGNOSTICS
+#if CONFIG_CIRVANE_MATCHED_EVAL
     hil_matched_class1();
 #endif
     ESP_LOGI(TAG, "cirvane online; powered by ESP-IDF/FreeRTOS; type 'help' at the prompt");

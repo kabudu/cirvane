@@ -57,6 +57,17 @@ class CirvaneContract(unittest.TestCase):
         self.assertIn("esp_crc32_le", self.runtime)
         self.assertIn("nvs_commit", self.runtime)
         self.assertIn("verify.generation != record.generation", self.runtime)
+        self.assertIn('nvs_open("cirvane",', self.runtime)
+        self.assertNotIn('nvs_open("cirvane_v2",', self.runtime)
+        self.assertIn("cirvane_serial_u32_newer", self.runtime)
+
+    def test_failure_paths_do_not_report_false_success(self):
+        self.assertIn("if (running == NULL)", self.runtime)
+        self.assertIn("err = esp_wifi_start()", self.runtime)
+        self.assertIn("err = esp_wifi_stop()", self.runtime)
+        self.assertIn("err = gpio_set_level(CIRVANE_LED_GPIO, 0)", self.runtime)
+        self.assertNotIn("        esp_wifi_start();", self.runtime)
+        self.assertNotIn("        esp_wifi_stop();", self.runtime)
 
     def test_signing_key_is_not_embedded_in_source(self):
         self.assertNotIn("BEGIN PRIVATE KEY", self.defaults)
@@ -112,6 +123,8 @@ class CirvaneContract(unittest.TestCase):
         main = (ROOT / "main" / "cirvane.c").read_text()
         matched = (ROOT / "sdkconfig.matched-eval.defaults").read_text()
         self.assertIn("CONFIG_CIRVANE_HIL_DIAGNOSTICS=y", self.hil_defaults)
+        self.assertNotIn("CONFIG_CIRVANE_MATCHED_EVAL=y", self.hil_defaults)
+        self.assertIn("CONFIG_CIRVANE_MATCHED_EVAL=y", matched)
         self.assertNotIn("CONFIG_CIRVANE_HIL_DIAGNOSTICS=y", self.defaults)
         self.assertNotIn("CONFIG_ESP_CONSOLE_NONE=y", self.hil_defaults)
         self.assertIn("CONFIG_ESP_CONSOLE_NONE=y", matched)
@@ -123,6 +136,7 @@ class CirvaneContract(unittest.TestCase):
         self.assertIn("ota-reject-corrupt", main)
         self.assertIn("config-corrupt-test", main)
         self.assertIn("err != ESP_OK && boot_unchanged", self.runtime)
+        self.assertIn("#if CONFIG_CIRVANE_MATCHED_EVAL", main)
         self.assertIn("hil_matched_class1", main)
         self.assertIn("s_cirvane_matched", main)
         self.assertIn("__NOINIT_ATTR", main)
