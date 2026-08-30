@@ -1,6 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2026 kabudu
- * SPDX-License-Identifier: MIT
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Minimal ESP32-C5 MMIO constants for the FreeRTOS-free spike.
  * Addresses are from ESP-IDF v6.0 ESP32-C5 soc headers.

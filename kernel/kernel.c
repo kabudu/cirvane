@@ -1,6 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2026 kabudu
- * SPDX-License-Identifier: MIT
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Portable Cirvane kernel: panic, IRQ table, cooperative scheduler,
  * typed messages and frozen syscalls. No FreeRTOS, no allocator.

@@ -1,6 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2026 kabudu
- * SPDX-License-Identifier: MIT
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Kernel-owned dual-slot rollback policy. Never select a boot slot until the
  * injected image verifier succeeds. Signature and ESP image parsing stay in

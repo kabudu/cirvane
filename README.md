@@ -85,4 +85,4 @@ Cirvane also contains a clean-sheet kernel research track. It is separate from t
 
 ## Licence
 
-Cirvane is licensed under the [MIT License](LICENSE). Third-party material is listed in [Third-party notices](THIRD_PARTY_NOTICES.md).
+Cirvane is licensed under the [Apache License 2.0](LICENSE). Third-party material is listed in [Third-party notices](THIRD_PARTY_NOTICES.md).

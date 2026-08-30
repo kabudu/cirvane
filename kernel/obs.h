@@ -1,6 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2026 kabudu
- * SPDX-License-Identifier: MIT
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Bounded crash, evidence and quiet-shell encodings. No allocator.
  * The USB shell is privileged and unauthenticated.

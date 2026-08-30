@@ -1,6 +1,6 @@
 # Dependency inventory
 
-Project-owned source is distributed under MIT. The vendored Espressif console example is `Unlicense OR CC0-1.0`; external ESP-IDF and toolchain dependencies retain their upstream licences. See `THIRD_PARTY_NOTICES.md` for the distribution-facing inventory.
+Project-owned source is distributed under Apache-2.0. The vendored Espressif console example is `Unlicense OR CC0-1.0`; external ESP-IDF and toolchain dependencies retain their upstream licences. See `THIRD_PARTY_NOTICES.md` for the distribution-facing inventory.
 
 Enumerated vendor and Cirvane dependencies for the Stage 1 kernel spike and the
 planned production kernel. Absence of a row means the component is not approved
@@ -10,10 +10,10 @@ for a clean-sheet image.
 
 | Component | Source | Licence | Privilege | Memory | Callbacks | Scheduler |
 |---|---|---|---|---|---|---|
-| Cirvane spike + kernel core | this repository | MIT | Machine | Internal SRAM only | Trap handler | Cooperative RR; ticks must return |
+| Cirvane spike + kernel core | this repository | Apache-2.0 | Machine | Internal SRAM only | Trap handler | Cooperative RR; ticks must return |
 | `riscv32-esp-elf` GCC 15.2 / newlib not linked | Espressif toolchain | toolchain | Build only | n/a | n/a | n/a |
 | ESP32-C5 ROM `esp_rom_spiflash_read` 0x40000160, `erase_sector` 0x40000154, `write` 0x4000015c, `unlock` 0x40000164 | Espressif ROM | ROM binary | ROM | ROM | None from spike besides the call | None |
-| Cirvane `otadata.c` adapter | this repository | MIT | Machine | Two 4 KB copies at `0xF000` | None | None. Writes only after rollback policy; HIL restores backup |
+| Cirvane `otadata.c` adapter | this repository | Apache-2.0 | Machine | Two 4 KB copies at `0xF000` | None | None. Writes only after rollback policy; HIL restores backup |
 | USB Serial/JTAG, SYSTIMER, CLIC, INTMTX, INTPRI, TIMG WDT, LP WDT, GPIO, IO MUX, LPPERI RNG | ESP32-C5 MMIO | hardware | Machine | Peripheral window | Interrupt via CLIC | None |
 | ESP32-C5 ROM USB TX (`usb_serial_device_tx_one_char` 0x40000ac4, flush 0x40000ac0) | Espressif ROM | ROM binary | ROM | ROM | None besides the call | None |
 | ESP-IDF second-stage bootloader (already flashed) | ESP-IDF v6.0.2 | Apache-2.0 | Boot | Bootloader SRAM, then released | Jumps to app entry | Not in spike image |

@@ -36,12 +36,12 @@ for relative in REQUIRED:
         fail(f"missing or empty {relative}")
 
 license_text = (ROOT / "LICENSE").read_text(encoding="utf-8")
-if not license_text.startswith("MIT License\n"):
-    fail("root licence must be MIT")
+if not license_text.startswith("                                 Apache License\n                           Version 2.0, January 2004\n"):
+    fail("root licence must be Apache-2.0")
 
 readme = (ROOT / "README.md").read_text(encoding="utf-8")
-if "[MIT License](LICENSE)" not in readme or "Apache License 2.0" in readme:
-    fail("README licence does not match the root MIT licence")
+if "[Apache License 2.0](LICENSE)" not in readme:
+    fail("README licence does not match the root Apache-2.0 licence")
 for stale in ("private pre-release", "While the repository remains private"):
     if stale in readme:
         fail(f"visibility-dependent README wording remains: {stale}")
@@ -52,8 +52,8 @@ for root_name in ("main", "kernel", "tests"):
             continue
         text = path.read_text(encoding="utf-8")
         match = re.search(r"SPDX-License-Identifier:\s*([^\r\n*]+)", text)
-        if match and match.group(1).strip() != "MIT":
-            fail(f"project source has non-MIT SPDX identifier: {path.relative_to(ROOT)}")
+        if match and match.group(1).strip() != "Apache-2.0":
+            fail(f"project source has non-Apache-2.0 SPDX identifier: {path.relative_to(ROOT)}")
 
 security = (ROOT / "SECURITY.md").read_text(encoding="utf-8")
 if "private vulnerability reporting" not in security.lower():

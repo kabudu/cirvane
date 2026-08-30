@@ -1,6 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2026 kabudu
- * SPDX-License-Identifier: MIT
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Flash adapter for the two-slot configuration journal. Each slot occupies
  * one 4096-byte sector at CIRVANE_CFG_FLASH_BASE. Otadata is not written.

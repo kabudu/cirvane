@@ -1,6 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2026 kabudu
- * SPDX-License-Identifier: MIT
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Bounded kernel HAL. UART, GPIO, timer, flash read, watchdog and entropy.
  * Radio and network are excluded (owner decision; ESP-IDF Wi-Fi needs FreeRTOS).

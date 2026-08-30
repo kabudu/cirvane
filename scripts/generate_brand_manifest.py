@@ -98,15 +98,21 @@ def main() -> int:
         is_figtree_wordmark = relative.name in {
             "cirvane-wordmark.svg", "cirvane-wordmark-reversed.svg"
         }
+        is_figtree_license = relative.name == "Figtree-OFL.txt"
         entry = {
             "path": str(relative),
             "sha256": digest(path),
             "mediaType": media_type,
             "dimensions": dimensions,
             "colourSpace": "sRGB" if media_type.startswith("image/") else None,
-            "licence": "MIT",
-            "creator": "OpenAI Codex under owner direction",
+            "licence": "OFL-1.1" if is_figtree_license else "Apache-2.0",
+            "creator": (
+                "Figtree Project Authors" if is_figtree_license else
+                "OpenAI Codex under owner direction"
+            ),
             "provenance": (
+                "upstream Figtree SIL Open Font License 1.1 text"
+                if is_figtree_license else
                 "owner-approved AI-assisted raster master and deterministic derivative"
                 if is_dimensional_source else
                 "Figtree weight 450 outlines under the SIL Open Font License 1.1"

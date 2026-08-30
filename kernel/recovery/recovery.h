@@ -1,6 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2026 kabudu
- * SPDX-License-Identifier: MIT
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Host-testable model of the Cirvane bounded recovery transaction.
  * Stage 2 kernel syscalls own this ABI. It is not a novelty claim.
