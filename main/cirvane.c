@@ -101,6 +101,7 @@ static StaticEventGroup_t s_wifi_events_storage;
 static StaticSemaphore_t s_wifi_lock_storage;
 static volatile bool s_wifi_connecting;
 static volatile bool s_wifi_connected;
+static volatile bool s_wifi_started;
 static volatile bool s_wifi_ignore_disconnect;
 static volatile uint8_t s_wifi_disconnect_reason;
 static char s_wifi_ssid[sizeof(((wifi_config_t *)0)->sta.ssid) + 1];
@@ -240,6 +241,10 @@ static int cmd_scan(int argc, char **argv)
         printf("permission denied\n");
         return 1;
     }
+    if (cirvane_power_current_budget() != CIRVANE_BUDGET_ACTIVE) {
+        printf("scan refused: set power active first\n");
+        return 1;
+    }
     cirvane_msg_t *msg = cirvane_bus_alloc();
     if (msg == NULL) {
         printf("message bus busy\n");
@@ -256,7 +261,13 @@ static void wifi_event_handler(void *arg, esp_event_base_t base,
                                int32_t id, void *data)
 {
     (void)arg;
-    if (base == IP_EVENT && id == IP_EVENT_STA_GOT_IP) {
+    if (base == WIFI_EVENT && id == WIFI_EVENT_STA_START) {
+        s_wifi_started = true;
+    } else if (base == WIFI_EVENT && id == WIFI_EVENT_STA_STOP) {
+        s_wifi_started = false;
+        s_wifi_connected = false;
+        s_wifi_connecting = false;
+    } else if (base == IP_EVENT && id == IP_EVENT_STA_GOT_IP) {
         const ip_event_got_ip_t *event = data;
         s_wifi_ip = event->ip_info.ip;
         s_wifi_connected = true;
@@ -276,7 +287,12 @@ static void wifi_event_handler(void *arg, esp_event_base_t base,
 
 static esp_err_t wifi_ensure_ready(void)
 {
-    if (s_wifi_init_stage == WIFI_INIT_READY) return ESP_OK;
+    if (s_wifi_init_stage == WIFI_INIT_READY) {
+        if (s_wifi_started) return ESP_OK;
+        esp_err_t start_err = esp_wifi_start();
+        if (start_err == ESP_OK) s_wifi_started = true;
+        return start_err;
+    }
 
     esp_err_t err = ESP_OK;
     if (s_wifi_init_stage == WIFI_INIT_NONE) {
@@ -305,7 +321,7 @@ static esp_err_t wifi_ensure_ready(void)
         err = esp_wifi_set_storage(WIFI_STORAGE_RAM);
         if (err == ESP_OK) err = esp_wifi_set_mode(WIFI_MODE_STA);
         if (err == ESP_OK) {
-            err = esp_event_handler_register(WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED,
+            err = esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID,
                                              wifi_event_handler, NULL);
             if (err == ESP_OK) s_wifi_init_stage = WIFI_INIT_WIFI_HANDLER;
         }
@@ -317,7 +333,10 @@ static esp_err_t wifi_ensure_ready(void)
     }
     if (s_wifi_init_stage == WIFI_INIT_IP_HANDLER) {
         err = esp_wifi_start();
-        if (err == ESP_OK) s_wifi_init_stage = WIFI_INIT_READY;
+        if (err == ESP_OK) {
+            s_wifi_started = true;
+            s_wifi_init_stage = WIFI_INIT_READY;
+        }
     }
     return err;
 }
@@ -436,8 +455,10 @@ static int wifi_disconnect_and_clear(void)
     xEventGroupClearBits(s_wifi_events, WIFI_DISCONNECTED_BIT);
     esp_err_t disconnect_err = esp_wifi_disconnect();
     if (disconnect_err == ESP_OK) {
-        (void)xEventGroupWaitBits(s_wifi_events, WIFI_DISCONNECTED_BIT,
-                                  pdTRUE, pdFALSE, pdMS_TO_TICKS(1000));
+        EventBits_t bits = xEventGroupWaitBits(
+            s_wifi_events, WIFI_DISCONNECTED_BIT, pdTRUE, pdFALSE,
+            pdMS_TO_TICKS(1000));
+        if ((bits & WIFI_DISCONNECTED_BIT) == 0) disconnect_err = ESP_ERR_TIMEOUT;
     }
     wifi_config_t cleared = {0};
     esp_err_t clear_err = esp_wifi_set_config(WIFI_IF_STA, &cleared);
@@ -448,7 +469,8 @@ static int wifi_disconnect_and_clear(void)
     secure_zero(s_wifi_ssid, sizeof(s_wifi_ssid));
     s_wifi_ignore_disconnect = false;
     if (clear_err != ESP_OK) return clear_err;
-    return disconnect_err == ESP_OK || disconnect_err == ESP_ERR_WIFI_NOT_CONNECT
+    return disconnect_err == ESP_OK || disconnect_err == ESP_ERR_WIFI_NOT_CONNECT ||
+                   disconnect_err == ESP_ERR_WIFI_NOT_STARTED
                ? ESP_OK : disconnect_err;
 }
 
@@ -474,8 +496,11 @@ static int cmd_wifi(int argc, char **argv)
             printf("wifi busy\n");
             return 1;
         }
-        esp_err_t err = wifi_ensure_ready();
-        if (err == ESP_OK) err = wifi_disconnect_and_clear();
+        esp_err_t err = ESP_OK;
+        if (s_wifi_init_stage != WIFI_INIT_NONE) {
+            if (s_wifi_init_stage != WIFI_INIT_READY) err = wifi_ensure_ready();
+            if (err == ESP_OK) err = wifi_disconnect_and_clear();
+        }
         xSemaphoreGive(s_wifi_lock);
         if (err == ESP_OK) printf("wifi disconnected; credentials cleared\n");
         else printf("wifi disconnect failed: %s\n", esp_err_to_name(err));
@@ -483,6 +508,10 @@ static int cmd_wifi(int argc, char **argv)
     }
     if ((argc != 2 && argc != 3) || strcmp(argv[1], "connect") != 0) {
         printf("usage: wifi connect <ssid> | wifi status | wifi disconnect\n");
+        return 1;
+    }
+    if (cirvane_power_current_budget() != CIRVANE_BUDGET_ACTIVE) {
+        printf("wifi connect refused: set power active first\n");
         return 1;
     }
     char selected_ssid[sizeof(((wifi_config_t *)0)->sta.ssid) + 1] = {0};
