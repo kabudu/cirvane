@@ -450,11 +450,12 @@ static void print_wifi_scan(const wifi_ap_record_t *records, uint16_t visible,
 
 static int wifi_disconnect_and_clear(void)
 {
+    bool disconnect_event_expected = s_wifi_connected || s_wifi_connecting;
     s_wifi_connecting = false;
     s_wifi_ignore_disconnect = true;
     xEventGroupClearBits(s_wifi_events, WIFI_DISCONNECTED_BIT);
     esp_err_t disconnect_err = esp_wifi_disconnect();
-    if (disconnect_err == ESP_OK) {
+    if (disconnect_err == ESP_OK && disconnect_event_expected) {
         EventBits_t bits = xEventGroupWaitBits(
             s_wifi_events, WIFI_DISCONNECTED_BIT, pdTRUE, pdFALSE,
             pdMS_TO_TICKS(1000));
