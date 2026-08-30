@@ -13,7 +13,7 @@ This gate prepares the source repository for public visibility. It does not crea
 | Security disclosure | `SECURITY.md` and private-reporting link | Prepared; GitHub private vulnerability reporting must be enabled immediately after the repository becomes public |
 | Support boundary | `SUPPORT.md`, README status and named ESP32-C5 support | Ready |
 | Secret hygiene | Gitleaks 8.30.1 found zero leaks before the rewrite; tracked-file audit found no key, credential, SDK state or build tree | Rerun on every rewritten ref before publication |
-| Evidence privacy | All historical `benchmarks/results` content was removed from rewritten history; only the validated, redacted evidence snapshot was added back at the new head | Ready in rewritten branch history; GitHub Support must still purge immutable pull-request refs and cached views |
+| Evidence privacy | All historical `benchmarks/results` content was removed from writable branch history; only the validated, redacted evidence snapshot was added back at the new head | Ready for writable history; on 2026-08-30 the owner explicitly accepted that 19 immutable GitHub pull-request refs and cached views retain the old commits |
 | Source provenance | Single repository author identity; Espressif console source retains `Unlicense OR CC0-1.0`; brand source and Figtree provenance recorded | Ready, subject to the professional AI-assisted asset rights review below |
 | Validation | `./scripts/ci-local.sh` remains authoritative and hosted CI remains disabled | Must pass at the final reviewed commit |
 | Public claims | README separates the ESP-IDF/FreeRTOS product firmware from kernel research and lists security limitations | Ready except for the owner decision on the unqualified word `Secure` in the GitHub About text |
@@ -26,7 +26,7 @@ This search is not trademark clearance and does not reserve a name. Professional
 
 ## Public-opening procedure
 
-1. Confirm the rewritten branch and tag history contains only the redacted evidence snapshot, then obtain confirmation that GitHub Support purged affected pull-request refs and cached views.
+1. Confirm the rewritten branch and tag history contains only the redacted evidence snapshot. Preserve the recorded owner acceptance if the 19 immutable GitHub pull-request refs and cached views remain.
 2. Freeze a clean reviewed commit and rerun `./scripts/ci-local.sh`, Gitleaks history scanning and `scripts/validate_public_readiness.py`.
 3. Review the GitHub About wording against `docs/BRAND_IDENTITY.md`; prefer capability-focused language over an unqualified assurance claim.
 4. Obtain or explicitly accept the remaining name, mark and AI-assisted asset rights risks.
