@@ -1,4 +1,5 @@
 # Overlay for matched class-1 recording on development boards only.
+CONFIG_CIRVANE_MATCHED_EVAL=y
 # USB CDC is unusable after a 1 MiB OpenOCD program; do not start the
 # USB Serial/JTAG console so class-1 recording can run and be JTAG-dumped.
 CONFIG_ESP_CONSOLE_NONE=y

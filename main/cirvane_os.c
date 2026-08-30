@@ -7,6 +7,7 @@
  * fixed service count; failures cannot create unbounded restart loops.
  */
 #include "cirvane_os.h"
+#include "cirvane_serial.h"
 
 #include <inttypes.h>
 #include <string.h>
@@ -249,7 +250,7 @@ int cirvane_config_load(cirvane_config_t *out)
     config_record_t records[2] = {0};
     bool valid[2] = {false, false};
     nvs_handle_t nvs;
-    esp_err_t err = nvs_open("cirvane_v2", NVS_READONLY, &nvs);
+    esp_err_t err = nvs_open("cirvane", NVS_READONLY, &nvs);
     if (err == ESP_OK) {
         for (unsigned i = 0; i < 2; ++i) {
             char key[8];
@@ -266,7 +267,8 @@ int cirvane_config_load(cirvane_config_t *out)
     }
 
     int selected = valid[0] && valid[1]
-                       ? (records[1].generation > records[0].generation ? 1 : 0)
+                       ? (cirvane_serial_u32_newer(records[1].generation,
+                                                  records[0].generation) ? 1 : 0)
                        : valid[1] ? 1 : valid[0] ? 0 : -1;
     if (selected < 0) {
         s_config = config_defaults();
@@ -290,7 +292,7 @@ int cirvane_config_commit(const cirvane_config_t *config)
     ESP_RETURN_ON_FALSE(config_valid(&record), ESP_ERR_INVALID_ARG, TAG, "invalid config");
 
     nvs_handle_t nvs;
-    ESP_RETURN_ON_ERROR(nvs_open("cirvane_v2", NVS_READWRITE, &nvs), TAG, "open config NVS");
+    ESP_RETURN_ON_ERROR(nvs_open("cirvane", NVS_READWRITE, &nvs), TAG, "open config NVS");
     char key[8];
     snprintf(key, sizeof(key), "cfg%u", (unsigned)(record.generation & 1u));
     esp_err_t err = nvs_set_blob(nvs, key, &record, sizeof(record));
@@ -326,7 +328,7 @@ int cirvane_config_corruption_test(void)
     corrupt.crc = record_crc(&corrupt) ^ 1u;
 
     nvs_handle_t nvs;
-    ESP_RETURN_ON_ERROR(nvs_open("cirvane_v2", NVS_READWRITE, &nvs), TAG,
+    ESP_RETURN_ON_ERROR(nvs_open("cirvane", NVS_READWRITE, &nvs), TAG,
                         "open config NVS for corruption test");
     char key[8];
     snprintf(key, sizeof(key), "cfg%u", (unsigned)(corrupt.generation & 1u));
@@ -372,13 +374,26 @@ int cirvane_power_set_budget(cirvane_budget_t budget)
     if (budget > CIRVANE_BUDGET_SENTINEL) {
         return ESP_ERR_INVALID_ARG;
     }
+    esp_err_t err = ESP_OK;
+    if (budget == CIRVANE_BUDGET_ACTIVE) {
+        err = esp_wifi_start();
+        if (err != ESP_OK) {
+            return err;
+        }
+    } else {
+        err = esp_wifi_stop();
+        if (err != ESP_OK && err != ESP_ERR_WIFI_NOT_INIT &&
+            err != ESP_ERR_WIFI_NOT_STARTED) {
+            return err;
+        }
+        err = gpio_set_level(CIRVANE_LED_GPIO, 0);
+        if (err != ESP_OK) {
+            return err;
+        }
+    }
     s_budget = budget;
     if (budget == CIRVANE_BUDGET_ACTIVE) {
         s_sleep_after_ms = 0;
-        esp_wifi_start();
-    } else {
-        esp_wifi_stop();
-        gpio_set_level(CIRVANE_LED_GPIO, 0);
     }
     return ESP_OK;
 }
@@ -406,6 +421,9 @@ int cirvane_power_schedule(cirvane_budget_t budget, uint32_t wake_after_ms)
 int cirvane_ota_confirm(void)
 {
     const esp_partition_t *running = esp_ota_get_running_partition();
+    if (running == NULL) {
+        return ESP_ERR_NOT_FOUND;
+    }
     esp_ota_img_states_t state;
     esp_err_t err = esp_ota_get_state_partition(running, &state);
     if (err != ESP_OK) {

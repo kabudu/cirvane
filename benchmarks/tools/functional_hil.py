@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from ota_rollback_hil import require, run_command
-from serial_benchmark import reconnect_and_await
+from serial_benchmark import reconnect_and_await, sha256
 
 
 def await_fragment(port, fragment: bytes, timeout: float) -> str:
@@ -29,6 +29,7 @@ def await_fragment(port, fragment: bytes, timeout: float) -> str:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--port", default="/dev/cu.usbmodem3101")
+    parser.add_argument("--firmware", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
 
@@ -40,6 +41,7 @@ def main() -> None:
             records.append({"step": name, "command": text, "output": output})
             return output
 
+        require(command("identity", "info"), "project    cirvane", "ESP32-C5")
         require(command("self-test", "selftest"), "result=PASS")
         require(command("resources", "res"), "led-heartbeat", "wifi-scan")
         require(command("lazy-dual-band-scan", "scan"), "scan queued")
@@ -59,6 +61,8 @@ def main() -> None:
         "schema": 1,
         "captured_at": datetime.now(timezone.utc).isoformat(),
         "port": args.port,
+        "firmware": str(args.firmware),
+        "firmware_sha256": sha256(args.firmware),
         "result": "pass",
         "records": records,
     }

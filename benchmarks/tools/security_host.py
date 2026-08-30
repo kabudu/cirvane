@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import subprocess
 import tempfile
@@ -20,6 +21,14 @@ def run(*args: str, expect_success: bool) -> dict[str, object]:
             f"{result.stdout[-400:]}{result.stderr[-400:]}"
         )
     return {"command": list(args), "exit_code": result.returncode, "passed": True}
+
+
+def sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as source:
+        for block in iter(lambda: source.read(65536), b""):
+            digest.update(block)
+    return digest.hexdigest()
 
 
 def main() -> None:
@@ -57,6 +66,8 @@ def main() -> None:
     result = {
         "schema": 1,
         "captured_at": datetime.now(timezone.utc).isoformat(),
+        "firmware": str(args.firmware),
+        "firmware_sha256": sha256(args.firmware),
         "result": "pass",
         "records": records,
     }

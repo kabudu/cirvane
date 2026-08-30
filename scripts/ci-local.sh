@@ -14,6 +14,7 @@ python3 scripts/validate_repo.py
 python3 scripts/validate_brand_candidates.py
 python3 scripts/validate_brand.py
 python3 tests/test_contract.py
+python3 tests/test_runtime_bounds.py
 python3 tests/test_recovery_model.py
 python3 tests/test_kernel_core.py
 python3 tests/test_config_rollback.py

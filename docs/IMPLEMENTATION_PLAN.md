@@ -33,7 +33,7 @@ The detailed path from the current productised identity to the first developer r
 - [x] Rename project identifiers, firmware metadata, shell prompt, commands, source symbols and documentation.
 - [x] Preserve baseline evidence provenance while labelling historical Nucleus records accurately.
 - [x] Flash the renamed image and capture identity, functional and quiet-shell evidence with prompt `cirvane>`.
-- [ ] Recapture rollback and security hardware gates with the renamed image.
+- [x] Recapture rollback, security and performance hardware gates with the renamed image and tested firmware digest.
 
 ## M5: authenticated OTA transport
 
