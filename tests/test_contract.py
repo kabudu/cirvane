@@ -105,6 +105,7 @@ class CirvaneContract(unittest.TestCase):
         self.assertIn('strcmp(argv[1], "disconnect")', main)
         self.assertIn("WIFI_CONNECT_TIMEOUT_MS 15000u", main)
         self.assertIn("WIFI_STORAGE_RAM", main)
+        self.assertIn("WPA3_SAE_PWE_BOTH", main)
         self.assertIn("read_secret(password", main)
         self.assertIn("secure_zero(password", main)
         self.assertNotIn("nvs_set_str", main)

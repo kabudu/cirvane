@@ -595,6 +595,7 @@ static int cmd_wifi(int argc, char **argv)
     config.sta.threshold.authmode = password_len == 0 ? WIFI_AUTH_OPEN : WIFI_AUTH_WPA2_PSK;
     config.sta.pmf_cfg.capable = true;
     config.sta.pmf_cfg.required = false;
+    config.sta.sae_pwe_h2e = WPA3_SAE_PWE_BOTH;
     secure_zero(password, sizeof(password));
 
     esp_err_t err = wifi_ensure_ready();
