@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "captured_at": "2026-08-28T13:53:11.562761+00:00",
+  "port": "<serial-port>",
+  "image": "build/ci/cirvane.bin",
+  "project": "cirvane",
+  "substrate": "ESP-IDF/FreeRTOS",
+  "result": "pass",
+  "records": [
+    {
+      "step": "prompt",
+      "command": "",
+      "output": "\r\ncirvane>  "
+    },
+    {
+      "step": "self-test",
+      "command": "selftest",
+      "output": "selftest\r\nselftest bus=ok config=ok services=ok result=PASS\r\ncirvane>  "
+    },
+    {
+      "step": "info",
+      "command": "info",
+      "output": "info\r\nproject    cirvane\r\nversion    fbd47f8-dirty\r\nidf        v6.0.2\r\nchip       ESP32-C5 rev 1.0, 1 core(s) @ 240 MHz\r\nflash      8 MB\r\nheap free  196516 B, largest block 172032 B\r\nuptime     50072 ms\r\nboots      2\r\ncirvane>  "
+    },
+    {
+      "step": "services",
+      "command": "svc",
+      "output": "svc\r\nsystem=nominal services=2\r\nid  name           phase     health  restarts last/max ms\r\n0   led-heartbeat  running   0       0        0/0\r\n1   wifi-scan      running   0       0        0/0\r\ncirvane>  "
+    },
+    {
+      "step": "resources",
+      "command": "res",
+      "output": "res\r\nid  name           stack_min  heap_delta cpu%  radio_ms\r\n0   led-heartbeat  3832       -3924      0     0\r\n1   wifi-scan      3836       -3924      0     0\r\ncirvane>  "
+    },
+    {
+      "step": "quiet-interval",
+      "command": "",
+      "output": ""
+    }
+  ]
+}

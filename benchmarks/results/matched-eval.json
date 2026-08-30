@@ -1,0 +1,890 @@
+{
+  "schema": 1,
+  "captured_at": "2026-08-28T09:01:31.633181+00:00",
+  "amendment": "2026-08-27: single-board OpenOCD cost makes per-sample A,B,B,A impractical. Collection is image-blocked (Cirvane eval, then Nucleus HIL class 1). Warm-up 3 and n>=30 remain. Classes 2-5 are Cirvane-only and incomparable. No Wi-Fi samples (ADR 0004). 2026-08-28: Nucleus class-1 collected by chip RST then JTAG dump of s_cirvane_matched (magic 0xC1455E01, count=33, done=1). First 3 samples are warmup. Source jtag_noinit. Units remain incomparable.",
+  "warmup": 3,
+  "n": 30,
+  "cirvane_log": "ESP-ROM:esp32c5-eco2-20250121\r\nBuild:Jan 21 2025\r\nrst:0x15 (USB_UART_HPSYS),boot:0x18 (SPI_FAST_FLASH_BOOT)\r\nSPI mode:DIO, clock div:1\r\nload:0x408556c0,len:0x16c4\r\nload:0x4084bba0,len:0xd64\r\nload:0x4084e5a0,len:0x3388\r\nentry 0x4084bbaa\r\nI (21) boot: ESP-IDF v6.0.2 2nd stage bootloader\r\nI (21) boot: compile time Aug 24 2026 08:56:59\r\nI (22) boot: chip revision: v1.0\r\nI (22) boot: efuse block revision: v0.3\r\nI (22) boot.esp32c5: SPI Speed      : 80MHz\r\nI (23) boot.esp32c5: SPI Mode       : DIO\r\nI (23) boot.esp32c5: SPI Flash Size : 8MB\r\nI (23) boot: Enabling RNG early entropy source...\r\nI (23) boot: Partition Table:\r\nI (24) boot: ## Label            Usage          Type ST Offset   Length\r\nI (24) boot:  0 nvs              WiFi data        01 02 00009000 00006000\r\nI (25) boot:  1 otadata          OTA data         01 00 0000f000 00002000\r\nI (25) boot:  2 phy_init         RF data          01 01 00011000 00001000\r\nI (26) boot:  3 ota_0            OTA app          00 10 00020000 001a9000\r\nI (26) boot:  4 ota_1            OTA app          00 11 001d0000 001a9000\r\nI (27) boot: End of partition table\r\nI (27) esp_image: segment 0: paddr=00020020 vaddr=42000020 size=0fff8h ( 65528) map\r\nI (40) esp_image: segment 1: paddr=00030020 vaddr=42010020 size=00010h (    16) map\r\nI (41) esp_image: segment 2: paddr=00030038 vaddr=40800000 size=015d0h (  5584) load\r\nI (43) boot: Loaded app from partition at offset 0x20000\r\nI (43) boot: Disabling RNG early entropy source...\r\ncirvane-eval boot=ok\r\ncirvane-eval class=0 i=0 outcome=0 stale=0 ticks=1076\r\ncirvane-eval class=0 i=1 outcome=0 stale=0 ticks=1068\r\ncirvane-eval class=0 i=2 outcome=0 stale=0 ticks=1055\r\ncirvane-eval class=0 i=3 outcome=0 stale=0 ticks=1054\r\ncirvane-eval class=0 i=4 outcome=0 stale=0 ticks=1053\r\ncirvane-eval class=0 i=5 outcome=0 stale=0 ticks=1054\r\ncirvane-eval class=0 i=6 outcome=0 stale=0 ticks=1054\r\ncirvane-eval class=0 i=7 outcome=0 stale=0 ticks=1054\r\ncirvane-eval class=0 i=8 outcome=0 stale=0 ticks=1054\r\ncirvane-eval class=0 i=9 outcome=0 stale=0 ticks=1054\r\ncirvane-eval class=0 i=10 outcome=0 stale=0 ticks=1054\r\ncirvane-eval class=0 i=11 outcome=0 stale=0 ticks=1053\r\ncirvane-eval class=0 i=12 outcome=0 stale=0 ticks=1054\r\ncirvane-eval class=0 i=13 outcome=0 stale=0 ticks=1053\r\ncirvane-eval class=0 i=14 outcome=0 stale=0 ticks=1054\r\ncirvane-eval class=0 i=15 outcome=0 stale=0 ticks=1054\r\ncirvane-eval class=0 i=16 outcome=0 stale=0 ticks=1054\r\ncirvane-eval class=0 i=17 outcome=0 stale=0 ticks=1053\r\ncirvane-eval class=0 i=18 outcome=0 stale=0 ticks=1053\r\ncirvane-eval class=0 i=19 outcome=0 stale=0 ticks=1054\r\ncirvane-eval class=0 i=20 outcome=0 stale=0 ticks=1054\r\ncirvane-eval class=0 i=21 outcome=0 stale=0 ticks=1054\r\ncirvane-eval class=0 i=22 outcome=0 stale=0 ticks=1053\r\ncirvane-eval class=0 i=23 outcome=0 stale=0 ticks=1053\r\ncirvane-eval class=0 i=24 outcome=0 stale=0 ticks=1054\r\ncirvane-eval class=0 i=25 outcome=0 stale=0 ticks=1054\r\ncirvane-eval class=0 i=26 outcome=0 stale=0 ticks=1054\r\ncirvane-eval class=0 i=27 outcome=0 stale=0 ticks=1053\r\ncirvane-eval class=0 i=28 outcome=0 stale=0 ticks=1053\r\ncirvane-eval class=0 i=29 outcome=0 stale=0 ticks=1054\r\ncirvane-eval class=0 i=30 outcome=0 stale=0 ticks=1054\r\ncirvane-eval class=0 i=31 outcome=0 stale=0 ticks=1054\r\ncirvane-eval class=0 i=32 outcome=0 stale=0 ticks=1053\r\ncirvane-eval class=1 i=0 outcome=1 stale=0 ticks=1010\r\ncirvane-eval class=1 i=1 outcome=1 stale=0 ticks=1011\r\ncirvane-eval class=1 i=2 outcome=1 stale=0 ticks=1006\r\ncirvane-eval class=1 i=3 outcome=1 stale=0 ticks=1006\r\ncirvane-eval class=1 i=4 outcome=1 stale=0 ticks=1006\r\ncirvane-eval class=1 i=5 outcome=1 stale=0 ticks=1006\r\ncirvane-eval class=1 i=6 outcome=1 stale=0 ticks=1006\r\ncirvane-eval class=1 i=7 outcome=1 stale=0 ticks=1006\r\ncirvane-eval class=1 i=8 outcome=1 stale=0 ticks=1006\r\ncirvane-eval class=1 i=9 outcome=1 stale=0 ticks=1006\r\ncirvane-eval class=1 i=10 outcome=1 stale=0 ticks=1006\r\ncirvane-eval class=1 i=11 outcome=1 stale=0 ticks=1006\r\ncirvane-eval class=1 i=12 outcome=1 stale=0 ticks=1007\r\ncirvane-eval class=1 i=13 outcome=1 stale=0 ticks=1006\r\ncirvane-eval class=1 i=14 outcome=1 stale=0 ticks=1006\r\ncirvane-eval class=1 i=15 outcome=1 stale=0 ticks=1006\r\ncirvane-eval class=1 i=16 outcome=1 stale=0 ticks=1006\r\ncirvane-eval class=1 i=17 outcome=1 stale=0 ticks=1006\r\ncirvane-eval class=1 i=18 outcome=1 stale=0 ticks=1007\r\ncirvane-eval class=1 i=19 outcome=1 stale=0 ticks=1006\r\ncirvane-eval class=1 i=20 outcome=1 stale=0 ticks=1006\r\ncirvane-eval class=1 i=21 outcome=1 stale=0 ticks=1006\r\ncirvane-eval class=1 i=22 outcome=1 stale=0 ticks=1007\r\ncirvane-eval class=1 i=23 outcome=1 stale=0 ticks=1006\r\ncirvane-eval class=1 i=24 outcome=1 stale=0 ticks=1006\r\ncirvane-eval class=1 i=25 outcome=1 stale=0 ticks=1006\r\ncirvane-eval class=1 i=26 outcome=1 stale=0 ticks=1006\r\ncirvane-eval class=1 i=27 outcome=1 stale=0 ticks=1006\r\ncirvane-eval class=1 i=28 outcome=1 stale=0 ticks=1007\r\ncirvane-eval class=1 i=29 outcome=1 stale=0 ticks=1006\r\ncirvane-eval class=1 i=30 outcome=1 stale=0 ticks=1006\r\ncirvane-eval class=1 i=31 outcome=1 stale=0 ticks=1006\r\ncirvane-eval class=1 i=32 outcome=1 stale=0 ticks=1007\r\ncirvane-eval class=2 i=0 outcome=2 stale=0 ticks=1824\r\ncirvane-eval class=2 i=1 outcome=2 stale=0 ticks=1820\r\ncirvane-eval class=2 i=2 outcome=2 stale=0 ticks=1814\r\ncirvane-eval class=2 i=3 outcome=2 stale=0 ticks=1813\r\ncirvane-eval class=2 i=4 outcome=2 stale=0 ticks=1812\r\ncirvane-eval class=2 i=5 outcome=2 stale=0 ticks=1813\r\ncirvane-eval class=2 i=6 outcome=2 stale=0 ticks=1813\r\ncirvane-eval class=2 i=7 outcome=2 stale=0 ticks=1814\r\ncirvane-eval class=2 i=8 outcome=2 stale=0 ticks=1813\r\ncirvane-eval class=2 i=9 outcome=2 stale=0 ticks=1813\r\ncirvane-eval class=2 i=10 outcome=2 stale=0 ticks=1812\r\ncirvane-eval class=2 i=11 outcome=2 stale=0 ticks=1814\r\ncirvane-eval class=2 i=12 outcome=2 stale=0 ticks=1812\r\ncirvane-eval class=2 i=13 outcome=2 stale=0 ticks=1813\r\ncirvane-eval class=2 i=14 outcome=2 stale=0 ticks=1812\r\ncirvane-eval class=2 i=15 outcome=2 stale=0 ticks=1813\r\ncirvane-eval class=2 i=16 outcome=2 stale=0 ticks=1812\r\ncirvane-eval class=2 i=17 outcome=2 stale=0 ticks=1814\r\ncirvane-eval class=2 i=18 outcome=2 stale=0 ticks=1813\r\ncirvane-eval class=2 i=19 outcome=2 stale=0 ticks=1814\r\ncirvane-eval class=2 i=20 outcome=2 stale=0 ticks=1813\r\ncirvane-eval class=2 i=21 outcome=2 stale=0 ticks=1813\r\ncirvane-eval class=2 i=22 outcome=2 stale=0 ticks=1813\r\ncirvane-eval class=2 i=23 outcome=2 stale=0 ticks=1813\r\ncirvane-eval class=2 i=24 outcome=2 stale=0 ticks=1813\r\ncirvane-eval class=2 i=25 outcome=2 stale=0 ticks=1813\r\ncirvane-eval class=2 i=26 outcome=2 stale=0 ticks=1813\r\ncirvane-eval class=2 i=27 outcome=2 stale=0 ticks=1813\r\ncirvane-eval class=2 i=28 outcome=2 stale=0 ticks=1813\r\ncirvane-eval class=2 i=29 outcome=2 stale=0 ticks=1813\r\ncirvane-eval class=2 i=30 outcome=2 stale=0 ticks=1813\r\ncirvane-eval class=2 i=31 outcome=2 stale=0 ticks=1814\r\ncirvane-eval class=2 i=32 outcome=2 stale=0 ticks=1812\r\ncirvane-eval class=3 i=0 outcome=3 stale=0 ticks=882\r\ncirvane-eval class=3 i=1 outcome=3 stale=0 ticks=882\r\ncirvane-eval class=3 i=2 outcome=3 stale=0 ticks=877\r\ncirvane-eval class=3 i=3 outcome=3 stale=0 ticks=875\r\ncirvane-eval class=3 i=4 outcome=3 stale=0 ticks=876\r\ncirvane-eval class=3 i=5 outcome=3 stale=0 ticks=876\r\ncirvane-eval class=3 i=6 outcome=3 stale=0 ticks=876\r\ncirvane-eval class=3 i=7 outcome=3 stale=0 ticks=875\r\ncirvane-eval class=3 i=8 outcome=3 stale=0 ticks=875\r\ncirvane-eval class=3 i=9 outcome=3 stale=0 ticks=876\r\ncirvane-eval class=3 i=10 outcome=3 stale=0 ticks=876\r\ncirvane-eval class=3 i=11 outcome=3 stale=0 ticks=876\r\ncirvane-eval class=3 i=12 outcome=3 stale=0 ticks=876\r\ncirvane-eval class=3 i=13 outcome=3 stale=0 ticks=876\r\ncirvane-eval class=3 i=14 outcome=3 stale=0 ticks=875\r\ncirvane-eval class=3 i=15 outcome=3 stale=0 ticks=876\r\ncirvane-eval class=3 i=16 outcome=3 stale=0 ticks=875\r\ncirvane-eval class=3 i=17 outcome=3 stale=0 ticks=876\r\ncirvane-eval class=3 i=18 outcome=3 stale=0 ticks=876\r\ncirvane-eval class=3 i=19 outcome=3 stale=0 ticks=875\r\ncirvane-eval class=3 i=20 outcome=3 stale=0 ticks=876\r\ncirvane-eval class=3 i=21 outcome=3 stale=0 ticks=875\r\ncirvane-eval class=3 i=22 outcome=3 stale=0 ticks=876\r\ncirvane-eval class=3 i=23 outcome=3 stale=0 ticks=876\r\ncirvane-eval class=3 i=24 outcome=3 stale=0 ticks=875\r\ncirvane-eval class=3 i=25 outcome=3 stale=0 ticks=876\r\ncirvane-eval class=3 i=26 outcome=3 stale=0 ticks=875\r\ncirvane-eval class=3 i=27 outcome=3 stale=0 ticks=876\r\ncirvane-eval class=3 i=28 outcome=3 stale=0 ticks=876\r\ncirvane-eval class=3 i=29 outcome=3 stale=0 ticks=875\r\ncirvane-eval class=3 i=30 outcome=3 stale=0 ticks=876\r\ncirvane-eval class=3 i=31 outcome=3 stale=0 ticks=876\r\ncirvane-eval class=3 i=32 outcome=3 stale=0 ticks=876\r\ncirvane-eval class=4 i=0 outcome=0 stale=0 ticks=3291\r\ncirvane-eval class=4 i=1 outcome=0 stale=0 ticks=3278\r\ncirvane-eval class=4 i=2 outcome=0 stale=0 ticks=3255\r\ncirvane-eval class=4 i=3 outcome=0 stale=0 ticks=3254\r\ncirvane-eval class=4 i=4 outcome=0 stale=0 ticks=3254\r\ncirvane-eval class=4 i=5 outcome=0 stale=0 ticks=3254\r\ncirvane-eval class=4 i=6 outcome=0 stale=0 ticks=3254\r\ncirvane-eval class=4 i=7 outcome=0 stale=0 ticks=3254\r\ncirvane-eval class=4 i=8 outcome=0 stale=0 ticks=3254\r\ncirvane-eval class=4 i=9 outcome=0 stale=0 ticks=3254\r\ncirvane-eval class=4 i=10 outcome=0 stale=0 ticks=3254\r\ncirvane-eval class=4 i=11 outcome=0 stale=0 ticks=3254\r\ncirvane-eval class=4 i=12 outcome=0 stale=0 ticks=3254\r\ncirvane-eval class=4 i=13 outcome=0 stale=0 ticks=3254\r\ncirvane-eval class=4 i=14 outcome=0 stale=0 ticks=3254\r\ncirvane-eval class=4 i=15 outcome=0 stale=0 ticks=3254\r\ncirvane-eval class=4 i=16 outcome=0 stale=0 ticks=3254\r\ncirvane-eval class=4 i=17 outcome=0 stale=0 ticks=3254\r\ncirvane-eval class=4 i=18 outcome=0 stale=0 ticks=3254\r\ncirvane-eval class=4 i=19 outcome=0 stale=0 ticks=3254\r\ncirvane-eval class=4 i=20 outcome=0 stale=0 ticks=3254\r\ncirvane-eval class=4 i=21 outcome=0 stale=0 ticks=3254\r\ncirvane-eval class=4 i=22 outcome=0 stale=0 ticks=3254\r\ncirvane-eval class=4 i=23 outcome=0 stale=0 ticks=3254\r\ncirvane-eval class=4 i=24 outcome=0 stale=0 ticks=3254\r\ncirvane-eval class=4 i=25 outcome=0 stale=0 ticks=3254\r\ncirvane-eval class=4 i=26 outcome=0 stale=0 ticks=3254\r\ncirvane-eval class=4 i=27 outcome=0 stale=0 ticks=3254\r\ncirvane-eval class=4 i=28 outcome=0 stale=0 ticks=3254\r\ncirvane-eval class=4 i=29 outcome=0 stale=0 ticks=3254\r\ncirvane-eval class=4 i=30 outcome=0 stale=0 ticks=3254\r\ncirvane-eval class=4 i=31 outcome=0 stale=0 ticks=3254\r\ncirvane-eval class=4 i=32 outcome=0 stale=0 ticks=3254\r\ncirvane-eval done\r\n",
+  "cirvane": {
+    "0": {
+      "samples": [
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 1054
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 1053
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 1054
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 1054
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 1054
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 1054
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 1054
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 1054
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 1053
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 1054
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 1053
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 1054
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 1054
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 1054
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 1053
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 1053
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 1054
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 1054
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 1054
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 1053
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 1053
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 1054
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 1054
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 1054
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 1053
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 1053
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 1054
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 1054
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 1054
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 1053
+        }
+      ],
+      "ticks": {
+        "n": 30,
+        "median": 1054.0,
+        "p95": 1054.0,
+        "sd": 0.4714045207910317,
+        "min": 1053.0,
+        "max": 1054.0
+      },
+      "stale": 0
+    },
+    "1": {
+      "samples": [
+        {
+          "outcome": 1,
+          "stale": 0,
+          "ticks": 1006
+        },
+        {
+          "outcome": 1,
+          "stale": 0,
+          "ticks": 1006
+        },
+        {
+          "outcome": 1,
+          "stale": 0,
+          "ticks": 1006
+        },
+        {
+          "outcome": 1,
+          "stale": 0,
+          "ticks": 1006
+        },
+        {
+          "outcome": 1,
+          "stale": 0,
+          "ticks": 1006
+        },
+        {
+          "outcome": 1,
+          "stale": 0,
+          "ticks": 1006
+        },
+        {
+          "outcome": 1,
+          "stale": 0,
+          "ticks": 1006
+        },
+        {
+          "outcome": 1,
+          "stale": 0,
+          "ticks": 1006
+        },
+        {
+          "outcome": 1,
+          "stale": 0,
+          "ticks": 1006
+        },
+        {
+          "outcome": 1,
+          "stale": 0,
+          "ticks": 1007
+        },
+        {
+          "outcome": 1,
+          "stale": 0,
+          "ticks": 1006
+        },
+        {
+          "outcome": 1,
+          "stale": 0,
+          "ticks": 1006
+        },
+        {
+          "outcome": 1,
+          "stale": 0,
+          "ticks": 1006
+        },
+        {
+          "outcome": 1,
+          "stale": 0,
+          "ticks": 1006
+        },
+        {
+          "outcome": 1,
+          "stale": 0,
+          "ticks": 1006
+        },
+        {
+          "outcome": 1,
+          "stale": 0,
+          "ticks": 1007
+        },
+        {
+          "outcome": 1,
+          "stale": 0,
+          "ticks": 1006
+        },
+        {
+          "outcome": 1,
+          "stale": 0,
+          "ticks": 1006
+        },
+        {
+          "outcome": 1,
+          "stale": 0,
+          "ticks": 1006
+        },
+        {
+          "outcome": 1,
+          "stale": 0,
+          "ticks": 1007
+        },
+        {
+          "outcome": 1,
+          "stale": 0,
+          "ticks": 1006
+        },
+        {
+          "outcome": 1,
+          "stale": 0,
+          "ticks": 1006
+        },
+        {
+          "outcome": 1,
+          "stale": 0,
+          "ticks": 1006
+        },
+        {
+          "outcome": 1,
+          "stale": 0,
+          "ticks": 1006
+        },
+        {
+          "outcome": 1,
+          "stale": 0,
+          "ticks": 1006
+        },
+        {
+          "outcome": 1,
+          "stale": 0,
+          "ticks": 1007
+        },
+        {
+          "outcome": 1,
+          "stale": 0,
+          "ticks": 1006
+        },
+        {
+          "outcome": 1,
+          "stale": 0,
+          "ticks": 1006
+        },
+        {
+          "outcome": 1,
+          "stale": 0,
+          "ticks": 1006
+        },
+        {
+          "outcome": 1,
+          "stale": 0,
+          "ticks": 1007
+        }
+      ],
+      "ticks": {
+        "n": 30,
+        "median": 1006.0,
+        "p95": 1007.0,
+        "sd": 0.37267799624996495,
+        "min": 1006.0,
+        "max": 1007.0
+      },
+      "stale": 0
+    },
+    "2": {
+      "samples": [
+        {
+          "outcome": 2,
+          "stale": 0,
+          "ticks": 1813
+        },
+        {
+          "outcome": 2,
+          "stale": 0,
+          "ticks": 1812
+        },
+        {
+          "outcome": 2,
+          "stale": 0,
+          "ticks": 1813
+        },
+        {
+          "outcome": 2,
+          "stale": 0,
+          "ticks": 1813
+        },
+        {
+          "outcome": 2,
+          "stale": 0,
+          "ticks": 1814
+        },
+        {
+          "outcome": 2,
+          "stale": 0,
+          "ticks": 1813
+        },
+        {
+          "outcome": 2,
+          "stale": 0,
+          "ticks": 1813
+        },
+        {
+          "outcome": 2,
+          "stale": 0,
+          "ticks": 1812
+        },
+        {
+          "outcome": 2,
+          "stale": 0,
+          "ticks": 1814
+        },
+        {
+          "outcome": 2,
+          "stale": 0,
+          "ticks": 1812
+        },
+        {
+          "outcome": 2,
+          "stale": 0,
+          "ticks": 1813
+        },
+        {
+          "outcome": 2,
+          "stale": 0,
+          "ticks": 1812
+        },
+        {
+          "outcome": 2,
+          "stale": 0,
+          "ticks": 1813
+        },
+        {
+          "outcome": 2,
+          "stale": 0,
+          "ticks": 1812
+        },
+        {
+          "outcome": 2,
+          "stale": 0,
+          "ticks": 1814
+        },
+        {
+          "outcome": 2,
+          "stale": 0,
+          "ticks": 1813
+        },
+        {
+          "outcome": 2,
+          "stale": 0,
+          "ticks": 1814
+        },
+        {
+          "outcome": 2,
+          "stale": 0,
+          "ticks": 1813
+        },
+        {
+          "outcome": 2,
+          "stale": 0,
+          "ticks": 1813
+        },
+        {
+          "outcome": 2,
+          "stale": 0,
+          "ticks": 1813
+        },
+        {
+          "outcome": 2,
+          "stale": 0,
+          "ticks": 1813
+        },
+        {
+          "outcome": 2,
+          "stale": 0,
+          "ticks": 1813
+        },
+        {
+          "outcome": 2,
+          "stale": 0,
+          "ticks": 1813
+        },
+        {
+          "outcome": 2,
+          "stale": 0,
+          "ticks": 1813
+        },
+        {
+          "outcome": 2,
+          "stale": 0,
+          "ticks": 1813
+        },
+        {
+          "outcome": 2,
+          "stale": 0,
+          "ticks": 1813
+        },
+        {
+          "outcome": 2,
+          "stale": 0,
+          "ticks": 1813
+        },
+        {
+          "outcome": 2,
+          "stale": 0,
+          "ticks": 1813
+        },
+        {
+          "outcome": 2,
+          "stale": 0,
+          "ticks": 1814
+        },
+        {
+          "outcome": 2,
+          "stale": 0,
+          "ticks": 1812
+        }
+      ],
+      "ticks": {
+        "n": 30,
+        "median": 1813.0,
+        "p95": 1814.0,
+        "sd": 0.6046119049072352,
+        "min": 1812.0,
+        "max": 1814.0
+      },
+      "stale": 0
+    },
+    "3": {
+      "samples": [
+        {
+          "outcome": 3,
+          "stale": 0,
+          "ticks": 875
+        },
+        {
+          "outcome": 3,
+          "stale": 0,
+          "ticks": 876
+        },
+        {
+          "outcome": 3,
+          "stale": 0,
+          "ticks": 876
+        },
+        {
+          "outcome": 3,
+          "stale": 0,
+          "ticks": 876
+        },
+        {
+          "outcome": 3,
+          "stale": 0,
+          "ticks": 875
+        },
+        {
+          "outcome": 3,
+          "stale": 0,
+          "ticks": 875
+        },
+        {
+          "outcome": 3,
+          "stale": 0,
+          "ticks": 876
+        },
+        {
+          "outcome": 3,
+          "stale": 0,
+          "ticks": 876
+        },
+        {
+          "outcome": 3,
+          "stale": 0,
+          "ticks": 876
+        },
+        {
+          "outcome": 3,
+          "stale": 0,
+          "ticks": 876
+        },
+        {
+          "outcome": 3,
+          "stale": 0,
+          "ticks": 876
+        },
+        {
+          "outcome": 3,
+          "stale": 0,
+          "ticks": 875
+        },
+        {
+          "outcome": 3,
+          "stale": 0,
+          "ticks": 876
+        },
+        {
+          "outcome": 3,
+          "stale": 0,
+          "ticks": 875
+        },
+        {
+          "outcome": 3,
+          "stale": 0,
+          "ticks": 876
+        },
+        {
+          "outcome": 3,
+          "stale": 0,
+          "ticks": 876
+        },
+        {
+          "outcome": 3,
+          "stale": 0,
+          "ticks": 875
+        },
+        {
+          "outcome": 3,
+          "stale": 0,
+          "ticks": 876
+        },
+        {
+          "outcome": 3,
+          "stale": 0,
+          "ticks": 875
+        },
+        {
+          "outcome": 3,
+          "stale": 0,
+          "ticks": 876
+        },
+        {
+          "outcome": 3,
+          "stale": 0,
+          "ticks": 876
+        },
+        {
+          "outcome": 3,
+          "stale": 0,
+          "ticks": 875
+        },
+        {
+          "outcome": 3,
+          "stale": 0,
+          "ticks": 876
+        },
+        {
+          "outcome": 3,
+          "stale": 0,
+          "ticks": 875
+        },
+        {
+          "outcome": 3,
+          "stale": 0,
+          "ticks": 876
+        },
+        {
+          "outcome": 3,
+          "stale": 0,
+          "ticks": 876
+        },
+        {
+          "outcome": 3,
+          "stale": 0,
+          "ticks": 875
+        },
+        {
+          "outcome": 3,
+          "stale": 0,
+          "ticks": 876
+        },
+        {
+          "outcome": 3,
+          "stale": 0,
+          "ticks": 876
+        },
+        {
+          "outcome": 3,
+          "stale": 0,
+          "ticks": 876
+        }
+      ],
+      "ticks": {
+        "n": 30,
+        "median": 876.0,
+        "p95": 876.0,
+        "sd": 0.4714045207910317,
+        "min": 875.0,
+        "max": 876.0
+      },
+      "stale": 0
+    },
+    "4": {
+      "samples": [
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 3254
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 3254
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 3254
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 3254
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 3254
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 3254
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 3254
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 3254
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 3254
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 3254
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 3254
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 3254
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 3254
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 3254
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 3254
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 3254
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 3254
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 3254
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 3254
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 3254
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 3254
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 3254
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 3254
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 3254
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 3254
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 3254
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 3254
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 3254
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 3254
+        },
+        {
+          "outcome": 0,
+          "stale": 0,
+          "ticks": 3254
+        }
+      ],
+      "ticks": {
+        "n": 30,
+        "median": 3254.0,
+        "p95": 3254.0,
+        "sd": 0.0,
+        "min": 3254.0,
+        "max": 3254.0
+      },
+      "stale": 0
+    }
+  },
+  "cirvane_stale_total": 0,
+  "nucleus": {
+    "class_1_ms": [
+      1996,
+      2999,
+      4000,
+      1996,
+      2999,
+      3999,
+      1996,
+      2999,
+      4000,
+      1996,
+      2999,
+      4000,
+      1996,
+      2999,
+      4000,
+      1996,
+      2999,
+      4000,
+      1996,
+      2999,
+      4000,
+      1996,
+      2999,
+      4000,
+      1996,
+      2999,
+      4000,
+      1996,
+      2999,
+      3999
+    ],
+    "stats_ms": {
+      "n": 30,
+      "median": 2999.0,
+      "p95": 4000,
+      "sd": 818.048121377275,
+      "min": 1996,
+      "max": 4000
+    },
+    "source": "jtag_noinit",
+    "warmup_ms": [
+      1996,
+      2999,
+      4000
+    ]
+  },
+  "differentiated": [
+    {
+      "metric": "class_1_recovery_latency",
+      "cirvane_ticks_median": 1054.0,
+      "nucleus_ms_median": 2999.0,
+      "note": "Units differ (SYSTIMER ticks vs wall ms). Cirvane is a synchronous admit with stale_total=0. Nucleus uses 1s-shifted supervisor backoff and produces a 2s/3s/4s cycle (median 2999 ms, p95 4000 ms)."
+    }
+  ],
+  "incomparable": [
+    "Cirvane classes 2-5 vs Nucleus (no matching injectors)",
+    "Scheduler/message/interrupt tails vs FreeRTOS (no matched Nucleus probes)",
+    "Wi-Fi (ADR 0004)",
+    "Class-1 units (SYSTIMER ticks vs wall ms)"
+  ],
+  "result": "pass",
+  "hil_restored": true
+}

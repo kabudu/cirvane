@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "label": "v2",
+  "block": "latency-b",
+  "captured_at": "2026-08-23T21:03:40.615133+00:00",
+  "port": "<serial-port>",
+  "baud": 115200,
+  "firmware": "nucleus/build/nucleus.bin",
+  "firmware_sha256": "2aea03efb0849855026ec5b4f45acbf802e40c055fb0c63ad4fcc5c4c88ec3c4",
+  "latency": {
+    "command": "info",
+    "samples_ms": [
+      2.138083,
+      2.124958,
+      2.146833,
+      2.1435,
+      2.114916,
+      2.137959,
+      2.129,
+      2.138875,
+      3.24075,
+      2.163375,
+      2.099333,
+      2.118083,
+      2.167667,
+      2.10375,
+      2.173167
+    ],
+    "median_ms": 2.138083,
+    "p95_ms": 3.24075,
+    "population_stdev_ms": 0.27645542187785394,
+    "min_ms": 2.099333,
+    "max_ms": 3.24075
+  },
+  "boot": {
+    "method": "shell restart to prompt",
+    "samples_ms": [],
+    "median_ms": null,
+    "p95_ms": null,
+    "population_stdev_ms": null,
+    "min_ms": null,
+    "max_ms": null
+  }
+}

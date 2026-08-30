@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "captured_at": "2026-08-30T02:47:07.498004+00:00",
+  "port": "<serial-port>",
+  "firmware": "build/wifi/cirvane.bin",
+  "firmware_sha256": "60b275ff5821ae964c9500ddfe14b8b9c0459b74c6c658de6fa3838967644784",
+  "result": "pass",
+  "records": [
+    {
+      "step": "identity",
+      "command": "info",
+      "output": "info\r\nproject    cirvane\r\nversion    bbf58a5\r\nidf        v6.0.2\r\nchip       ESP32-C5 rev 1.0, 1 core(s) @ 240 MHz\r\nflash      8 MB\r\nheap free  139860 B, largest block 118784 B\r\nuptime     134010 ms\r\nboots      68\r\ncirvane>  "
+    },
+    {
+      "step": "self-test",
+      "command": "selftest",
+      "output": "selftest\r\nselftest bus=ok config=ok services=ok result=PASS\r\ncirvane>  "
+    },
+    {
+      "step": "resources",
+      "command": "res",
+      "output": "res\r\nid  name           stack_min  heap_delta cpu%  radio_ms\r\n0   led-heartbeat  3824       -57252     0     0\r\n1   wifi-scan      3220       -57252     0     9701\r\ncirvane>  "
+    },
+    {
+      "step": "lazy-dual-band-scan",
+      "command": "scan",
+      "output": "scan\r\nscan queued; results follow asynchronously\r\ncirvane>  "
+    },
+    {
+      "step": "scan-results",
+      "command": "",
+      "output": "scanning both bands...\r\n7 networks visible (7 sh"
+    },
+    {
+      "step": "service-after-scan",
+      "command": "svc",
+      "output": "svc\r\nsystem=nominal services=2\r\nid  name           phase     health  restarts last/max ms\r\n0   led-heartbeat  running   0       0        0/1\r\n1   wifi-scan      running   0       0        0/9704\r\ncirvane>  "
+    },
+    {
+      "step": "inject-wifi-failure",
+      "command": "svcfail 1",
+      "output": "svcfail 1\r\nfailure injected into service 1; inspect with svc\r\ncirvane>  "
+    },
+    {
+      "step": "supervised-recovery",
+      "command": "svc",
+      "output": "svc\r\nsystem=nominal services=2\r\nid  name           phase     health  restarts last/max ms\r\n0   led-heartbeat  running   0       0        0/1\r\n1   wifi-scan      running   0       1        0/9704\r\ncirvane>  "
+    }
+  ]
+}
