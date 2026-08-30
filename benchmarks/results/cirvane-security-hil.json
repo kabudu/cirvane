@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "captured_at": "2026-08-30T01:04:05.066194+00:00",
+  "captured_at": "2026-08-30T02:47:14.714200+00:00",
   "port": "/dev/cu.usbmodem3101",
-  "firmware": "build/hil/cirvane.bin",
-  "firmware_sha256": "da66a98e201b9e04b73fbefa348843ddf7c554d2a52ce29ecfde577e7a9f05c8",
+  "firmware": "build/wifi/cirvane.bin",
+  "firmware_sha256": "60b275ff5821ae964c9500ddfe14b8b9c0459b74c6c658de6fa3838967644784",
   "result": "pass",
   "records": [
     {
@@ -89,17 +89,17 @@
     {
       "step": "ota-before",
       "command": "ota-status",
-      "output": "ota-status\r\nota running=ota_0 boot=ota_0 state=valid query=ESP_OK\r\ncirvane>  "
+      "output": "ota-status\r\nota running=ota_1 boot=ota_1 state=valid query=ESP_OK\r\ncirvane>  "
     },
     {
       "step": "corrupt-ota",
       "command": "ota-reject-corrupt",
-      "output": "ota-reject-corrupt\r\nI (44218) esp_image: segment 0: paddr=00020020 vaddr=420c0020 size=22d4ch (142668) map\r\nI (44238) esp_image: segment 1: paddr=00042d74 vaddr=40800000 size=0d2a4h ( 53924) \r\nI (44238) esp_image: segment 2: paddr=00050020 vaddr=42000020 size=b45e8h (738792) map\r\nI (44328) esp_image: segment 3: paddr=00104610 vaddr=4080d2a4 size=0fda8h ( 64936) \r\nI (44328) esp_image: segment 4: paddr=001143c0 vaddr=50000000 size=000a8h (   168) \r\nI (44338) esp_image: segment 5: paddr=00114470 vaddr=00000000 size=0bb60h ( 47968) \r\nI (44338) esp_image: Verifying image signature...\r\nI (44338) secure_boot_v2: Take trusted digest key(s) from running app\r\nI (44338) secure_boot_v2: #0 app key digest == #0 trusted key digest\r\nI (44338) secure_boot_v2: Verifying with ECDSA...\r\nI (50698) esp_image: segment 0: paddr=001d0020 vaddr=420c0020 size=22d4ch (142668) map\r\nI (50708) esp_image: segment 1: paddr=001f2d74 vaddr=40800000 size=0d2a4h ( 53924) \r\nI (50718) esp_image: segment 2: paddr=00200020 vaddr=42000020 size=b45e8h (738792) map\r\nI (50798) esp_image: segment 3: paddr=002b4610 vaddr=4080d2a4 size=0fda8h ( 64936) \r\nI (50808) esp_image: segment 4: paddr=002c43c0 vaddr=50000000 size=000a8h (   168) \r\nI (50808) esp_image: segment 5: paddr=002c4470 vaddr=00000000 size=0bb60h ( 47968) \r\nE (50818) esp_image: Checksum failed. Calculated 0x43 read 0x42\r\nE (50818) esp_ota_ops: New image failed verification\r\nota corrupt rejection: ESP_OK\r\ncirvane>  "
+      "output": "ota-reject-corrupt\r\nI (147168) esp_image: segment 0: paddr=001d0020 vaddr=420c0020 size=24398h (148376) map\r\nI (147178) esp_image: segment 1: paddr=001f43c0 vaddr=40800000 size=0bc58h ( 48216) \r\nI (147188) esp_image: segment 2: paddr=00200020 vaddr=42000020 size=bc038h (770104) map\r\nI (147268) esp_image: segment 3: paddr=002bc060 vaddr=4080bc58 size=0cec8h ( 52936) \r\nI (147278) esp_image: segment 4: paddr=002c8f30 vaddr=40818b80 size=04544h ( 17732) \r\nI (147278) esp_image: segment 5: paddr=002cd47c vaddr=50000000 size=000a8h (   168) \r\nI (147278) esp_image: segment 6: paddr=002cd52c vaddr=00000000 size=02aa4h ( 10916) \r\nI (147288) esp_image: Verifying image signature...\r\nI (147288) secure_boot_v2: Take trusted digest key(s) from running app\r\nI (147288) secure_boot_v2: #0 app key digest == #0 trusted key digest\r\nI (147288) secure_boot_v2: Verifying with ECDSA...\r\nI (154098) esp_image: segment 0: paddr=00020020 vaddr=420c0020 size=24398h (148376) map\r\nI (154108) esp_image: segment 1: paddr=000443c0 vaddr=40800000 size=0bc58h ( 48216) \r\nI (154118) esp_image: segment 2: paddr=00050020 vaddr=42000020 size=bc038h (770104) map\r\nI (154198) esp_image: segment 3: paddr=0010c060 vaddr=4080bc58 size=0cec8h ( 52936) \r\nI (154208) esp_image: segment 4: paddr=00118f30 vaddr=40818b80 size=04544h ( 17732) \r\nI (154208) esp_image: segment 5: paddr=0011d47c vaddr=50000000 size=000a8h (   168) \r\nI (154218) esp_image: segment 6: paddr=0011d52c vaddr=00000000 size=02aa4h ( 10916) \r\nE (154218) esp_image: Checksum failed. Calculated 0xe5 read 0xe4\r\nE (154218) esp_ota_ops: New image failed verification\r\nota corrupt rejection: ESP_OK\r\ncirvane>  "
     },
     {
       "step": "ota-after",
       "command": "ota-status",
-      "output": "ota-status\r\nota running=ota_0 boot=ota_0 state=valid query=ESP_OK\r\ncirvane>  "
+      "output": "ota-status\r\nota running=ota_1 boot=ota_1 state=valid query=ESP_OK\r\ncirvane>  "
     },
     {
       "step": "corrupt-config-slot",

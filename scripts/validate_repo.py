@@ -40,6 +40,7 @@ CURRENT_PRODUCT_IDENTITY_FILES = [
     "sdkconfig.matched-eval.defaults",
     "scripts/ci-local.sh",
     "benchmarks/tools/serial_benchmark.py",
+    "benchmarks/tools/wifi_hil.py",
 ]
 NUCLEUS_TOKEN = re.compile(r"nucleus", re.IGNORECASE)
 
