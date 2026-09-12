@@ -68,7 +68,7 @@ Validated on a real XIAO ESP32-C5:
 
 Authenticated remote OTA is implemented and remains release-gated on the recorded real-board adversarial matrix. The USB shell is a privileged local interface and does not provide user authentication. Hardware Secure Boot, flash encryption, energy qualification, independent penetration testing and safety certification are outside the current release claim.
 
-Evidence and reproducible test harnesses are stored in [`benchmarks/`](benchmarks/). `./scripts/ci-local.sh` is the authoritative validation gate. Hosted CI is not configured.
+Evidence and reproducible test harnesses are stored in [`benchmarks/`](benchmarks/). `./scripts/ci-local.sh` is the authoritative validation gate; public hosted CI repeats it for every change to `master`.
 
 ## Project documentation
 

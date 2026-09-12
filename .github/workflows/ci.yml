@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    container: espressif/idf@sha256:0d8c9773d48a327233f9c1d7c654ff0bcf133ae24503ea2e97a57cfe02b8cb67
+    steps:
+      - name: Check out source
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          persist-credentials: false
+      - name: Install deterministic rendering dependency
+        run: |
+          apt-get update
+          apt-get install --yes --no-install-recommends imagemagick librsvg2-bin python3-cryptography
+          command -v magick >/dev/null || ln -s "$(command -v convert)" /usr/local/bin/magick
+          rm -rf /var/lib/apt/lists/*
+      - name: Trust the runner-owned checkout inside the build container
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - name: Run authoritative gate
+        run: . "$IDF_PATH/export.sh" && ./scripts/ci-local.sh

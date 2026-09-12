@@ -1,8 +1,8 @@
 # Release policy
 
-## Private repository policy
+## Continuous-integration policy
 
-`./scripts/ci-local.sh` is authoritative while this repository is private. Hosted CI is disabled and must not be added or described as passing. Hosted CI may be considered only at the public-opening gate after explicit user approval.
+`./scripts/ci-local.sh` is authoritative. The owner authorised hosted CI and GitHub Pages on 2026-09-12 after the repository became public. Public workflows may repeat local checks and deploy the static site, but they must not receive release-signing keys, hardware credentials or other owner secrets.
 
 ## Public source-opening gate
 
@@ -16,7 +16,7 @@ Before changing visibility:
 - Confirm no key, credential, personal data, local SDK state, generated build tree, private prompt or sensitive device/network identifier is tracked in the current tree or writable branch/tag history. Any immutable provider-managed reference or cache that cannot be rewritten requires explicit owner risk acceptance before visibility changes.
 - Review public claims, name or mark results, dependency provenance and AI-assisted brand rights. Record professional review or explicit owner risk acceptance where independent legal review is unavailable.
 - Obtain explicit owner approval for the exact commit and visibility change.
-- Keep hosted CI disabled unless the owner separately authorizes it. Public visibility is not implicit hosted-CI approval.
+- Confirm hosted CI remains limited to the separately authorised, least-privilege public workflows recorded in `docs/PUBLIC_CI.md`.
 
 Immediately after a public visibility change, enable and verify GitHub private vulnerability reporting, then inspect the repository while signed out. Do not create a tag, GitHub Release or binary merely because the source becomes public.
 
