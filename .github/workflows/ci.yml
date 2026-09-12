@@ -32,4 +32,4 @@ jobs:
       - name: Trust the runner-owned checkout inside the build container
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - name: Run authoritative gate
-        run: ./scripts/ci-local.sh
+        run: . "$IDF_PATH/export.sh" && ./scripts/ci-local.sh
