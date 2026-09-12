@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Cirvane is recovery-focused firmware for constrained embedded devices.">
+  <meta name="theme-color" content="#3a2748">
+  <title>Cirvane | Recover visibly</title>
+  <link rel="icon" href="assets/cirvane-symbol-32.png" sizes="32x32">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="Cirvane home">
+      <img src="assets/cirvane-horizontal-reversed-680.png" alt="Cirvane">
+    </a>
+    <nav aria-label="Primary navigation">
+      <a href="#capabilities">Capabilities</a>
+      <a href="#status">Status</a>
+      <a href="https://github.com/kabudu/cirvane">GitHub</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Recovery-focused embedded firmware</p>
+        <h1>Know what failed.<br>See how it recovered.</h1>
+        <p class="lede">Cirvane gives constrained devices bounded services, recoverable configuration and explicit firmware rollback. Its first hardware target is the Seeed Studio XIAO ESP32-C5.</p>
+        <div class="actions">
+          <a class="button primary" href="https://github.com/kabudu/cirvane#try-it-on-supported-hardware">Try Cirvane</a>
+          <a class="button secondary" href="https://github.com/kabudu/cirvane/blob/master/docs/ARCHITECTURE.md">Explore the architecture</a>
+        </div>
+      </div>
+      <div class="hero-mark" aria-hidden="true">
+        <img src="assets/cirvane-symbol-512.png" alt="">
+      </div>
+    </section>
+
+    <section class="proof" aria-label="Current product boundaries">
+      <p><strong>Bounded by design</strong><span>Fixed services, queues and recovery work</span></p>
+      <p><strong>Hardware tested</strong><span>XIAO ESP32-C5 evidence is committed</span></p>
+      <p><strong>Honest about scope</strong><span>Pre-release, powered by ESP-IDF and FreeRTOS</span></p>
+    </section>
+
+    <section class="section" id="capabilities">
+      <p class="eyebrow">What it does</p>
+      <h2>Failure behaviour you can reason about</h2>
+      <div class="cards">
+        <article><span class="number">01</span><h3>Supervises services</h3><p>Fixed service identities, health checks and limited restart policies keep recovery work predictable.</p></article>
+        <article><span class="number">02</span><h3>Bounds messages</h3><p>Typed messages use a fixed pool. Queues cannot grow without limit when a producer misbehaves.</p></article>
+        <article><span class="number">03</span><h3>Recovers configuration</h3><p>Two verified records preserve the last valid settings after a corrupt or interrupted write.</p></article>
+        <article><span class="number">04</span><h3>Rolls firmware back</h3><p>Signed dual-slot images must pass their first-boot health check or the device returns to the prior image.</p></article>
+      </div>
+    </section>
+
+    <section class="terminal-section">
+      <div>
+        <p class="eyebrow">Operator experience</p>
+        <h2>Clear commands. Visible outcomes.</h2>
+        <p>The privileged USB shell exposes identity, health, resource use, Wi-Fi and update state without hiding refusals behind generic errors.</p>
+      </div>
+      <pre aria-label="Example Cirvane shell session"><code><span>cirvane&gt;</span> selftest
+selftest: PASS
+<span>cirvane&gt;</span> wifi connect
+Scanning for nearby networks...
+Select a network [1-4]: 2
+Password: ************
+Connected. Address acquired.</code></pre>
+    </section>
+
+    <section class="section status" id="status">
+      <p class="eyebrow">Current status</p>
+      <h2>Built for evaluation, not unattended deployment</h2>
+      <p>Cirvane is pre-release software. Authenticated remote OTA transport still requires its release-candidate hardware evidence. USB-shell authentication, hardware Secure Boot, flash encryption, energy qualification, independent penetration testing and safety certification are not complete.</p>
+      <div class="actions">
+        <a class="button primary" href="https://github.com/kabudu/cirvane/blob/master/docs/VALIDATION.md">Review the evidence</a>
+        <a class="text-link" href="https://github.com/kabudu/cirvane/blob/master/SECURITY.md">Read the security policy <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <img src="assets/cirvane-wordmark-reversed.svg" alt="Cirvane">
+    <p>Recover visibly. Apache-2.0 licensed.</p>
+  </footer>
+</body>
+</html>

@@ -4,7 +4,7 @@
 
 This plan defines the remaining work required to create Cirvane's first explicitly labelled developer release. ADR 0005 records that the first labelled Cirvane firmware is the ESP-IDF/FreeRTOS image with an honest substrate claim. A clean-sheet kernel remains a separately gated research and later kernel-release path (ADR 0002). A checked item requires implemented behaviour and the named evidence; documentation, an unflashed binary or a passing host-only test is not sufficient where real-board evidence is required.
 
-The enduring Cirvane brand identity is complete. Current firmware, USB prompt and application binary use the Cirvane name on ESP-IDF/FreeRTOS. Historical Nucleus evidence is retained with that provenance. Authenticated OTA transport is not yet implemented, and no Cirvane release has been authorised.
+The enduring Cirvane brand identity is complete. Current firmware, USB prompt and application binary use the Cirvane name on ESP-IDF/FreeRTOS. Historical Nucleus evidence is retained with that provenance. Authenticated OTA transport is implemented but not yet qualified on the release-candidate hardware, and no Cirvane release has been authorised.
 
 Completion means all five stages have passed at one release candidate commit, every stop-ship condition is closed, the accepted deferrals are stated without implying completion, and the owner has approved the exact version and repository visibility. The first labelled firmware must state that it is powered by ESP-IDF and FreeRTOS. It may describe Cirvane as a clean-sheet kernel implementation only in a later kernel-labelled release when dependency inspection proves that claim. It may describe the kernel mechanism as novel only when the internal prior-art and matched-evidence gates support carefully qualified wording.
 
@@ -174,21 +174,21 @@ Add a bounded, fail-closed transport and manifest layer so no remotely retrieved
 
 ### Protocol and trust decisions
 
-- [ ] Freeze a versioned manifest schema and canonical encoding suitable for deterministic signature verification.
-- [ ] Define product and device identity fields, image version ordering, downgrade policy, image length and digest fields, key identifiers and expiry or freshness semantics.
-- [ ] Define replay protection, interrupted-download recovery, duplicate-request behaviour and the exact boundary between transport success and update acceptance.
-- [ ] Define signing-key rotation and revocation metadata without storing private signing keys in firmware or the repository.
-- [ ] Record the protocol and trust-boundary decision in repository documentation and an ADR when the decision is material.
+- [x] Freeze a versioned manifest schema and canonical encoding suitable for deterministic signature verification.
+- [x] Define product and device identity fields, image version ordering, downgrade policy, image length and digest fields, key identifiers and freshness semantics.
+- [x] Define replay protection, interrupted-download recovery, duplicate-request behaviour and the exact boundary between transport success and update acceptance.
+- [x] Define signing-key rotation and revocation policy without storing private signing keys in firmware or the repository.
+- [x] Record the protocol and trust-boundary decision in repository documentation and ADR 0006.
 
 ### Implementation checklist
 
-- [ ] Implement bounded HTTPS retrieval using certificate verification, explicit connection and read timeouts, bounded redirects and a maximum manifest and image size.
-- [ ] Reject scheme downgrade, untrusted certificates, disallowed origins, redirect loops, cross-origin credential forwarding and ambiguous content length.
-- [ ] Verify canonical manifest signature and key status before accepting manifest claims.
-- [ ] Verify product identity, supported device identity, version policy, declared length and final image digest before changing the selected boot target.
-- [ ] Stream into the inactive slot using bounded buffers and abort safely on truncation, timeout, disconnect, overflow or storage failure.
-- [ ] Preserve the current selected image and clean partial staging state after every rejected or interrupted attempt.
-- [ ] Expose operator-visible reason codes and bounded telemetry without storing credentials or complete manifests by default.
+- [x] Implement bounded HTTPS retrieval using certificate verification, explicit connection and read timeouts, bounded redirects and a maximum manifest and image size.
+- [x] Reject scheme downgrade, untrusted certificates, disallowed origins, redirect loops, cross-origin credential forwarding and ambiguous content length.
+- [x] Verify canonical manifest signature and key status before accepting manifest claims.
+- [x] Verify product identity, supported device identity, version policy, declared length and final image digest before changing the selected boot target.
+- [x] Stream into the inactive slot using bounded buffers and abort safely on truncation, timeout, disconnect, overflow or storage failure.
+- [x] Preserve the current selected image and leave partial staging unselected after every rejected or interrupted attempt.
+- [x] Expose operator-visible reason codes and bounded telemetry without storing credentials or complete manifests by default.
 - [ ] Add deterministic host tests and a public-workflow real-board harness for successful update, rejection and rollback behaviour.
 
 ### Adversarial acceptance matrix
@@ -285,7 +285,7 @@ Do not release while any of the following is present:
 | 1. Kernel novelty and feasibility | Verified | Prior-art matrix, ADR 0003, pre-registered evaluation, host model and Stage 1 spike HIL |
 | 2. Clean-sheet kernel | Verified | kernel-spike.json HIL pass; matched-eval.json class-1 pair; warm n=11 and cold n=5 boot samples. Research image, not the labelled firmware |
 | 3. Cirvane identity on ESP-IDF/FreeRTOS | Verified | Current identity scan and signed build; digest-bound Cirvane functional, security, rollback and performance HIL evidence |
-| 4. Authenticated OTA | Planned | Pending merged protocol implementation and adversarial evidence matrix |
+| 4. Authenticated OTA | In progress | Protocol implementation complete; adversarial release-candidate evidence matrix pending |
 | 5. Developer release | Planned | Pending release-candidate evidence, owner approval and verified release |
 
 States are planned, in progress, implemented, verified, deferred or blocked. The completion record advances only after its named evidence exists.

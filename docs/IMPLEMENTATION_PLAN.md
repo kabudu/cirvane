@@ -37,10 +37,10 @@ The detailed path from the current productised identity to the first developer r
 
 ## M5: authenticated OTA transport
 
-- [ ] Freeze the manifest schema, canonical encoding, key identifiers, version policy and replay rules.
-- [ ] Implement bounded HTTPS retrieval with certificate verification and strict redirects/timeouts.
-- [ ] Verify manifest signature, device/product identity, version, length and image digest before selection.
-- [ ] Add key rotation and revocation metadata without embedding private keys.
+- [x] Freeze the manifest schema, canonical encoding, key identifiers, version policy and replay rules.
+- [x] Implement bounded HTTPS retrieval with certificate verification and strict redirects/timeouts.
+- [x] Verify manifest signature, device/product identity, version, length and image digest before selection.
+- [x] Add key rotation and revocation policy without embedding private keys.
 - [ ] Pass success, corruption, wrong-key, stale-version, replay, truncation, timeout, redirect and rollback tests.
 
 ## M6: initial developer release

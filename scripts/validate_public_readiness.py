@@ -23,6 +23,9 @@ REQUIRED = [
     ".github/ISSUE_TEMPLATE/feature_request.yml",
     ".github/ISSUE_TEMPLATE/config.yml",
     "docs/OPEN_SOURCE_READINESS.md",
+    "docs/OTA_PROTOCOL.md",
+    "site/index.html",
+    "site/styles.css",
 ]
 
 

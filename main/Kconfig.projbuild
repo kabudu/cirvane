@@ -1,5 +1,13 @@
 menu "Cirvane development options"
 
+config CIRVANE_RELEASE_SEQUENCE
+    int "Authenticated OTA release sequence"
+    range 0 2147483647
+    default 0
+    help
+        Monotonic anti-replay sequence compiled into this image. Development
+        builds use zero. Each official release must increment the value.
+
 config CIRVANE_HIL_DIAGNOSTICS
     bool "Enable destructive hardware-in-the-loop diagnostics"
     default n

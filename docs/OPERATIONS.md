@@ -14,6 +14,14 @@ Run `wifi connect` to scan for nearby networks, select a numbered result and ent
 
 Cirvane does not persist Wi-Fi credentials. A reboot therefore returns to the disconnected state. Passwords are not accepted as command arguments, printed, logged or written into committed evidence. The USB shell remains a privileged physical interface; an operator with device or debugger access is inside the current trust boundary.
 
+## Authenticated firmware update
+
+Run `ota-update vMAJOR.MINOR.PATCH` only after Wi-Fi reports connected and the power budget is active. Cirvane downloads the named manifest and firmware from the fixed public GitHub Releases path. The command reports a stage-specific refusal and preserves the current boot target if TLS, redirects, response length, manifest encoding, product identity, device identity, release sequence, signing key, signature, image length, digest, flash write or application signature validation fails.
+
+On `ota update: ready-to-reboot`, run `restart`, inspect `info`, `svc`, `res`, `bus` and `ota-status`, and exercise the application before running `ota-confirm`. Restarting a pending image without confirming it triggers rollback. Do not confirm a degraded or unexplained image. See `docs/OTA_PROTOCOL.md` for the wire format, trust boundaries and key lifecycle.
+
+The first installation uses the versioned full-flash image from GitHub Releases. Put the XIAO ESP32-C5 into download mode, then run `python -m esptool --chip esp32c5 write-flash 0x0 <full-image>`. Verify the downloaded SHA-256 digest against `SHA256SUMS` before flashing. This development release does not enable hardware Secure Boot or flash encryption.
+
 ## Incident response
 
-For update or runtime failure: preserve serial output and evidence, do not confirm a suspect image, allow rollback, capture `info`, `svc`, `res`, `bus` and `ota-status`, reproduce with the same build identity, and classify unsupported or unavailable evidence separately from pass. Key compromise requires revocation metadata and a new trusted key path before further OTA use.
+For update or runtime failure: preserve serial output and evidence, do not confirm a suspect image, allow rollback, capture `info`, `svc`, `res`, `bus` and `ota-status`, reproduce with the same build identity, and classify unsupported or unavailable evidence separately from pass. On suspected key compromise, stop OTA distribution and follow the recovery process in `docs/OTA_PROTOCOL.md`; remotely supplied revocation metadata is never trusted.
