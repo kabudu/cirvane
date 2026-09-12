@@ -38,4 +38,4 @@ This search is not trademark clearance and does not reserve a name. Professional
 
 ## Gates that do not block source visibility
 
-Authenticated remote OTA, hardware Secure Boot, flash encryption, eFuse provisioning, energy qualification, safety certification, independent penetration testing, clean-room reproduction, formal verification and a versioned developer release remain incomplete. They block stronger deployment or release claims, not an accurately described public source repository.
+Authenticated remote OTA hardware qualification, hardware Secure Boot, flash encryption, eFuse provisioning, energy qualification, safety certification, independent penetration testing, clean-room reproduction, formal verification and a versioned developer release remain incomplete. They block stronger deployment or release claims, not an accurately described public source repository.

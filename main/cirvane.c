@@ -55,6 +55,7 @@
 #include "esp_netif.h"
 #include "cmd_system.h"
 #include "cirvane_os.h"
+#include "cirvane_ota_remote.h"
 #include "cirvane_wifi_policy.h"
 
 static const char *TAG = "cirvane";
@@ -840,6 +841,35 @@ static int cmd_ota_status(int argc, char **argv)
     return err == ESP_OK ? 0 : 1;
 }
 
+static int cmd_ota_update(int argc, char **argv)
+{
+    if (argc != 2) {
+        printf("usage: ota-update v<major>.<minor>.<patch>\n");
+        return 1;
+    }
+    if (!cirvane_caps_check(CIRVANE_SERVICE_INVALID, CIRVANE_CAP_OTA)) {
+        printf("permission denied\n");
+        return 1;
+    }
+    if (!s_wifi_connected) {
+        printf("ota update refused: connect Wi-Fi first\n");
+        return 1;
+    }
+    if (cirvane_power_current_budget() != CIRVANE_BUDGET_ACTIVE) {
+        printf("ota update refused: set power active first\n");
+        return 1;
+    }
+    printf("checking signed Cirvane release %s...\n", argv[1]);
+    cirvane_ota_remote_result_t result = cirvane_ota_remote_update(argv[1]);
+    printf("ota update: %s\n", cirvane_ota_remote_result_name(result));
+    if (result == CIRVANE_OTA_REMOTE_OK) {
+        printf("verified image selected; run restart to boot it\n");
+        return 0;
+    }
+    printf("current boot target preserved\n");
+    return 1;
+}
+
 #if CONFIG_CIRVANE_HIL_DIAGNOSTICS
 static int cmd_ota_stage_self(int argc, char **argv)
 {
@@ -1072,6 +1102,7 @@ static void shell_start(void)
     (void)cmd_power;
     (void)cmd_ota_confirm;
     (void)cmd_ota_status;
+    (void)cmd_ota_update;
     (void)cmd_config;
     (void)cmd_selftest;
 #if CONFIG_CIRVANE_HIL_DIAGNOSTICS
@@ -1133,6 +1164,10 @@ static void shell_start(void)
     ESP_ERROR_CHECK(esp_console_cmd_register(&(esp_console_cmd_t){
         .command = "ota-status", .help = "Show running and selected OTA state",
         .func = &cmd_ota_status }));
+    ESP_ERROR_CHECK(esp_console_cmd_register(&(esp_console_cmd_t){
+        .command = "ota-update", .hint = "v<major>.<minor>.<patch>",
+        .help = "Download and verify a signed Cirvane release",
+        .func = &cmd_ota_update }));
 #if CONFIG_CIRVANE_HIL_DIAGNOSTICS
     ESP_ERROR_CHECK(esp_console_cmd_register(&(esp_console_cmd_t){
         .command = "ota-stage-self",

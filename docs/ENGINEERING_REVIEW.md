@@ -4,7 +4,7 @@
 
 The public-readiness review corrected a root-licence mismatch in README and three project SPDX identifiers, documented the vendored Espressif console example, and added contribution, DCO, conduct, governance, support, private security disclosure, citation, issue and pull-request policies. Gitleaks 8.30.1 scanned all 34 commits through `e49e4b2` with zero findings. No build tree, signing key, SDK state or `.DS_Store` is tracked.
 
-Source visibility is deliberately separated from a versioned developer release. Authenticated OTA, hardware security provisioning, energy qualification, independent penetration testing, formal verification and the clean-sheet kernel remain incomplete and retain their existing claim limits. Remaining visibility decisions are professional or explicit owner acceptance of name, mark and AI-assisted asset rights risk; approval of the exact public commit; review of the GitHub About use of unqualified `Secure`; and immediate enablement of private vulnerability reporting after the repository becomes public. Hosted CI remains disabled until separately approved.
+Source visibility is deliberately separated from a versioned developer release. Authenticated OTA hardware qualification, hardware security provisioning, energy qualification, independent penetration testing, formal verification and the clean-sheet kernel remain incomplete and retain their existing claim limits. Remaining visibility decisions are professional or explicit owner acceptance of name, mark and AI-assisted asset rights risk; approval of the exact public commit; and immediate enablement of private vulnerability reporting after the repository becomes public. Hosted CI remains disabled until separately approved.
 
 ## Scope and current finding
 

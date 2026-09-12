@@ -35,3 +35,7 @@ CONFIG_ESP_TASK_WDT_PANIC=y
 
 # Required by the watchdog power budget's timed light sleep path.
 CONFIG_PM_ENABLE=y
+
+# Verify public HTTPS endpoints using ESP-IDF's curated root bundle. OTA also
+# requires a Cirvane-signed manifest and a signed application image.
+CONFIG_MBEDTLS_CERTIFICATE_BUNDLE=y

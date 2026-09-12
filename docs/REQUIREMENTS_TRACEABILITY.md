@@ -7,7 +7,7 @@
 | SEC-02 | Signed image rejection and rollback | OTA policy | Host crypto plus rollback HIL | `cirvane-security-host.json`, `cirvane-security-hil.json`, `cirvane-ota-rollback-hil.json` | Verified Cirvane firmware; authenticated remote transport remains SEC-03 |
 | UX-01 | Interactive prompt remains readable | Logging and shell | Quiet-interval hardware test | PR #2 evidence | Verified baseline |
 | REL-03 | Consistent Cirvane identity | Product and brand | Current-product identity scan plus board capture | `cirvane.bin`, `cirvane>` prompt, `cirvane-functional-hil.json` | Verified across current firmware, functional, security and rollback evidence; historical Nucleus records retained |
-| SEC-03 | Authenticated OTA transport | OTA adapter and policy | Adversarial public-workflow E2E | OTA evidence matrix | Planned |
+| SEC-03 | Authenticated OTA transport | OTA adapter and policy | Canonical-manifest policy tests, signed-manifest tests, production build and adversarial real-board E2E | OTA evidence matrix | Implemented; hardware qualification pending |
 | REL-02 | Explicit developer-release limitations | Release owner | Claim/deferred-state scan | Curated release notes | Planned |
 | PERF-01 | Preserve performance envelope | Runtime owners | Controlled shell and restart measurement | `cirvane-stage3-performance.json`, `matched-eval.json` | Verified for renamed ESP-IDF/FreeRTOS firmware; kernel classes 2-5, units and Wi-Fi remain incomparable |
 | NOV-01 | Bounded recovery transaction differs from reviewed kernel mechanisms | Research and kernel owners | Systematic matrix plus matched prototype | Novelty claim matrix | Candidate |

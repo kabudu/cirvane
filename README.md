@@ -45,9 +45,12 @@ wifi connect
 wifi status
 wifi disconnect
 ota-status
+ota-update v0.1.0
 ```
 
 `wifi connect` scans for nearby networks and asks you to choose one. Password entry is masked. Use `wifi connect "<ssid>"` to connect directly to a known or hidden network. Credentials stay in driver RAM for the active session and are cleared on disconnect or reboot.
+
+`ota-update` retrieves an exact Cirvane release from GitHub, verifies its signed manifest and streams the signed firmware into the inactive slot. See [Authenticated OTA](docs/OTA_PROTOCOL.md) for the trust model and recovery workflow.
 
 See [Operations](docs/OPERATIONS.md) for the device lifecycle and recovery workflow, and [Adoption and integration](docs/ADOPTION_AND_INTEGRATION.md) for a staged evaluation path.
 
@@ -63,7 +66,7 @@ Validated on a real XIAO ESP32-C5:
 - production removal of destructive test commands;
 - repeatable build, host-test and hardware-test evidence.
 
-Authenticated remote OTA transport is not implemented yet. The USB shell is a privileged local interface and does not provide user authentication. Hardware Secure Boot, flash encryption, energy qualification, independent penetration testing and safety certification are also outside the current release claim.
+Authenticated remote OTA is implemented and remains release-gated on the recorded real-board adversarial matrix. The USB shell is a privileged local interface and does not provide user authentication. Hardware Secure Boot, flash encryption, energy qualification, independent penetration testing and safety certification are outside the current release claim.
 
 Evidence and reproducible test harnesses are stored in [`benchmarks/`](benchmarks/). `./scripts/ci-local.sh` is the authoritative validation gate. Hosted CI is not configured.
 
