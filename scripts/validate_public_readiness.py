@@ -23,6 +23,7 @@ REQUIRED = [
     ".github/ISSUE_TEMPLATE/feature_request.yml",
     ".github/ISSUE_TEMPLATE/config.yml",
     "docs/OPEN_SOURCE_READINESS.md",
+    "docs/PUBLIC_CI.md",
     "docs/OTA_PROTOCOL.md",
     "site/index.html",
     "site/styles.css",
@@ -67,8 +68,13 @@ for required in ("./scripts/ci-local.sh", "Signed-off-by", "SECURITY.md"):
     if required not in contributing:
         fail(f"CONTRIBUTING.md missing {required}")
 
-if list((ROOT / ".github" / "workflows").glob("*")) if (ROOT / ".github" / "workflows").exists() else []:
-    fail("hosted workflow present without recorded owner approval")
+workflows = sorted((ROOT / ".github" / "workflows").glob("*.yml"))
+expected_workflows = {"ci.yml", "pages.yml", "secret-scan.yml"}
+if {path.name for path in workflows} != expected_workflows:
+    fail("public workflows must be exactly CI, Pages and secret scanning")
+approval = (ROOT / "docs" / "PUBLIC_CI.md").read_text(encoding="utf-8")
+if "Owner authorised hosted CI and GitHub Pages on 2026-09-12" not in approval:
+    fail("hosted workflow owner approval is not recorded")
 
 mac = re.compile(r"(?i)\b(?:[0-9a-f]{2}:){5}[0-9a-f]{2}\b")
 private_ip = re.compile(

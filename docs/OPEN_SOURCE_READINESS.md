@@ -15,7 +15,7 @@ This gate prepares the source repository for public visibility. It does not crea
 | Secret hygiene | Gitleaks 8.30.1 found zero leaks before the rewrite; tracked-file audit found no key, credential, SDK state or build tree | Rerun on every rewritten ref before publication |
 | Evidence privacy | All historical `benchmarks/results` content was removed from writable branch history; only the validated, redacted evidence snapshot was added back at the new head | Ready for writable history; on 2026-08-30 the owner explicitly accepted that 19 immutable GitHub pull-request refs and cached views retain the old commits |
 | Source provenance | Single repository author identity; Espressif console source retains `Unlicense OR CC0-1.0`; brand source and Figtree provenance recorded | Ready, subject to the professional AI-assisted asset rights review below |
-| Validation | `./scripts/ci-local.sh` remains authoritative and hosted CI remains disabled | Must pass at the final reviewed commit |
+| Validation | `./scripts/ci-local.sh` remains authoritative; public hosted CI mirrors it | Must pass locally and on GitHub at the final reviewed commit |
 | Public claims | README separates the ESP-IDF/FreeRTOS product firmware from kernel research and lists security limitations | Ready except for the owner decision on the unqualified word `Secure` in the GitHub About text |
 
 ## Name and mark audit
@@ -34,7 +34,7 @@ This search is not trademark clearance and does not reserve a name. Professional
 6. Publish only the approved history, without publishing a tag, binary or GitHub Release.
 7. Immediately enable GitHub private vulnerability reporting and verify the Security tab presents a private report form.
 8. Verify the public README, licence, contribution guide, security policy, issue forms, pull-request template, citation metadata, About text and default branch from a signed-out view.
-9. Decide separately whether to authorize hosted CI. Until then, local CI remains authoritative and no workflow should be added.
+9. Owner authorization for hosted CI and GitHub Pages was recorded on 2026-09-12; verify both on their first public run.
 
 ## Gates that do not block source visibility
 
