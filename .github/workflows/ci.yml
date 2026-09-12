@@ -24,7 +24,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Install deterministic rendering dependency
-        run: apt-get update && apt-get install --yes --no-install-recommends librsvg2-bin && rm -rf /var/lib/apt/lists/*
+        run: apt-get update && apt-get install --yes --no-install-recommends librsvg2-bin python3-cryptography && rm -rf /var/lib/apt/lists/*
       - name: Trust the runner-owned checkout inside the build container
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - name: Run authoritative gate
