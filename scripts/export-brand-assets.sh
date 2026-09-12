@@ -22,6 +22,11 @@ render() {
   local destination="$4"
   rsvg-convert --keep-aspect-ratio --width "$width" --height "$height" \
     --output "$output_dir/$destination" "$source"
+  if [[ "${CI:-}" == "true" ]]; then
+    magick "$output_dir/$destination" -strip \
+      -define png:exclude-chunks=date,time "$output_dir/$destination.normalized.png"
+    mv "$output_dir/$destination.normalized.png" "$output_dir/$destination"
+  fi
 }
 
 render "$source_dir/cirvane-symbol-small.svg" 16 16 cirvane-symbol-16.png
