@@ -17,6 +17,8 @@ The first supported device is the Seeed Studio XIAO ESP32-C5. The current firmwa
 
 ## How it works
 
+![Cirvane architecture: operator interfaces feed bounded services and messaging, governed by recovery and durable state on ESP-IDF, FreeRTOS and ESP32-C5 hardware](docs/assets/cirvane-architecture.svg)
+
 Cirvane starts a fixed set of services and monitors their health. Services communicate through bounded message slots instead of allocating unbounded work. If a service fails, Cirvane applies a limited recovery policy and reports the outcome.
 
 Configuration changes are written to an alternate record and verified before becoming current. Firmware updates use two application slots, leaving a known-good image available when a new image fails its first-boot health check.

@@ -3,6 +3,7 @@
 
 from pathlib import Path
 import re
+import xml.etree.ElementTree as ET
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -19,6 +20,17 @@ class CirvaneContract(unittest.TestCase):
 
     def enabled(self, symbol):
         self.assertRegex(self.defaults, rf"(?m)^{re.escape(symbol)}=y$")
+
+    def test_readme_architecture_diagram_is_accessible_and_self_contained(self):
+        readme = (ROOT / "README.md").read_text()
+        diagram_path = "docs/assets/cirvane-architecture.svg"
+        self.assertIn(f"]({diagram_path})", readme)
+        self.assertLess(readme.index(diagram_path), readme.index("Cirvane starts a fixed set of services"))
+        svg = (ROOT / diagram_path).read_text()
+        root = ET.fromstring(svg)
+        self.assertEqual(root.attrib.get("role"), "img")
+        self.assertEqual(root.attrib.get("aria-labelledby"), "title desc")
+        self.assertNotRegex(svg, r"(?i)<script|https?://(?!www\.w3\.org/2000/svg)|javascript:")
 
     def test_ota_is_signed_dual_slot_with_rollback(self):
         for symbol in (
