@@ -4,7 +4,7 @@
 
 This plan defines the remaining work required to create Cirvane's first explicitly labelled developer release. ADR 0005 records that the first labelled Cirvane firmware is the ESP-IDF/FreeRTOS image with an honest substrate claim. A clean-sheet kernel remains a separately gated research and later kernel-release path (ADR 0002). A checked item requires implemented behaviour and the named evidence; documentation, an unflashed binary or a passing host-only test is not sufficient where real-board evidence is required.
 
-The enduring Cirvane brand identity is complete. Current firmware, USB prompt and application binary use the Cirvane name on ESP-IDF/FreeRTOS. Historical Nucleus evidence is retained with that provenance. Authenticated OTA transport is implemented but not yet qualified on the release-candidate hardware, and no Cirvane release has been authorised.
+The enduring Cirvane brand identity is complete. Current firmware, USB prompt and application binary use the Cirvane name on ESP-IDF/FreeRTOS. Historical Nucleus evidence is retained with that provenance. Authenticated OTA transport and the v0.1.0 release image are qualified on the supported board. Cirvane v0.1.0 was published on 2026-09-13.
 
 Completion means all five stages have passed at one release candidate commit, every stop-ship condition is closed, the accepted deferrals are stated without implying completion, and the owner has approved the exact version and repository visibility. The first labelled firmware must state that it is powered by ESP-IDF and FreeRTOS. It may describe Cirvane as a clean-sheet kernel implementation only in a later kernel-labelled release when dependency inspection proves that claim. It may describe the kernel mechanism as novel only when the internal prior-art and matched-evidence gates support carefully qualified wording.
 
@@ -189,17 +189,17 @@ Add a bounded, fail-closed transport and manifest layer so no remotely retrieved
 - [x] Stream into the inactive slot using bounded buffers and abort safely on truncation, timeout, disconnect, overflow or storage failure.
 - [x] Preserve the current selected image and leave partial staging unselected after every rejected or interrupted attempt.
 - [x] Expose operator-visible reason codes and bounded telemetry without storing credentials or complete manifests by default.
-- [ ] Add deterministic host tests and a public-workflow real-board harness for successful update, rejection and rollback behaviour.
+- [x] Add deterministic host tests and a public-workflow real-board harness for successful update, rejection and rollback behaviour.
 
 ### Adversarial acceptance matrix
 
-- [ ] Valid manifest and image complete successfully and boot pending is selected only after every check passes.
-- [ ] Corrupt image, wrong digest, wrong signing key, revoked key and malformed signature are rejected.
-- [ ] Wrong product, wrong device, stale version, forbidden downgrade, expired metadata and replayed metadata are rejected.
-- [ ] Truncated body, oversized body, inconsistent length, timeout, disconnect and storage failure leave the current boot target unchanged.
-- [ ] HTTP downgrade, untrusted certificate, redirect loop, excessive redirects and disallowed redirect origin are rejected.
-- [ ] A boot-pending image that fails the health-confirmation window rolls back to the prior verified image.
-- [ ] Logs, evidence and test fixtures contain no private keys, bearer credentials or unredacted secret material.
+- [x] Valid manifest and image complete successfully and boot pending is selected only after every check passes.
+- [x] Corrupt image, wrong digest, wrong signing key, revoked key and malformed signature are rejected.
+- [x] Wrong product, wrong device, stale version, forbidden downgrade, expired metadata and replayed metadata are rejected.
+- [x] Truncated body, oversized body, inconsistent length, timeout, disconnect and storage failure leave the current boot target unchanged.
+- [x] HTTP downgrade, untrusted certificate, redirect loop, excessive redirects and disallowed redirect origin are rejected.
+- [x] A boot-pending image that fails the health-confirmation window rolls back to the prior verified image.
+- [x] Logs, evidence and test fixtures contain no private keys, bearer credentials or unredacted secret material.
 
 ### Required evidence
 
@@ -221,18 +221,18 @@ Freeze one evidence-backed commit as Cirvane's first labelled developer release 
 
 ### Release-candidate checklist
 
-- [ ] Select the release version and theme using the title format `Cirvane vX.Y.Z: <theme>`.
-- [ ] Freeze one release candidate commit containing the Cirvane ESP-IDF/FreeRTOS firmware, completed identity rename, authenticated OTA transport, documentation, manifests and release metadata.
-- [ ] Run authoritative `./scripts/ci-local.sh` at that exact commit in the documented ESP-IDF environment.
-- [ ] Rebuild the signed production image from the release commit and record its digest, size, toolchain and configuration identity.
-- [ ] Repeat all supported real-board functional, security, OTA, rollback and quiet-shell gates against that exact image.
-- [ ] Verify deterministic brand exports, asset-manifest integrity, licence inventory and consistent Cirvane identity across release surfaces.
-- [ ] Prepare curated release notes with one outcome paragraph, three to five material changes, compatibility and claim boundaries, one primary installation path and evidence links.
-- [ ] Render and inspect release notes at desktop and narrow widths, checking hierarchy, wrapping, links, code blocks and placeholder text.
-- [ ] Document upgrade, installation, rollback, recovery and removal procedures for the supported board.
-- [ ] Complete the licence and name or mark checks appropriate to the chosen private or public release channel.
-- [ ] Obtain explicit owner approval for the exact commit, version, release notes, artefacts and repository visibility.
-- [ ] Create and verify the release only after all preceding items pass.
+- [x] Select the release version and theme using the title format `Cirvane vX.Y.Z: <theme>`.
+- [x] Freeze one release candidate commit containing the Cirvane ESP-IDF/FreeRTOS firmware, completed identity rename, authenticated OTA transport, documentation, manifests and release metadata.
+- [x] Run authoritative `./scripts/ci-local.sh` at that exact commit in the documented ESP-IDF environment.
+- [x] Rebuild the signed production image from the release commit and record its digest, size, toolchain and configuration identity.
+- [x] Repeat all supported real-board functional, security, OTA, rollback and quiet-shell gates against that exact image.
+- [x] Verify deterministic brand exports, asset-manifest integrity, licence inventory and consistent Cirvane identity across release surfaces.
+- [x] Prepare curated release notes with one outcome paragraph, three to five material changes, compatibility and claim boundaries, one primary installation path and evidence links.
+- [x] Render and inspect release notes at desktop and narrow widths, checking hierarchy, wrapping, links, code blocks and placeholder text.
+- [x] Document upgrade, installation, rollback, recovery and removal procedures for the supported board.
+- [x] Complete the licence and name or mark checks appropriate to the chosen private or public release channel.
+- [x] Obtain explicit owner approval for the exact commit, version, release notes, artefacts and repository visibility.
+- [x] Create and verify the release only after all preceding items pass.
 
 ### Accepted initial-release deferrals
 
@@ -285,7 +285,7 @@ Do not release while any of the following is present:
 | 1. Kernel novelty and feasibility | Verified | Prior-art matrix, ADR 0003, pre-registered evaluation, host model and Stage 1 spike HIL |
 | 2. Clean-sheet kernel | Verified | kernel-spike.json HIL pass; matched-eval.json class-1 pair; warm n=11 and cold n=5 boot samples. Research image, not the labelled firmware |
 | 3. Cirvane identity on ESP-IDF/FreeRTOS | Verified | Current identity scan and signed build; digest-bound Cirvane functional, security, rollback and performance HIL evidence |
-| 4. Authenticated OTA | In progress | Protocol implementation complete; adversarial release-candidate evidence matrix pending |
-| 5. Developer release | Planned | Pending release-candidate evidence, owner approval and verified release |
+| 4. Authenticated OTA | Verified | Host policy and signature tests; redacted transport qualification; exact v0.1.0 download, pending boot, rollback, confirmation and persistence evidence |
+| 5. Developer release | Verified | v0.1.0 tag and curated notes; digest-bound signed artifacts; local and hosted CI; release-attached production and OTA HIL evidence; public Pages review |
 
 States are planned, in progress, implemented, verified, deferred or blocked. The completion record advances only after its named evidence exists.
