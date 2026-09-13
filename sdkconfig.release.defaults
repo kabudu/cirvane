@@ -1,4 +1,4 @@
 # Official release profile. scripts/build-release.sh copies the owner-held key
 # into this ignored build directory before invoking ESP-IDF.
 CONFIG_SECURE_BOOT_SIGNING_KEY="build/release/signing-key.pem"
-CONFIG_CIRVANE_RELEASE_SEQUENCE=1
+CONFIG_CIRVANE_RELEASE_SEQUENCE=2

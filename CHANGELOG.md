@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-09-13
+
 ### Added
 
 - Add authenticated, bounded remote OTA delivery from signed GitHub Release assets.
@@ -23,4 +25,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Remove local network identifiers from writable Git history and automatically redact future hardware evidence.
 - Record owner acceptance of residual privacy exposure in immutable GitHub pull-request refs after writable-history sanitisation.
 
-[Unreleased]: https://github.com/kabudu/cirvane/compare/HEAD...HEAD
+[Unreleased]: https://github.com/kabudu/cirvane/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/kabudu/cirvane/releases/tag/v0.1.0

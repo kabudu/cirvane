@@ -45,7 +45,7 @@ The example sequence above is illustrative; a real manifest contains only decima
 6. Require the release sequence to exceed both the sequence compiled into the running image and the highest sequence accepted in NVS.
 7. Require an active embedded key identifier and verify the manifest signature.
 8. Open only the inactive application slot. Require the declared image length to fit it and the HTTP length to equal the declared length.
-9. Stream through a 2048-byte HTTP buffer while hashing and writing. Reject timeout, disconnect, overflow, short body, long body or flash error.
+9. Stream through a 2048-byte HTTP receive buffer while hashing and writing. Use the same bounded transmit size so an allowed GitHub signed-asset path fits without accepting an unbounded redirect. Reject timeout, disconnect, overflow, short body, long body or flash error.
 10. Require the computed SHA-256 digest to equal the manifest and require `esp_ota_end` to accept the signed application image.
 11. Persist the new highest sequence. Only then select the inactive slot for the next boot.
 
