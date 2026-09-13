@@ -56,7 +56,7 @@ See [Operations](docs/OPERATIONS.md) for the device lifecycle and recovery workf
 
 ## Current status
 
-Cirvane is pre-release software under active productisation. Source access does not imply production readiness, safety certification or support for unattended deployment.
+Cirvane v0.1.0 is a developer release under active productisation. Source access does not imply production readiness, safety certification or support for unattended deployment.
 
 Validated on a real XIAO ESP32-C5:
 
@@ -66,7 +66,7 @@ Validated on a real XIAO ESP32-C5:
 - production removal of destructive test commands;
 - repeatable build, host-test and hardware-test evidence.
 
-Authenticated remote OTA is implemented and remains release-gated on the recorded real-board adversarial matrix. The USB shell is a privileged local interface and does not provide user authentication. Hardware Secure Boot, flash encryption, energy qualification, independent penetration testing and safety certification are outside the current release claim.
+Authenticated remote OTA, first-boot confirmation and automatic rollback are tested on the supported board for v0.1.0. The USB shell is a privileged local interface and does not provide user authentication. Hardware Secure Boot, flash encryption, energy qualification, independent penetration testing and safety certification are outside the current release claim.
 
 Evidence and reproducible test harnesses are stored in [`benchmarks/`](benchmarks/). `./scripts/ci-local.sh` is the authoritative validation gate; public hosted CI repeats it for every change to `master`.
 
