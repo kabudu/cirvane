@@ -17,6 +17,7 @@
     </a>
     <nav aria-label="Primary navigation">
       <a href="#capabilities">Capabilities</a>
+      <a href="#install">Install</a>
       <a href="#status">Status</a>
       <a href="https://github.com/kabudu/cirvane">GitHub</a>
     </nav>
@@ -41,7 +42,17 @@
     <section class="proof" aria-label="Current product boundaries">
       <p><strong>Bounded by design</strong><span>Fixed services, queues and recovery work</span></p>
       <p><strong>Hardware tested</strong><span>XIAO ESP32-C5 evidence is committed</span></p>
-      <p><strong>Honest about scope</strong><span>Pre-release, powered by ESP-IDF and FreeRTOS</span></p>
+      <p><strong>Honest about scope</strong><span>Developer release, powered by ESP-IDF and FreeRTOS</span></p>
+    </section>
+
+    <section class="section" id="install">
+      <p class="eyebrow">Install v0.1.0</p>
+      <h2>Flash the supported board</h2>
+      <p>Download the full image for the Seeed Studio XIAO ESP32-C5 from the <a href="https://github.com/kabudu/cirvane/releases/tag/v0.1.0">v0.1.0 release</a>, verify it with <code>SHA256SUMS</code>, then write it at flash offset <code>0x0</code>.</p>
+      <pre aria-label="Installation command"><code>python -m esptool --chip esp32c5 \
+  --port PORT \
+  write-flash 0x0 cirvane-v0.1.0-xiao-esp32c5-full.bin</code></pre>
+      <p>Replace the serial port with the one shown by your computer. After reset, open it at 115200 baud and run <code>selftest</code>.</p>
     </section>
 
     <section class="section" id="capabilities">
@@ -73,7 +84,7 @@ Connected. Address acquired.</code></pre>
     <section class="section status" id="status">
       <p class="eyebrow">Current status</p>
       <h2>Built for evaluation, not unattended deployment</h2>
-      <p>Cirvane is pre-release software. Authenticated remote OTA transport still requires its release-candidate hardware evidence. USB-shell authentication, hardware Secure Boot, flash encryption, energy qualification, independent penetration testing and safety certification are not complete.</p>
+      <p>Cirvane v0.1.0 is a developer release. Authenticated remote OTA, first-boot confirmation and automatic rollback have been tested on the supported board. USB-shell authentication, hardware Secure Boot, flash encryption, energy qualification, independent penetration testing and safety certification are not complete.</p>
       <div class="actions">
         <a class="button primary" href="https://github.com/kabudu/cirvane/blob/master/docs/VALIDATION.md">Review the evidence</a>
         <a class="text-link" href="https://github.com/kabudu/cirvane/blob/master/SECURITY.md">Read the security policy <span aria-hidden="true">→</span></a>

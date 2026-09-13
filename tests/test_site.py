@@ -15,12 +15,14 @@ class SiteContractTests(unittest.TestCase):
 
     def test_claim_boundaries_are_visible(self) -> None:
         for text in (
-            "pre-release software",
-            "Authenticated remote OTA transport",
+            "developer release",
+            "Authenticated remote OTA",
             "powered by ESP-IDF and FreeRTOS",
             "XIAO ESP32-C5",
         ):
             self.assertIn(text, self.html)
+        self.assertIn('id="install"', self.html)
+        self.assertIn("releases/tag/v0.1.0", self.html)
 
     def test_accessibility_basics(self) -> None:
         self.assertIn('class="skip-link"', self.html)
