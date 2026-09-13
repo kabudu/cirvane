@@ -31,6 +31,9 @@ class CirvaneContract(unittest.TestCase):
         self.assertEqual(root.attrib.get("role"), "img")
         self.assertEqual(root.attrib.get("aria-labelledby"), "title desc")
         self.assertNotRegex(svg, r"(?i)<script|https?://(?!www\.w3\.org/2000/svg)|javascript:")
+        self.assertIn(".service-title{font:750 18px", svg)
+        self.assertEqual(svg.count('class="service-title"'), 4)
+        self.assertNotIn('class="title" font-size=', svg)
 
     def test_ota_is_signed_dual_slot_with_rollback(self):
         for symbol in (
