@@ -29,6 +29,8 @@ class SiteContractTests(unittest.TestCase):
         self.assertIn('prefers-reduced-motion: reduce', self.css)
         self.assertIn('@media (forced-colors: active)', self.css)
         self.assertNotIn('target="_blank"', self.html)
+        self.assertIn("overflow-wrap: anywhere", self.css)
+        self.assertIn("pre { max-width: 100%; min-width: 0; }", self.css)
 
     def test_site_has_no_remote_runtime_assets(self) -> None:
         self.assertNotIn("<script", self.html)
