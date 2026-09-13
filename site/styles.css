@@ -87,13 +87,18 @@ footer img { width: 120px; }
 footer p { font-size: .85rem; margin: 0; }
 
 @media (max-width: 760px) {
-  .site-header { align-items: flex-start; gap: 1rem; }
+  .site-header { align-items: flex-start; flex-direction: column; gap: .75rem; }
   .brand img { width: 132px; }
-  nav { gap: .85rem; }
+  nav { flex-wrap: wrap; gap: .5rem 1rem; }
   nav a { font-size: .8rem; }
   .hero { grid-template-columns: 1fr; min-height: 0; }
+  .hero-copy { min-width: 0; }
+  h1 { font-size: clamp(2.55rem, 12vw, 3.4rem); overflow-wrap: anywhere; }
+  .actions { align-items: stretch; flex-direction: column; }
+  .button { text-align: center; width: 100%; }
   .hero-mark { display: none; }
   .proof, .cards, .terminal-section { grid-template-columns: 1fr; }
+  .terminal-section > *, pre { max-width: 100%; min-width: 0; }
   .proof p { border-bottom: 1px solid var(--line); border-right: 0; }
   footer { align-items: flex-start; flex-direction: column; gap: 1rem; }
 }
