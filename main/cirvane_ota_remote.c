@@ -171,6 +171,7 @@ static esp_err_t perform_download(const char *url, download_context_t *context)
         .max_redirection_count = OTA_MAX_REDIRECTS,
         .max_authorization_retries = -1,
         .buffer_size = OTA_HTTP_BUFFER_SIZE,
+        .buffer_size_tx = OTA_HTTP_BUFFER_SIZE,
         .event_handler = download_event,
         .user_data = context,
         .crt_bundle_attach = esp_crt_bundle_attach,

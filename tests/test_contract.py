@@ -15,6 +15,7 @@ class CirvaneContract(unittest.TestCase):
         cls.hil_defaults = (ROOT / "sdkconfig.hil.defaults").read_text()
         cls.header = (ROOT / "main" / "cirvane_os.h").read_text()
         cls.runtime = (ROOT / "main" / "cirvane_os.c").read_text()
+        cls.ota_remote = (ROOT / "main" / "cirvane_ota_remote.c").read_text()
 
     def enabled(self, symbol):
         self.assertRegex(self.defaults, rf"(?m)^{re.escape(symbol)}=y$")
@@ -28,6 +29,9 @@ class CirvaneContract(unittest.TestCase):
             "CONFIG_SECURE_SIGNED_ON_UPDATE_NO_SECURE_BOOT",
         ):
             self.enabled(symbol)
+        self.assertIn("#define OTA_HTTP_BUFFER_SIZE 2048", self.ota_remote)
+        self.assertIn(".buffer_size = OTA_HTTP_BUFFER_SIZE", self.ota_remote)
+        self.assertIn(".buffer_size_tx = OTA_HTTP_BUFFER_SIZE", self.ota_remote)
 
     def test_runtime_observability_and_power_are_enabled(self):
         for symbol in (

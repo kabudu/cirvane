@@ -1,0 +1,3 @@
+# Release-key-signed receiver image used only for OTA qualification.
+CONFIG_SECURE_BOOT_SIGNING_KEY="build/ota-baseline/signing-key.pem"
+CONFIG_CIRVANE_RELEASE_SEQUENCE=0

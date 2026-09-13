@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "captured_at": "2026-09-13T16:50:00+01:00",
+  "target": "Seeed Studio XIAO ESP32-C5",
+  "serial_port": "<serial-port>",
+  "baseline": {
+    "version": "ota-baseline",
+    "release_sequence": 0,
+    "firmware_sha256": "84bdb814043dbc51510f36b3e8f9e3d2a33e963467e618655575a5bd543c5161"
+  },
+  "fixture": {
+    "tag": "v0.0.1",
+    "release_sequence": 1,
+    "firmware_sha256": "84bdb814043dbc51510f36b3e8f9e3d2a33e963467e618655575a5bd543c5161",
+    "manifest_sha256": "5b6c776458a7c52519d607f3c280f62e6045fdb70631436871721f5553e889d2"
+  },
+  "result": "pass",
+  "checks": [
+    {"name": "initial-state", "result": "pass", "evidence": "running=ota_0 boot=ota_0 state=valid"},
+    {"name": "authenticated-download", "result": "pass", "evidence": "GitHub redirect chain completed and TLS certificates validated"},
+    {"name": "signed-image-selection", "result": "pass", "evidence": "ready-to-reboot; running=ota_0 boot=ota_1 state=valid"},
+    {"name": "pending-first-boot", "result": "pass", "evidence": "running=ota_1 boot=ota_1 state=pending_verify"},
+    {"name": "unconfirmed-rollback", "result": "pass", "evidence": "running=ota_0 boot=ota_0 state=valid"}
+  ],
+  "privacy": "Wi-Fi SSID, password, IP address and device identifiers are not recorded. Credentials were entered only through the masked device prompt and retained in RAM only.",
+  "scope": "Transport qualification fixture. The official v0.1.0 image requires a separate exact-artifact gate before promotion from prerelease."
+}
