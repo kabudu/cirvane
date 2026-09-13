@@ -41,15 +41,15 @@ The detailed path from the current productised identity to the first developer r
 - [x] Implement bounded HTTPS retrieval with certificate verification and strict redirects/timeouts.
 - [x] Verify manifest signature, device/product identity, version, length and image digest before selection.
 - [x] Add key rotation and revocation policy without embedding private keys.
-- [ ] Pass success, corruption, wrong-key, stale-version, replay, truncation, timeout, redirect and rollback tests.
+- [x] Pass success, corruption, wrong-key, stale-version, replay, truncation, timeout, redirect and rollback tests.
 
 ## M6: initial developer release
 
-- [ ] Pass authoritative local CI and all supported real-board gates at the release commit.
-- [ ] Produce curated release notes and verify desktop and narrow rendering.
-- [ ] Record energy measurement, hardware security provisioning, formal verification, independent reproduction, independent novelty challenge and independent penetration testing as deferred, not passed.
-- [ ] Complete licence and trademark gates appropriate to the chosen private or public release channel.
-- [ ] Create the initial developer release only after explicit owner authorization.
+- [x] Pass authoritative local CI and all supported real-board gates at the release commit.
+- [x] Produce curated release notes and verify desktop and narrow rendering.
+- [x] Record energy measurement, hardware security provisioning, formal verification, independent reproduction, independent novelty challenge and independent penetration testing as deferred, not passed.
+- [x] Complete licence and trademark gates appropriate to the chosen private or public release channel.
+- [x] Create the initial developer release only after explicit owner authorization.
 
 ## Optional post-release evidence
 
