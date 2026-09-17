@@ -24,6 +24,22 @@ class SiteContractTests(unittest.TestCase):
         self.assertIn('id="install"', self.html)
         self.assertIn("releases/tag/v0.1.0", self.html)
 
+    def test_hero_explains_product_and_evaluation_scope(self) -> None:
+        hero = self.html.split('<section class="hero">', 1)[1].split('</section>', 1)[0]
+        for text in (
+            "For embedded developers",
+            "Recovery-focused firmware for connected devices.",
+            "monitors services",
+            "preserves settings after interrupted writes",
+            "rolls back firmware that fails its first-boot health check",
+            "ESP-IDF and FreeRTOS",
+            "XIAO ESP32-C5",
+            "developer release, not for unattended deployment",
+        ):
+            self.assertIn(text, hero)
+        self.assertNotIn("<br>", hero)
+        self.assertLess(self.html.index('id="capabilities"'), self.html.index('id="install"'))
+
     def test_accessibility_basics(self) -> None:
         self.assertIn('class="skip-link"', self.html)
         self.assertIn('prefers-reduced-motion: reduce', self.css)

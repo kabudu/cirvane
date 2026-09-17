@@ -26,9 +26,10 @@
   <main id="main">
     <section class="hero">
       <div class="hero-copy">
-        <p class="eyebrow">Recovery-focused embedded firmware</p>
-        <h1>Know what failed.<br>See how it recovered.</h1>
-        <p class="lede">Cirvane gives constrained devices bounded services, recoverable configuration and explicit firmware rollback. Its first hardware target is the Seeed Studio XIAO ESP32-C5.</p>
+        <p class="eyebrow">For embedded developers</p>
+        <h1>Recovery-focused firmware for connected devices.</h1>
+        <p class="lede">Cirvane is a small device runtime that monitors services, preserves settings after interrupted writes and rolls back firmware that fails its first-boot health check.</p>
+        <p class="hero-platform">Runs on ESP-IDF and FreeRTOS. Available for the Seeed Studio XIAO ESP32-C5 as a developer release, not for unattended deployment.</p>
         <div class="actions">
           <a class="button primary" href="https://github.com/kabudu/cirvane#try-it-on-supported-hardware">Try Cirvane</a>
           <a class="button secondary" href="https://github.com/kabudu/cirvane/blob/master/docs/ARCHITECTURE.md">Explore the architecture</a>
@@ -45,16 +46,6 @@
       <p><strong>Honest about scope</strong><span>Developer release, powered by ESP-IDF and FreeRTOS</span></p>
     </section>
 
-    <section class="section" id="install">
-      <p class="eyebrow">Install v0.1.0</p>
-      <h2>Flash the supported board</h2>
-      <p>Download the full image for the Seeed Studio XIAO ESP32-C5 from the <a href="https://github.com/kabudu/cirvane/releases/tag/v0.1.0">v0.1.0 release</a>, verify it with <code>SHA256SUMS</code>, then write it at flash offset <code>0x0</code>.</p>
-      <pre aria-label="Installation command"><code>python -m esptool --chip esp32c5 \
-  --port PORT \
-  write-flash 0x0 cirvane-v0.1.0-xiao-esp32c5-full.bin</code></pre>
-      <p>Replace the serial port with the one shown by your computer. After reset, open it at 115200 baud and run <code>selftest</code>.</p>
-    </section>
-
     <section class="section" id="capabilities">
       <p class="eyebrow">What it does</p>
       <h2>Failure behaviour you can reason about</h2>
@@ -64,6 +55,16 @@
         <article><span class="number">03</span><h3>Recovers configuration</h3><p>Two verified records preserve the last valid settings after a corrupt or interrupted write.</p></article>
         <article><span class="number">04</span><h3>Rolls firmware back</h3><p>Signed dual-slot images must pass their first-boot health check or the device returns to the prior image.</p></article>
       </div>
+    </section>
+
+    <section class="section" id="install">
+      <p class="eyebrow">Install v0.1.0</p>
+      <h2>Flash the supported board</h2>
+      <p>Download the full image for the Seeed Studio XIAO ESP32-C5 from the <a href="https://github.com/kabudu/cirvane/releases/tag/v0.1.0">v0.1.0 release</a>, verify it with <code>SHA256SUMS</code>, then write it at flash offset <code>0x0</code>.</p>
+      <pre aria-label="Installation command"><code>python -m esptool --chip esp32c5 \
+  --port PORT \
+  write-flash 0x0 cirvane-v0.1.0-xiao-esp32c5-full.bin</code></pre>
+      <p>Replace the serial port with the one shown by your computer. After reset, open it at 115200 baud and run <code>selftest</code>.</p>
     </section>
 
     <section class="terminal-section">
