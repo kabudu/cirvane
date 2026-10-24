@@ -51,6 +51,10 @@ The detailed path from the current productised identity to the first developer r
 - [x] Complete licence and trademark gates appropriate to the chosen private or public release channel.
 - [x] Create the initial developer release only after explicit owner authorization.
 
+## Website clarity and trust
+
+- [x] Remove decorative capability numbering, tighten section/card spacing and expose maintainer identity, contact, licence, update date and validation links before installation. Acceptance: site contract checks, desktop/mobile rendered review and authoritative local CI, recorded in [WEBSITE_REVIEW.md](WEBSITE_REVIEW.md). This is a website improvement, not completion of the practitioner comprehension study.
+
 ## Optional post-release evidence
 
 - [ ] Practitioner interviews and comprehension study.

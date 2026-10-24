@@ -42,18 +42,18 @@
 
     <section class="proof" aria-label="Current product boundaries">
       <p><strong>Bounded by design</strong><span>Fixed services, queues and recovery work</span></p>
-      <p><strong>Hardware tested</strong><span>XIAO ESP32-C5 evidence is committed</span></p>
-      <p><strong>Honest about scope</strong><span>Developer release, powered by ESP-IDF and FreeRTOS</span></p>
+      <p><strong>Hardware tested</strong><span><a href="https://github.com/kabudu/cirvane/blob/master/docs/VALIDATION.md">Review the XIAO ESP32-C5 evidence</a></span></p>
+      <p><strong>Developer release</strong><span>For evaluation, powered by ESP-IDF and FreeRTOS</span></p>
     </section>
 
     <section class="section" id="capabilities">
       <p class="eyebrow">What it does</p>
       <h2>Failure behaviour you can reason about</h2>
       <div class="cards">
-        <article><span class="number">01</span><h3>Supervises services</h3><p>Fixed service identities, health checks and limited restart policies keep recovery work predictable.</p></article>
-        <article><span class="number">02</span><h3>Bounds messages</h3><p>Typed messages use a fixed pool. Queues cannot grow without limit when a producer misbehaves.</p></article>
-        <article><span class="number">03</span><h3>Recovers configuration</h3><p>Two verified records preserve the last valid settings after a corrupt or interrupted write.</p></article>
-        <article><span class="number">04</span><h3>Rolls firmware back</h3><p>Signed dual-slot images must pass their first-boot health check or the device returns to the prior image.</p></article>
+        <article><h3>Supervises services</h3><p>Fixed service identities, health checks and limited restart policies keep recovery work predictable.</p></article>
+        <article><h3>Bounds messages</h3><p>Typed messages use a fixed pool. Queues cannot grow without limit when a producer misbehaves.</p></article>
+        <article><h3>Recovers configuration</h3><p>Two verified records preserve the last valid settings after a corrupt or interrupted write.</p></article>
+        <article><h3>Rolls firmware back</h3><p>Signed dual-slot images must pass their first-boot health check or the device returns to the prior image.</p></article>
       </div>
     </section>
 
@@ -61,6 +61,11 @@
       <p class="eyebrow">Install v0.1.0</p>
       <h2>Flash the supported board</h2>
       <p>Download the full image for the Seeed Studio XIAO ESP32-C5 from the <a href="https://github.com/kabudu/cirvane/releases/tag/v0.1.0">v0.1.0 release</a>, verify it with <code>SHA256SUMS</code>, then write it at flash offset <code>0x0</code>.</p>
+      <aside class="install-trust" aria-label="Before you install">
+        <h3>Know what you are installing</h3>
+        <p>Created and maintained by <a href="https://github.com/kabudu">Kamba Abudu (@kabudu)</a>. Cirvane is Apache-2.0 licensed, with <a href="https://github.com/kabudu/cirvane">source code available for inspection</a>.</p>
+        <p><a href="https://github.com/kabudu/cirvane/blob/master/docs/VALIDATION.md">Read the recorded hardware validation</a> and <a href="#status">current limitations</a> before flashing. These are project-run checks, not independent certification.</p>
+      </aside>
       <pre aria-label="Installation command"><code>python -m esptool --chip esp32c5 \
   --port PORT \
   write-flash 0x0 cirvane-v0.1.0-xiao-esp32c5-full.bin</code></pre>
@@ -95,7 +100,15 @@ Connected. Address acquired.</code></pre>
 
   <footer>
     <img src="assets/cirvane-wordmark-reversed.svg" alt="Cirvane">
-    <p>Recover visibly. Apache-2.0 licensed.</p>
+    <div class="footer-details">
+      <p>&copy; 2026 <a href="https://github.com/kabudu">Kamba Abudu</a>. Recover visibly.</p>
+      <nav aria-label="Footer navigation">
+        <a href="https://github.com/kabudu/cirvane/issues">Contact / support</a>
+        <a href="https://github.com/kabudu/cirvane/blob/master/SECURITY.md">Report a vulnerability</a>
+        <a href="https://github.com/kabudu/cirvane/blob/master/LICENSE">Apache-2.0 licence</a>
+      </nav>
+      <p>Website updated <time datetime="2026-10-24">24 October 2026</time>.</p>
+    </div>
   </footer>
 </body>
 </html>

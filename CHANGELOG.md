@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Changed
+
+- Tighten website spacing, remove decorative capability numbers and surface maintainer identity, contact, licence, update date and hardware-validation links before installation.
+
 ## [0.1.0] - 2026-09-13
 
 ### Added

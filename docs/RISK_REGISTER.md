@@ -20,4 +20,6 @@
 | R16 | Privacy | Nineteen immutable GitHub pull-request refs and cached views retain historical hardware evidence containing local network and device identifiers after writable history was sanitised | Medium | High | Repository owner | An old pull-request ref or cached commit remains accessible | Owner accepted the residual risk on 2026-08-30 and declined GitHub Support cleanup; do not claim complete server-side erasure and reconsider Support cleanup before public visibility |
 | R17 | Release | The only OTA signing key is lost or compromised | Low | Critical | Repository owner | Key cannot sign a planned release or its public point appears outside approved use | Keep the owner-held key outside Git and GitHub with mode `0600`, maintain a protected offline backup, stop releases on suspected compromise and rotate through a release trusted by an uncompromised embedded key |
 
+| R18 | Website trust | Readers mistake project-run board checks or maintainer identity for independent certification or production assurance | Medium | Medium | Maintainer | Website copy implies assurance beyond committed evidence | Link validation and current limitations before flashing, name the maintainer, label checks as project-run and retain developer-release boundaries |
+
 Risks are reviewed at every milestone exit and release candidate.
