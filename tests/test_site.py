@@ -40,6 +40,27 @@ class SiteContractTests(unittest.TestCase):
         self.assertNotIn("<br>", hero)
         self.assertLess(self.html.index('id="capabilities"'), self.html.index('id="install"'))
 
+    def test_installation_exposes_provenance_and_evidence(self) -> None:
+        before_command = self.html.split('<pre aria-label="Installation command">', 1)[0]
+        for text in (
+            'Kamba Abudu (@kabudu)',
+            'https://github.com/kabudu',
+            'source code available for inspection',
+            'Read the recorded hardware validation',
+            'href="#status"',
+            'project-run checks, not independent certification',
+        ):
+            self.assertIn(text, before_command)
+        footer = self.html.split('<footer>', 1)[1]
+        for text in (
+            'Kamba Abudu',
+            'https://github.com/kabudu/cirvane/issues',
+            '/SECURITY.md',
+            '/LICENSE',
+            'Website updated <time datetime=',
+        ):
+            self.assertIn(text, footer)
+
     def test_accessibility_basics(self) -> None:
         self.assertIn('class="skip-link"', self.html)
         self.assertIn('prefers-reduced-motion: reduce', self.css)

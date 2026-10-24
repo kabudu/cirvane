@@ -17,7 +17,7 @@ The maintainer aims to acknowledge a report within five business days and provid
 - The USB shell is a privileged physical interface without user authentication.
 - Wi-Fi credentials are session-only, hidden from command history and cleared on disconnect or reboot.
 - Software image signatures and dual-slot rollback are tested, but hardware Secure Boot, flash encryption and production eFuse provisioning are not enabled by the project.
-- Authenticated remote OTA transport is not implemented.
+- Authenticated remote OTA transport has been qualified on the supported XIAO ESP32-C5; this does not establish production suitability or independent security validation.
 - Independent penetration testing and safety certification have not been completed.
 
 See `docs/THREAT_MODEL.md` and `docs/RELEASE.md` for the complete boundary and stop-ship conditions.
